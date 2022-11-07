@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import {StyleSheet, TouchableOpacity, Text} from 'react-native';
 
-function LoginButton(props) {
+function MaterialButtonViolet2(props) {
   return (
     <TouchableOpacity style={[styles.container, props.style]}>
-      <Text style={styles.login}>Login</Text>
+      <Text style={styles.submit}>Submit</Text>
     </TouchableOpacity>
   );
 }
@@ -12,6 +12,9 @@ function LoginButton(props) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#3F51B5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
     borderRadius: 2,
     shadowColor: '#000',
     shadowOffset: {
@@ -24,15 +27,11 @@ const styles = StyleSheet.create({
     minWidth: 88,
     paddingLeft: 16,
     paddingRight: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  login: {
+  submit: {
     color: '#fff',
     fontSize: 14,
-    height: 17,
-    width: 35,
   },
 });
 
-export default LoginButton;
+export default MaterialButtonViolet2;

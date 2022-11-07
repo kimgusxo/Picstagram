@@ -4,12 +4,12 @@ import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
 function CupertinoSegmentWithTwoTabs(props) {
   return (
     <View style={[styles.container, props.style]}>
-      <View style={styles.textWrapper}>
-        <TouchableOpacity style={styles.segmentTextWrapperLeft}>
-          <Text style={styles.팔로워}>팔로워</Text>
+      <View style={styles.tabsWrapper}>
+        <TouchableOpacity style={styles.follwerButton}>
+          <Text style={styles.txtFollower}>팔로워</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.segmentTextWrapperRight}>
-          <Text style={styles.팔로우}>팔로우</Text>
+        <TouchableOpacity style={styles.followButton}>
+          <Text style={styles.txtFollow}>팔로우</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -22,14 +22,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#FFF',
   },
-  textWrapper: {
+  tabsWrapper: {
     height: 29,
     paddingLeft: 30,
     paddingRight: 30,
     flexDirection: 'row',
     width: 360,
+    alignSelf: 'center',
   },
-  segmentTextWrapperLeft: {
+  follwerButton: {
     alignItems: 'center',
     backgroundColor: '#007AFF',
     padding: 6,
@@ -40,13 +41,13 @@ const styles = StyleSheet.create({
     width: 150,
     height: 29,
   },
-  팔로워: {
+  txtFollower: {
     fontSize: 13,
+    fontFamily: 'roboto-700',
     color: '#FFFFFF',
-    width: 42,
-    height: 9,
+    alignSelf: 'center',
   },
-  segmentTextWrapperRight: {
+  followButton: {
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
     padding: 6,
@@ -57,11 +58,11 @@ const styles = StyleSheet.create({
     width: 150,
     height: 29,
   },
-  팔로우: {
+  txtFollow: {
     fontSize: 13,
+    fontFamily: 'roboto-700',
     color: '#007AFF',
-    width: 44,
-    height: 9,
+    alignSelf: 'center',
   },
 });
 

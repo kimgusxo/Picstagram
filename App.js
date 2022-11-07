@@ -1,98 +1,38 @@
-import React, {useState} from 'react';
-import {createAppContainer} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
-import {createDrawerNavigator} from 'react-navigation-drawer';
-import AppLoading from 'expo-app-loading';
-
-import * as Font from 'expo-font';
-import FirstScreen from './src/screens/FirstScreen';
-import FollowListScreen from './src/screens/FollowListScreen';
-import LoginScreen from './src/screens/LoginScreen';
-import MainScreen from './src/screens/MainScreen';
-import PostingScreen from './src/screens/PostingScreen';
-import ProfileScreen from './src/screens/ProfileScreen';
-import RegisteryPostScreen from './src/screens/RegisteryPostScreen';
-import SearchScreen from './src/screens/SearchScreen';
-import SignUpScreen from './src/screens/SignUpScreen';
-import Untitled from './src/screens/Untitled';
-import Untitled1 from './src/screens/Untitled1';
-import Untitled2 from './src/screens/Untitled2';
-import UpdateProfileScreen from './src/screens/UpdateProfileScreen';
-import UserSearchScreen from './src/screens/UserSearchScreen';
-
-const DrawerNavigation = createDrawerNavigator({
-  FirstScreen: FirstScreen,
-  FollowListScreen: FollowListScreen,
-  LoginScreen: LoginScreen,
-  MainScreen: MainScreen,
-  PostingScreen: PostingScreen,
-  ProfileScreen: ProfileScreen,
-  RegisteryPostScreen: RegisteryPostScreen,
-  SearchScreen: SearchScreen,
-  SignUpScreen: SignUpScreen,
-  Untitled: Untitled,
-  Untitled1: Untitled1,
-  Untitled2: Untitled2,
-  UpdateProfileScreen: UpdateProfileScreen,
-  UserSearchScreen: UserSearchScreen,
-});
-
-const StackNavigation = createStackNavigator(
-  {
-    DrawerNavigation: {
-      screen: DrawerNavigation,
-    },
-    FirstScreen: FirstScreen,
-    FollowListScreen: FollowListScreen,
-    LoginScreen: LoginScreen,
-    MainScreen: MainScreen,
-    PostingScreen: PostingScreen,
-    ProfileScreen: ProfileScreen,
-    RegisteryPostScreen: RegisteryPostScreen,
-    SearchScreen: SearchScreen,
-    SignUpScreen: SignUpScreen,
-    Untitled: Untitled,
-    Untitled1: Untitled1,
-    Untitled2: Untitled2,
-    UpdateProfileScreen: UpdateProfileScreen,
-    UserSearchScreen: UserSearchScreen,
-  },
-  {
-    headerMode: 'none',
-  }
-);
-
-const AppContainer = createAppContainer(StackNavigation);
+import React, {Component} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import FirstScreen from './screens/FirstScreen';
+import LoginScreen from './screens/LoginScreen';
+import SignUpScreen from './screens/SignUpScreen';
+import FollowListScreen from './screens/FollowListScreen';
+import MainScreen from './screens/MainScreen';
+import PostingScreen from './screens/PostingScreen';
+import ProfileScreen from './screens/ProfileScreen';
+import RegisteryPostScreen from './screens/RegisteryPostScreen';
+import UpdateProfileScreen from './screens/UpdateProfileScreen';
+import UserSearchScreen from './screens/UserSearchScreen';
 
 function App() {
-  const [isLoadingComplete, setLoadingComplete] = useState(false);
-  if (!isLoadingComplete) {
-    return (
-      <AppLoading
-        startAsync={loadResourcesAsync}
-        onError={handleLoadingError}
-        onFinish={() => handleFinishLoading(setLoadingComplete)}
-      />
-    );
-  } else {
-    return isLoadingComplete ? <AppContainer /> : <AppLoading />;
-  }
-}
-async function loadResourcesAsync() {
-  await Promise.all([
-    Font.loadAsync({
-      'roboto-700': require('./src/assets/fonts/roboto-700.ttf'),
-      'roboto-regular': require('./src/assets/fonts/roboto-regular.ttf'),
-      'roboto-700italic': require('./src/assets/fonts/roboto-700italic.ttf'),
-    }),
-  ]);
-}
-function handleLoadingError(error) {
-  console.warn(error);
-}
+  const Stack = createStackNavigator();
 
-function handleFinishLoading(setLoadingComplete) {
-  setLoadingComplete(true);
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="First"
+        screenOptions={{headerShown: false}}>
+        <Stack.Screen name="First" component={FirstScreen} />
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="SignUp" component={SignUpScreen} />
+        <Stack.Screen name="FollowList" component={FollowListScreen} />
+        <Stack.Screen name="Main" component={MainScreen} />
+        <Stack.Screen name="Posting" component={PostingScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="RegisteryPost" component={RegisteryPostScreen} />
+        <Stack.Screen name="UpdateProfile" component={UpdateProfileScreen} />
+        <Stack.Screen name="UserSearch" component={UserSearchScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }
 
 export default App;

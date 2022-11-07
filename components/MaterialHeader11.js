@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   icon: {
     color: 'rgba(255,255,255,1)',
     fontSize: 30,
-    marginLeft: 247,
+    marginLeft: 284,
     marginTop: 12,
   },
 });

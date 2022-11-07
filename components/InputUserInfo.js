@@ -9,13 +9,21 @@ function InputUserInfo(props) {
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.idTextBoxRow}>
-        <IdTextBox inputStyle="ID" style={styles.idTextBox} />
+        <IdTextBox
+          inputStyle="Placeholder"
+          inputStyle="ID"
+          style={styles.idTextBox}
+        />
         <DuplicationCheckButton
           중복확인="중복확인"
           style={styles.duplicateCheckButton}
         />
       </View>
-      <PasswordTextBox inputStyle="PW" style={styles.pWTextBox} />
+      <PasswordTextBox
+        inputStyle="Placeholder"
+        inputStyle="PW"
+        style={styles.pWTextBox}
+      />
       <DuplicateCheckPasswordTextInput style={styles.pWCheckTextBox} />
     </View>
   );
@@ -40,12 +48,12 @@ const styles = StyleSheet.create({
   },
   pWTextBox: {
     height: 43,
-    width: 300,
+    width: 218,
     marginTop: 14,
   },
   pWCheckTextBox: {
     height: 43,
-    width: 300,
+    width: 218,
     marginTop: 18,
   },
 });

@@ -1,29 +1,19 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import EvilIconsIcon from 'react-native-vector-icons/EvilIcons';
 
 function HeaderMain(props) {
   return (
     <View style={[styles.container, props.style]}>
-      <View style={styles.textWrapperRow}>
-        <View style={styles.textWrapper}>
-          <Text numberOfLines={1} style={styles.picstagram}>
-            Picstagram
-          </Text>
-        </View>
-        <View style={styles.createPost}>
-          <TouchableOpacity style={styles.createPostButton}>
-            <FeatherIcon name="plus" style={styles.createPostIcon} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.search}>
-          <View style={styles.searchButtonStack}>
-            <TouchableOpacity style={styles.searchButton}>
-              <IoniconsIcon name="md-search" style={styles.searchIcon} />
-            </TouchableOpacity>
-          </View>
-        </View>
+      <View style={styles.picstagramRow}>
+        <Text style={styles.picstagram}>Picstagram</Text>
+        <TouchableOpacity style={styles.addPostButton}>
+          <FeatherIcon name="plus" style={styles.addPostIcon} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.searchButton}>
+          <EvilIconsIcon name="search" style={styles.searchIcon} />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -45,63 +35,42 @@ const styles = StyleSheet.create({
     shadowRadius: 1.2,
     elevation: 3,
   },
-  textWrapper: {
-    height: 18,
-    marginTop: 5,
-  },
   picstagram: {
-    fontSize: 18,
-    color: '#FFFFFF',
-    backgroundColor: 'transparent',
-    lineHeight: 18,
+    fontFamily: 'roboto-700',
+    color: 'rgba(255,255,255,1)',
+    fontSize: 20,
+    marginTop: 3,
   },
-  createPost: {
-    width: 29,
-    height: 34,
-    marginLeft: 200,
-  },
-  createPostButton: {
+  addPostButton: {
     width: 30,
     height: 30,
-    backgroundColor: '#3f51b5',
+    justifyContent: 'center',
+    marginLeft: 154,
+    marginTop: 1,
   },
-  createPostIcon: {
+  addPostIcon: {
     color: 'rgba(255,255,255,1)',
     fontSize: 30,
-    height: 30,
-    width: 30,
-  },
-  search: {
-    width: 30,
-    height: 28,
-    marginLeft: 10,
+    alignSelf: 'center',
   },
   searchButton: {
-    top: 2,
-    left: 0,
-    width: 31,
-    height: 30,
-    position: 'absolute',
-    backgroundColor: '#3f51b5',
+    width: 30,
+    height: 33,
+    justifyContent: 'center',
+    marginLeft: 10,
   },
   searchIcon: {
-    top: 0,
-    left: 4,
-    position: 'absolute',
     color: 'rgba(255,255,255,1)',
-    fontSize: 25,
+    fontSize: 30,
+    alignSelf: 'center',
   },
-  searchButtonStack: {
-    width: 31,
+  picstagramRow: {
     height: 33,
-  },
-  textWrapperRow: {
-    height: 34,
     flexDirection: 'row',
     flex: 1,
-    marginRight: 17,
-    marginLeft: 22,
-    marginTop: 11,
+    marginRight: 11,
+    marginLeft: 20,
+    marginTop: 12,
   },
 });
 

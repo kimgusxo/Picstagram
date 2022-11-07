@@ -4,11 +4,7 @@ import {StyleSheet, View, Text} from 'react-native';
 function HeaderLogo(props) {
   return (
     <View style={[styles.container, props.style]}>
-      <View style={styles.textWrapper}>
-        <Text numberOfLines={1} style={styles.picstagram}>
-          Picstagram
-        </Text>
-      </View>
+      <Text style={styles.picstagram}>Picstagram</Text>
     </View>
   );
 }
@@ -29,16 +25,12 @@ const styles = StyleSheet.create({
     shadowRadius: 1.2,
     elevation: 3,
   },
-  textWrapper: {
-    height: 30,
-    marginLeft: 23,
-    marginTop: 16,
-  },
   picstagram: {
-    fontSize: 18,
-    color: '#FFFFFF',
-    backgroundColor: 'transparent',
-    lineHeight: 18,
+    fontFamily: 'roboto-700',
+    color: 'rgba(255,255,255,1)',
+    fontSize: 20,
+    marginLeft: 20,
+    marginTop: 16,
   },
 });
 

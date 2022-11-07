@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, TextInput} from 'react-native';
 
-function ContentsWrite(props) {
+function ContentsWriter(props) {
   return (
     <View style={[styles.container, props.style]}>
       <TextInput placeholder="내용을 입력하세요." style={styles.inputStyle} />
@@ -29,4 +29,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ContentsWrite;
+export default ContentsWriter;

@@ -33,7 +33,7 @@ function PostingScreen(props) {
         <View style={styles.imageBox}>
           <View style={styles.imageStack}>
             <Image
-              source={require('../assets/images/CeVrRv4FyTN1.jfif')}
+              source={'../assets/images/Capture001.jfif'}
               resizeMode="contain"
               style={styles.image}
             />

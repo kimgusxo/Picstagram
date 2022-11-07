@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, StatusBar, Text} from 'react-native';
 import HeaderLogo from '../components/HeaderLogo';
-import InputLoginInfo from '../components/InputLoginInfo';
+import InputUserInfo from '../components/InputUserInfo';
 import SubmitButton from '../components/SubmitButton';
 
 function LoginScreen(props) {
@@ -9,7 +9,7 @@ function LoginScreen(props) {
     <View style={styles.container}>
       <StatusBar hidden />
       <HeaderLogo style={styles.headerLogo} />
-      <InputLoginInfo style={styles.inputLoginInfo} />
+      <InputUserInfo style={styles.InputUserInfo} />
       <Text style={styles.로그인}>로그인</Text>
       <SubmitButton style={styles.submitButton} />
     </View>
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   headerLogo: {
     height: 56,
   },
-  inputLoginInfo: {
+  InputUserInfo: {
     height: 110,
     width: 287,
     marginTop: 166,
