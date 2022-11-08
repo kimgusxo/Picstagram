@@ -11,11 +11,15 @@ import ProfileScreen from './screens/ProfileScreen';
 import RegisteryPostScreen from './screens/RegisteryPostScreen';
 import UpdateProfileScreen from './screens/UpdateProfileScreen';
 import UserSearchScreen from './screens/UserSearchScreen';
+import PostSearchScreen from './screens/PostSearchScreen';
 
 function App() {
   const Stack = createStackNavigator();
 
+  const isLogined = true;
+
   return (
+    !isLogined ? (
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="First"
@@ -23,15 +27,24 @@ function App() {
         <Stack.Screen name="First" component={FirstScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="SignUp" component={SignUpScreen} />
-        <Stack.Screen name="FollowList" component={FollowListScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+    ) : (
+      <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="Main"
+        screenOptions={{headerShown: false}}>
         <Stack.Screen name="Main" component={MainScreen} />
-        <Stack.Screen name="Posting" component={PostingScreen} />
+        <Stack.Screen name="FollowList" component={FollowListScreen} />
+        {/* <Stack.Screen name="Posting" component={PostingScreen} /> */}
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="RegisteryPost" component={RegisteryPostScreen} />
         <Stack.Screen name="UpdateProfile" component={UpdateProfileScreen} />
         <Stack.Screen name="UserSearch" component={UserSearchScreen} />
+        <Stack.Screen name="PostSearch" component={PostSearchScreen} />
       </Stack.Navigator>
     </NavigationContainer>
+    )
   );
 }
 

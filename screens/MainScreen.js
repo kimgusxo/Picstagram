@@ -17,6 +17,8 @@ function MainScreen({navigation, route}) {
         <PostComponent style={styles.postComponent} navigation={navigation} />
         <PostComponent style={styles.postComponent} navigation={navigation} />
         <PostComponent style={styles.postComponent} navigation={navigation} />
+        <PostComponent style={styles.postComponent} navigation={navigation} />
+        <PostComponent style={styles.postComponent} navigation={navigation} />
       </ScrollView>
       <View>
         <FooterMain style={styles.footerMain} navigation={navigation} />
@@ -43,3 +45,4 @@ const styles = StyleSheet.create({
 });
 
 export default MainScreen;
+

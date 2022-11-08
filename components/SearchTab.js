@@ -16,7 +16,7 @@ function SearchTab(props) {
               <TouchableOpacity style={styles.searchButton}>
                 <IoniconsIcon name="md-search" style={styles.searchIcon} />
               </TouchableOpacity>
-
+              
         </View>
     </View>
   );
