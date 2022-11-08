@@ -3,11 +3,11 @@ import {StyleSheet, View, StatusBar, ScrollView} from 'react-native';
 import UserSmallProfile from '../components/UserSmallProfile';
 import SearchTab from '../components/SearchTab';
 
-function UserSearchScreen(props) {
+function UserSearchScreen({navigation, route}) {
   return (
       <View style={styles.container}>
         <StatusBar hidden />
-        <SearchTab style={styles.searchTab} />
+        <SearchTab style={styles.searchTab} navigation={navigation} />
         <ScrollView
         contentContainerStyle={styles.scrollArea_contentContainerStyle}>
           <UserSmallProfile style={styles.userSmallProfile} />

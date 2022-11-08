@@ -4,7 +4,7 @@ import InputUserInfo from '../components/InputUserInfo';
 import HeaderLogo from '../components/HeaderLogo';
 import SubmitButton from '../components/SubmitButton';
 
-function SignUpScreen(props) {
+function SignUpScreen({navigation, route}) {
   return (
     <View style={styles.container}>
       <StatusBar hidden />

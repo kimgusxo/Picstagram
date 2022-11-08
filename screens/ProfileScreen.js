@@ -4,18 +4,18 @@ import ProfileHeader from '../components/ProfileHeader';
 import ProfileInfomation from '../components/ProfileInfomation';
 import FooterMain from '../components/FooterMain';
 
-function ProfileScreen(props) {
+function ProfileScreen({navigation, route}) {
   return (
     <>
       <View>
         <StatusBar hidden />
-        <ProfileHeader style={styles.profileHeader} />
-        <ProfileInfomation style={styles.profileInfomation} />
+        <ProfileHeader style={styles.profileHeader} navigation={navigation} />
+        <ProfileInfomation style={styles.profileInfomation} navigation={navigation} />
         <View style={styles.profileHeaderColumnFiller} />
       </View>
       <ScrollView style={styles.container} />
       <View>
-        <FooterMain style={styles.footerMain} />
+        <FooterMain style={styles.footerMain} navigation={navigation} />
       </View>
     </>
   );

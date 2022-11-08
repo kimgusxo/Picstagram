@@ -4,11 +4,11 @@ import ProfileHeader from '../components/ProfileHeader';
 import CupertinoSegmentWithTwoTabs from '../components/CupertinoSegmentWithTwoTabs';
 import UserSmallProfile from '../components/UserSmallProfile';
 
-function FollowListScreen(props) {
+function FollowListScreen({navigation, route}) {
   return (
     <View style={styles.container}>
       <StatusBar hidden />
-      <ProfileHeader style={styles.profileHeader} />
+      <ProfileHeader style={styles.profileHeader} navigation={navigation} />
       <CupertinoSegmentWithTwoTabs style={styles.followListTabs} />
       <ScrollView contentContainerStyle={styles.followList}>
         <UserSmallProfile style={styles.userSmallProfile} />

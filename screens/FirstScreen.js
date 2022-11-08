@@ -4,14 +4,14 @@ import LoginButton from '../components/LoginButton';
 import SignUpButton from '../components/SignUpButton';
 import HeaderLogo from '../components/HeaderLogo';
 
-function FirstScreen(props) {
+function FirstScreen({navigation, route}) {
   return (
     <View style={styles.container}>
       <StatusBar hidden backgroundColor="rgba(255,255,255,1)" />
       <HeaderLogo style={styles.headerLogo}></HeaderLogo>
       <Text style={styles.txtPicstagram}>Picstagram</Text>
-      <LoginButton style={styles.loginButton}></LoginButton>
-      <SignUpButton style={styles.signUpButton}></SignUpButton>
+      <LoginButton style={styles.loginButton} navigation={navigation}></LoginButton>
+      <SignUpButton style={styles.signUpButton} navigation={navigation}></SignUpButton>
     </View>
   );
 }

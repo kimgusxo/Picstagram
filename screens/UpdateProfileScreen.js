@@ -5,11 +5,11 @@ import HeaderLogo from '../components/HeaderLogo';
 import InputUserInfo from '../components/InputUserInfo';
 import ProfileHeader from '../components/ProfileHeader';
 
-function UpdateProfileScreen(props) {
+function UpdateProfileScreen({navigation, route}) {
   return (
     <View style={styles.container}>
       <StatusBar hidden />
-      <ProfileHeader style={styles.headerLogo} />
+      <ProfileHeader style={styles.headerLogo} navigation={navigation} />
       <Text style={styles.txtChangeProfile}>프로필 수정</Text>
       <InputUserInfo style={styles.inputUserInfo} />
     </View>

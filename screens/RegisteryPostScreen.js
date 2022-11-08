@@ -5,12 +5,12 @@ import OldPosting from '../components/OldPosting';
 import HeaderMain from '../components/HeaderMain';
 import UpdatePostingFooter from '../components/UpdatePostingFooter';
 
-function RegisteryPostScreen(props) {
+function RegisteryPostScreen({navigation, route}) {
   return (
     <>
       <View>
         <StatusBar hidden />
-        <HeaderMain style={styles.headerMain} />
+        <HeaderMain style={styles.headerMain} navigation={navigation} />
       </View>
       <ScrollView
         contentContainerStyle={styles.scrollArea_contentContainerStyle}>
@@ -23,7 +23,7 @@ function RegisteryPostScreen(props) {
         <OldPosting style={styles.oldPosting} />
       </ScrollView>
       <View>
-        <UpdatePostingFooter style={styles.cancelableFooter} />
+        <UpdatePostingFooter style={styles.cancelableFooter} navigation={navigation} />
       </View>
     </>
   );

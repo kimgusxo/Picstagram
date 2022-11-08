@@ -6,7 +6,7 @@ function ProfileHeader(props) {
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.backButtonRow}>
-        <TouchableOpacity style={styles.backButton}>
+        <TouchableOpacity style={styles.backButton} onPress={() => props.navigation.goBack()}>
           <Icon name="cross" style={styles.backIcon} />
         </TouchableOpacity>
         <Text style={styles.title}>Title</Text>

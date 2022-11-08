@@ -8,7 +8,7 @@ function SearchTab(props) {
   return (
     <View style={[styles.container, props.style]}>
         <View style={styles.prevRow}>
-            <TouchableOpacity style={styles.prevButton}>
+            <TouchableOpacity style={styles.prevButton} onPress={() => props.navigation.goBack()}>
               <FeatherIcon name="arrow-left" style={styles.prevIcon} />
             </TouchableOpacity>
           <SearchTextBox style={styles.searchTextBox} />

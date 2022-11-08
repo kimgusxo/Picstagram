@@ -3,11 +3,11 @@ import {StyleSheet, View, StatusBar, ScrollView} from 'react-native';
 import SearchedPostProfile from '../components/SearchedPostProfile';
 import SearchTab from '../components/SearchTab';
 
-function PostSearchScreen(props) {
+function PostSearchScreen({navigation, route}) {
   return (
     <View style={styles.container}>
       <StatusBar hidden />
-      <SearchTab style={styles.searchTab} />
+      <SearchTab style={styles.searchTab} navigation={navigation} />
       <ScrollView
         contentContainerStyle={
           styles.scrollArea_contentContainerStyle

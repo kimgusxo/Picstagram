@@ -11,13 +11,13 @@ function ProfileInfomation(props) {
         <View style={styles.group}>
           <View style={styles.followerRow}>
             <View style={styles.follower}>
-              <TouchableOpacity style={styles.followerCheckButton}>
+              <TouchableOpacity style={styles.followerCheckButton} onPress={() => props.navigation.navigate('FollowList')}>
                 <Text style={styles.followerCount}>0</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.followerFiller} />
             <View style={styles.following}>
-              <TouchableOpacity style={styles.followingCheckButton}>
+              <TouchableOpacity style={styles.followingCheckButton} onPress={() => props.navigation.navigate('FollowList')}>
                 <Text style={styles.followingCount}>0</Text>
               </TouchableOpacity>
             </View>
@@ -29,7 +29,7 @@ function ProfileInfomation(props) {
           </View>
         </View>
       </View>
-      <UpdateProfileButton style={styles.updateProfileButton} />
+      <UpdateProfileButton style={styles.updateProfileButton} navigation={props.navigation} />
     </View>
   );
 }

@@ -8,10 +8,10 @@ function HeaderMain(props) {
     <View style={[styles.container, props.style]}>
       <View style={styles.picstagramRow}>
         <Text style={styles.picstagram}>Picstagram</Text>
-        <TouchableOpacity style={styles.addPostButton}>
+        <TouchableOpacity style={styles.addPostButton} onPress={() => props.navigation.navigate('RegisteryPost')}>
           <FeatherIcon name="plus" style={styles.addPostIcon} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.searchButton}>
+        <TouchableOpacity style={styles.searchButton} onPress={() => props.navigation.navigate('UserSearch')}>
           <EvilIconsIcon name="search" style={styles.searchIcon} />
         </TouchableOpacity>
       </View>

@@ -7,25 +7,23 @@ import PostFooter from './PostFooter';
 function PostComponent(props) {
   return (
     <View style={[styles.container, props.style]}>
-      <PostProfile style={styles.postProfile} />
-      <Feed style={styles.imageFeed} />
-      <PostFooter style={styles.postFooter} />
+      <PostProfile style={styles.postProfile} navigation={props.navigation} />
+      <Feed navigation={props.navigation} />
+      <PostFooter style={styles.postFooter} navigation={props.navigation} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    marginVertical: 5,
+  },
   postProfile: {
     height: 64,
     backgroundColor: '#fff',
   },
-  imageFeed: {
-    height: 368,
-  },
   postFooter: {
-    height: 33,
-    marginTop: 6,
+    height: 44,
   },
 });
 

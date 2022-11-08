@@ -3,7 +3,7 @@ import {StyleSheet, TouchableOpacity, Text} from 'react-native';
 
 function UpdateProfileButton(props) {
   return (
-    <TouchableOpacity style={[styles.container, props.style]}>
+    <TouchableOpacity style={[styles.container, props.style]} onPress={() => props.navigation.navigate('UpdateProfile')} >
       <Text style={styles.프로필편집}>프로필 편집</Text>
     </TouchableOpacity>
   );

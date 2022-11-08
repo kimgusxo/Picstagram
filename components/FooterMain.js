@@ -6,13 +6,13 @@ function FooterMain(props) {
   return (
     <View style={[styles.container, props.style]}>
         <View style={styles.homeButtonRow}>
-          <TouchableOpacity style={styles.homeButton}>
+          <TouchableOpacity style={styles.homeButton} onPress={() => props.navigation.navigate('Main')}>
             <EntypoIcon name="home" style={styles.homeIcon} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.cameraButton}>
+          <TouchableOpacity style={styles.cameraButton} onPress={() => console.log('go to camera')}>
             <EntypoIcon name="camera" style={styles.cameraIcon} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.profileButton}>
+          <TouchableOpacity style={styles.profileButton} onPress={() => props.navigation.navigate('Profile')}>
             <EntypoIcon name="user" style={styles.myProfileIcon} />
           </TouchableOpacity>
         </View>
