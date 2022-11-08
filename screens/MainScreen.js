@@ -1,17 +1,24 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, StatusBar} from 'react-native';
+import {StyleSheet, View, Text, ScrollView, StatusBar} from 'react-native';
 import HeaderMain from '../components/HeaderMain';
 import PostComponent from '../components/PostComponent';
 import FooterMain from '../components/FooterMain';
 
 function MainScreen(props) {
   return (
-    <View style={styles.container}>
-      <StatusBar hidden />
-      <HeaderMain style={styles.headerMain} />
-      <PostComponent style={styles.postComponent} />
-      <FooterMain style={styles.footerMain} />
-    </View>
+    <>
+      <View>
+        <StatusBar hidden />
+        <HeaderMain style={styles.headerMain} />
+      </View>
+      <ScrollView style={styles.container}>
+        <PostComponent style={styles.postComponent} />
+
+      </ScrollView>
+      <View>
+        <FooterMain style={styles.footerMain} />
+      </View>
+    </>
   );
 }
 
@@ -29,7 +36,6 @@ const styles = StyleSheet.create({
   },
   footerMain: {
     height: 56,
-    marginTop: 53,
   },
 });
 

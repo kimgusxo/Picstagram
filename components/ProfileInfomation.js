@@ -111,8 +111,7 @@ const styles = StyleSheet.create({
     height: 66,
     flexDirection: 'row',
     marginTop: 24,
-    marginLeft: 40,
-    marginRight: 58,
+    justifyContent: 'center',
   },
   updateProfileButton: {
     height: 36,

@@ -7,20 +7,25 @@ import UpdatePostingFooter from '../components/UpdatePostingFooter';
 
 function RegisteryPostScreen(props) {
   return (
-    <View style={styles.container}>
-      <StatusBar hidden />
-      <View style={styles.scrollArea}>
-        <ScrollView
-          horizontal={false}
-          contentContainerStyle={styles.scrollArea_contentContainerStyle}>
-          <NewPosting style={styles.newPosting} />
-          <OldPosting style={styles.oldPosting} />
-          <OldPosting style={styles.oldPosting2} />
-        </ScrollView>
+    <>
+      <View>
+        <StatusBar hidden />
+        <HeaderMain style={styles.headerMain} />
       </View>
-      <HeaderMain style={styles.headerMain} />
-      <UpdatePostingFooter style={styles.cancelableFooter} />
-    </View>
+      <ScrollView
+        contentContainerStyle={styles.scrollArea_contentContainerStyle}>
+        <NewPosting style={styles.newPosting} />
+        <OldPosting style={styles.oldPosting} />
+        <OldPosting style={styles.oldPosting} />
+        <OldPosting style={styles.oldPosting} />
+        <OldPosting style={styles.oldPosting} />
+        <OldPosting style={styles.oldPosting} />
+        <OldPosting style={styles.oldPosting} />
+      </ScrollView>
+      <View>
+        <UpdatePostingFooter style={styles.cancelableFooter} />
+      </View>
+    </>
   );
 }
 
@@ -34,35 +39,24 @@ const styles = StyleSheet.create({
     marginTop: 56,
   },
   scrollArea_contentContainerStyle: {
-    height: 528,
+    alignSelf: 'center',
   },
   newPosting: {
     height: 167,
     width: 341,
-    marginTop: 7,
-    marginLeft: 9,
+    marginTop: 18,
   },
   oldPosting: {
     height: 168,
     width: 341,
-    marginTop: 6,
-    marginLeft: 9,
-  },
-  oldPosting2: {
-    width: 341,
-    height: 168,
-    marginTop: 6,
-    marginLeft: 9,
+    marginTop: 18,
   },
   headerMain: {
     height: 56,
-    width: 360,
-    marginTop: -584,
     alignSelf: 'center',
   },
   cancelableFooter: {
     height: 56,
-    marginTop: 528,
   },
 });
 

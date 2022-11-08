@@ -40,12 +40,11 @@ const styles = StyleSheet.create({
     marginTop: 18,
   },
   newPostingIconRow: {
-    height: 73,
     flexDirection: 'row',
     flex: 1,
-    marginRight: 44,
-    marginLeft: 22,
-    marginTop: 46,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    
   },
 });
 

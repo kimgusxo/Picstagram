@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     justifyContent: 'center',
-    marginLeft: 154,
+    marginLeft: 180,
     marginTop: 1,
   },
   addPostIcon: {
@@ -68,9 +68,7 @@ const styles = StyleSheet.create({
     height: 33,
     flexDirection: 'row',
     flex: 1,
-    marginRight: 11,
     marginLeft: 20,
-    marginTop: 12,
   },
 });
 

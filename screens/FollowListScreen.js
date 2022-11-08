@@ -10,13 +10,18 @@ function FollowListScreen(props) {
       <StatusBar hidden />
       <ProfileHeader style={styles.profileHeader} />
       <CupertinoSegmentWithTwoTabs style={styles.followListTabs} />
-      <View style={styles.followList}>
-        <ScrollView
-          horizontal={false}
-          contentContainerStyle={styles.followList_contentContainerStyle}>
-          <UserSmallProfile style={styles.userSmallProfile} />
-        </ScrollView>
-      </View>
+      <ScrollView contentContainerStyle={styles.followList}>
+        <UserSmallProfile style={styles.userSmallProfile} />
+        <UserSmallProfile style={styles.userSmallProfile} />
+        <UserSmallProfile style={styles.userSmallProfile} />
+        <UserSmallProfile style={styles.userSmallProfile} />
+        <UserSmallProfile style={styles.userSmallProfile} />
+        <UserSmallProfile style={styles.userSmallProfile} />
+        <UserSmallProfile style={styles.userSmallProfile} />
+        <UserSmallProfile style={styles.userSmallProfile} />
+        <UserSmallProfile style={styles.userSmallProfile} />
+        <UserSmallProfile style={styles.userSmallProfile} />
+      </ScrollView>
     </View>
   );
 }
@@ -32,10 +37,7 @@ const styles = StyleSheet.create({
     height: 56,
   },
   followList: {
-    height: 528,
-  },
-  followList_contentContainerStyle: {
-    height: 528,
+    paddingVertical: 15
   },
   userSmallProfile: {
     height: 70,

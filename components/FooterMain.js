@@ -5,7 +5,6 @@ import EntypoIcon from 'react-native-vector-icons/Entypo';
 function FooterMain(props) {
   return (
     <View style={[styles.container, props.style]}>
-      <View style={styles.group}>
         <View style={styles.homeButtonRow}>
           <TouchableOpacity style={styles.homeButton}>
             <EntypoIcon name="home" style={styles.homeIcon} />
@@ -17,7 +16,6 @@ function FooterMain(props) {
             <EntypoIcon name="user" style={styles.myProfileIcon} />
           </TouchableOpacity>
         </View>
-      </View>
     </View>
   );
 }
@@ -35,11 +33,6 @@ const styles = StyleSheet.create({
     shadowRadius: 1.2,
     elevation: 3,
   },
-  group: {
-    width: 360,
-    height: 56,
-    flexDirection: 'row',
-  },
   homeButton: {
     width: 120,
     justifyContent: 'center',
@@ -47,7 +40,6 @@ const styles = StyleSheet.create({
   homeIcon: {
     color: 'rgba(0,0,0,1)',
     fontSize: 40,
-    flex: 0.03,
     alignSelf: 'center',
   },
   cameraButton: {
@@ -57,7 +49,6 @@ const styles = StyleSheet.create({
   cameraIcon: {
     color: 'rgba(0,0,0,1)',
     fontSize: 40,
-    flex: 0.04,
     alignSelf: 'center',
   },
   profileButton: {
@@ -66,13 +57,13 @@ const styles = StyleSheet.create({
   myProfileIcon: {
     color: 'rgba(0,0,0,1)',
     fontSize: 40,
-    flex: 0.04,
     marginTop: 7,
     alignSelf: 'center',
   },
   homeButtonRow: {
     height: 56,
     flexDirection: 'row',
+    justifyContent: 'center',
     flex: 1,
   },
 });

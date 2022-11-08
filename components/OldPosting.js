@@ -16,15 +16,14 @@ const styles = StyleSheet.create({
   oldPostSelected: {
     backgroundColor: 'rgba(155,155,155,1)',
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   postTiltle: {
+    flexDirection: 'row',
     fontFamily: 'roboto-regular',
     color: '#121212',
     fontSize: 30,
-    width: 124,
-    height: 36,
-    marginTop: 66,
-    marginLeft: 109,
   },
 });
 

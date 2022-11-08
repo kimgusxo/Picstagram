@@ -23,6 +23,7 @@ function UserSmallProfile(props) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
+    marginBottom: 15
   },
   userButton: {
     width: 228,
@@ -62,9 +63,9 @@ const styles = StyleSheet.create({
     height: 44,
     flexDirection: 'row',
     flex: 1,
-    marginRight: 9,
-    marginLeft: 12,
-    marginTop: 18,
+    justifyContent: 'center',
+    alignSelf: 'center',
+
   },
 });
 

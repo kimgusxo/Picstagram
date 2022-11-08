@@ -20,25 +20,24 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#FFF',
   },
   tabsWrapper: {
-    height: 29,
-    paddingLeft: 30,
-    paddingRight: 30,
     flexDirection: 'row',
-    width: 360,
+    justifyContent: 'center',
     alignSelf: 'center',
   },
   follwerButton: {
+    width: 150,
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#007AFF',
-    padding: 6,
     borderWidth: 1,
     borderColor: '#007AFF',
     borderBottomLeftRadius: 5,
     borderTopLeftRadius: 5,
-    width: 150,
+
     height: 29,
   },
   txtFollower: {
@@ -48,14 +47,15 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   followButton: {
+    width: 150,
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#FFFFFF',
-    padding: 6,
     borderWidth: 1,
     borderColor: '#007AFF',
     borderBottomRightRadius: 5,
     borderTopRightRadius: 5,
-    width: 150,
+
     height: 29,
   },
   txtFollow: {

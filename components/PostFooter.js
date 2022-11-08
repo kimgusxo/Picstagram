@@ -3,7 +3,7 @@ import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
-function UntitledComponent(props) {
+function PostFooter(props) {
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.likeButtonRow}>
@@ -72,4 +72,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UntitledComponent;
+export default PostFooter;

@@ -8,13 +8,10 @@ function FirstScreen(props) {
   return (
     <View style={styles.container}>
       <StatusBar hidden backgroundColor="rgba(255,255,255,1)" />
-      <View style={styles.loginButtonColumn}>
-        <LoginButton style={styles.loginButton} />
-        <SignUpButton style={styles.signUpButton} />
-        <Text style={styles.txtPicstagram}>Picstagram</Text>
-      </View>
-      <View style={styles.loginButtonColumnFiller} />
-      <HeaderLogo style={styles.headerLogo} />
+      <HeaderLogo style={styles.headerLogo}></HeaderLogo>
+      <Text style={styles.txtPicstagram}>Picstagram</Text>
+      <LoginButton style={styles.loginButton}></LoginButton>
+      <SignUpButton style={styles.signUpButton}></SignUpButton>
     </View>
   );
 }
@@ -30,14 +27,14 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderColor: '#000000',
     marginTop: 190,
-    marginLeft: 76,
+    alignSelf: 'center',
   },
   signUpButton: {
     height: 36,
     width: 100,
     borderRadius: 5,
     marginTop: 26,
-    marginLeft: 76,
+    alignSelf: 'center',
   },
   txtPicstagram: {
     fontFamily: 'roboto-700italic',
@@ -45,19 +42,13 @@ const styles = StyleSheet.create({
     lineHeight: 50,
     fontSize: 50,
     textAlign: 'center',
-    marginTop: -288,
-  },
-  loginButtonColumn: {
-    width: 252,
-    marginTop: 230,
-    marginLeft: 54,
+    marginTop: 200,
   },
   loginButtonColumnFiller: {
     flex: 1,
   },
   headerLogo: {
     height: 56,
-    marginBottom: 584,
   },
 });
 

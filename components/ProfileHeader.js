@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,1)',
     fontSize: 20,
     marginLeft: 21,
-    marginTop: 2,
   },
   backButtonRow: {
     height: 30,
@@ -54,7 +53,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 259,
     marginLeft: 9,
-    marginTop: 13,
   },
 });
 

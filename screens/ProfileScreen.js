@@ -6,20 +6,18 @@ import FooterMain from '../components/FooterMain';
 
 function ProfileScreen(props) {
   return (
-    <View style={styles.container}>
-      <StatusBar hidden />
-      <View style={styles.profileHeaderColumn}>
+    <>
+      <View>
+        <StatusBar hidden />
         <ProfileHeader style={styles.profileHeader} />
-        <View style={styles.scrollArea}>
-          <ScrollView
-            contentContainerStyle={styles.scrollArea_contentContainerStyle}
-          />
-        </View>
         <ProfileInfomation style={styles.profileInfomation} />
+        <View style={styles.profileHeaderColumnFiller} />
       </View>
-      <View style={styles.profileHeaderColumnFiller} />
-      <FooterMain style={styles.footerMain} />
-    </View>
+      <ScrollView style={styles.container} />
+      <View>
+        <FooterMain style={styles.footerMain} />
+      </View>
+    </>
   );
 }
 
@@ -40,9 +38,8 @@ const styles = StyleSheet.create({
   },
   profileInfomation: {
     height: 148,
-    marginTop: -528,
+    backgroundColor: 'white',
   },
-  profileHeaderColumn: {},
   profileHeaderColumnFiller: {
     flex: 1,
   },
