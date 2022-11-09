@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  Dimensions,
 } from 'react-native';
 import CreatePostHeader from '../components/CreatePostHeader';
 import FeatherIcon from 'react-native-vector-icons/Feather';
@@ -13,39 +14,31 @@ import EntypoIcon from 'react-native-vector-icons/Entypo';
 import ContentsWrite from '../components/ContentsWrite';
 import TitleWrite from '../components/TitleWrite';
 
+const windowWidth = Dimensions.get("window").width;
+
 function PostingScreen(props) {
   return (
     <View style={styles.container}>
       <StatusBar hidden />
       <CreatePostHeader style={styles.createPostHeader} />
-      <View style={styles.scrollAreaStack}>
-        <View style={styles.scrollArea}>
-          <ScrollView
-            horizontal={true}
-            contentContainerStyle={styles.scrollArea_contentContainerStyle}>
-            <View style={styles.addImage}>
-              <TouchableOpacity style={styles.addImageButton}>
-                <FeatherIcon name="plus-square" style={styles.addImageIcon} />
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
+      <TitleWrite style={styles.titleWrite} />
+      <ContentsWrite style={styles.contentsWrite} />
+      <View style={styles.addImageStack}>
+        <View style={styles.addImage}>
+          <TouchableOpacity style={styles.addImageButton}>
+            <FeatherIcon name="plus-square" style={styles.addImageIcon} />
+          </TouchableOpacity>
         </View>
-        <View style={styles.imageBox}>
+        <ScrollView horizontal={true} style={styles.scrollArea}>
           <View style={styles.imageStack}>
             <Image
-              source={'../assets/images/Capture001.jfif'}
+              source={require('../assets/images/Capture001.png')}
               resizeMode="contain"
               style={styles.image}
             />
-            <EntypoIcon
-              name="circle-with-cross"
-              style={styles.imageCancelIcon}
-            />
           </View>
-        </View>
-        <ContentsWrite style={styles.contentsWrite} />
+        </ScrollView>
       </View>
-      <TitleWrite style={styles.titleWrite} />
     </View>
   );
 }
@@ -56,27 +49,21 @@ const styles = StyleSheet.create({
   },
   createPostHeader: {
     height: 56,
+    width : windowWidth,
   },
   scrollArea: {
-    top: 441,
-    left: 0,
-    width: 360,
+    width: '100%',
     height: 100,
-    position: 'absolute',
     backgroundColor: 'rgba(155,155,155,1)',
-  },
-  scrollArea_contentContainerStyle: {
-    width: 360,
-    height: 100,
   },
   addImage: {
     width: 100,
     height: 100,
   },
   addImageButton: {
+    flex:1,
     width: 100,
     height: 100,
-    backgroundColor: 'rgba(255,255,255,1)',
   },
   addImageIcon: {
     color: 'rgba(0,0,0,1)',
@@ -86,50 +73,27 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginLeft: 10,
   },
-  imageBox: {
-    top: 421,
-    left: 100,
-    width: 120,
-    height: 120,
-    position: 'absolute',
-  },
   image: {
-    top: 20,
-    left: 0,
     width: 100,
     height: 100,
-    position: 'absolute',
-  },
-  imageCancelIcon: {
-    top: 0,
-    left: 80,
-    position: 'absolute',
-    color: 'rgba(208,2,27,1)',
-    fontSize: 40,
+    alignSelf: 'center',
   },
   imageStack: {
-    width: 120,
-    height: 120,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderRadius: 5,
   },
   contentsWrite: {
-    height: 441,
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    right: 0,
-  },
-  scrollAreaStack: {
-    height: 541,
-    marginTop: 43,
+    paddingVertical: 210.8,
   },
   titleWrite: {
-    height: 43,
-    width: 360,
-    borderWidth: 1,
-    borderColor: '#000000',
-    borderBottomWidth: 2,
-    marginTop: -1260,
-    marginLeft: -220,
+    width: windowWidth,
+  },
+  addImageStack: {
+    flexDirection : 'row',
+    width: windowWidth,
   },
 });
 

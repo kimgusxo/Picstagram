@@ -7,6 +7,7 @@ function PasswordTextBox(props) {
       <TextInput
         placeholder={props.inputStyle || 'PW'}
         style={styles.inputStyle}
+        secureTextEntry={true}
       />
     </View>
   );

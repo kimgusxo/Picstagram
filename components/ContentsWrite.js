@@ -4,7 +4,12 @@ import {StyleSheet, View, TextInput} from 'react-native';
 function ContentsWrite(props) {
   return (
     <View style={[styles.container, props.style]}>
-      <TextInput placeholder="내용을 입력하세요." style={styles.inputStyle} />
+      <TextInput
+        multiline
+        returnKeyType="next"
+        placeholder="   내용을 입력하세요."
+        style={styles.inputStyle}
+      />
     </View>
   );
 }
@@ -23,7 +28,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     alignSelf: 'stretch',
     flex: 1,
-    lineHeight: 16,
+    lineHeight: 16, 
     paddingTop: 16,
     paddingBottom: 8,
   },
