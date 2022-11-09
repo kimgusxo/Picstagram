@@ -4,7 +4,11 @@ import {StyleSheet, View, TextInput} from 'react-native';
 function DuplicateCheckPasswordTextInput(props) {
   return (
     <View style={[styles.container, props.style]}>
-      <TextInput placeholder="PW Check" style={styles.inputStyle} />
+      <TextInput 
+        placeholder="PW Check"
+        style={styles.inputStyle}
+        secureTextEntry={true} 
+      />
     </View>
   );
 }
