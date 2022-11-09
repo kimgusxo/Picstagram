@@ -8,9 +8,9 @@ function SignUpScreen(props) {
   return (
     <View style={styles.container}>
       <StatusBar hidden />
-      <InputUserInfo style={styles.inputUserInfo} />
-      <Text style={styles.txtSignUp}>회원 가입</Text>
       <HeaderLogo style={styles.headerLogo} />
+      <Text style={styles.txtSignUp}>회원 가입</Text>
+      <InputUserInfo style={styles.inputUserInfo} />
       <SubmitButton style={styles.submitButton} />
     </View>
   );
@@ -19,30 +19,30 @@ function SignUpScreen(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  inputUserInfo: {
-    height: 161,
-    width: 329,
-    marginTop: 220,
-    alignSelf: 'center',
-  },
-  txtSignUp: {
-    fontFamily: 'roboto-700',
-    color: '#121212',
-    fontSize: 40,
-    height: 54,
-    width: 170,
-    marginTop: -275,
-    alignSelf: 'center',
+    backgroundColor: '#fff',
   },
   headerLogo: {
     height: 56,
-    marginTop: -160,
+  },
+  inputUserInfo: {
+    height: 110,
+    alignSelf: 'center',
+  },
+  txtSignUp: {
+    height : 120,
+    marginTop: 100,
+    fontFamily: 'roboto-700',
+    color: '#121212',
+    fontSize: 40,
+    alignSelf: 'center',
   },
   submitButton: {
     width: 100,
     height: 36,
-    marginTop: 388,
+    marginTop: 120,
+    borderWidth: 0,
+    borderColor: '#000000',
+    borderRadius: 5,
     alignSelf: 'center',
   },
 });
