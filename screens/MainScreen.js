@@ -1,21 +1,38 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, Text, ScrollView, StatusBar} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, View, ScrollView, StatusBar, RefreshControl, SafeAreaView } from 'react-native';
 import HeaderMain from '../components/HeaderMain';
 import PostComponent from '../components/PostComponent';
 import FooterMain from '../components/FooterMain';
 
-function MainScreen({navigation, route}) {
+// timeout for refreshing
+const wait = (timeout) => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+}
+
+function MainScreen({ navigation, route }) {
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    console.log("리프레쉬 이후 작업을 이곳에 기술하세요.")
+    setRefreshing(true);
+    wait(2000).then(() => setRefreshing(false));
+  }, [])
+
   return (
     <>
       <View>
         <StatusBar hidden />
-        <HeaderMain style={styles.headerMain} navigation={navigation}/>
+        <HeaderMain style={styles.headerMain} navigation={navigation} />
       </View>
-      <ScrollView style={styles.container}>
-        <PostComponent style={styles.postComponent} navigation={navigation} />
-        <PostComponent style={styles.postComponent} navigation={navigation} />
-        <PostComponent style={styles.postComponent} navigation={navigation} />
-        <PostComponent style={styles.postComponent} navigation={navigation} />
+      <ScrollView style={styles.container}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            />
+        }
+      >  
         <PostComponent style={styles.postComponent} navigation={navigation} />
         <PostComponent style={styles.postComponent} navigation={navigation} />
         <PostComponent style={styles.postComponent} navigation={navigation} />
