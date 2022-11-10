@@ -6,8 +6,10 @@ import {
   Text,
   Dimensions,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
+import EntypoIcon from 'react-native-vector-icons/Entypo';
 
 const sampleImagePathList = [
   {
@@ -22,27 +24,52 @@ const sampleImagePathList = [
 ];
 
 function Feed(props) {
+  // props
+  const isDetailed = props.isDetailed;
+
+  // state & ref
   const [imagePathList, setImagePathList] = useState([]);
   const [index, setIndex] = useState(0);
-  const isDetailed = props.isDetailed;
+  const [isConvertedMap, setIsConvertedMap] = useState(false);
   const carouselRef = useRef(null);
+
+  const sliderWidth = Dimensions.get('window').width;
+  const itemWidth = Dimensions.get('window').width;
 
   useEffect(() => {
     setImagePathList(sampleImagePathList);
   }, []);
 
-  const sliderWidth = Dimensions.get('window').width;
-  const itemWidth = Dimensions.get('window').width;
+  const toggleMapToImg = () => {
+    setIsConvertedMap(!isConvertedMap);
+  }
 
   const _renderItem = ({item, index}) => {
     return (
       <TouchableOpacity
        onPress={() => !isDetailed ? props.navigation.navigate('DetailPost') : props.navigation.navigate('DetailPicture')}
        style={{alignItems: 'center'}}>
+        {isDetailed ?
+        <TouchableOpacity style={styles.convertBtn} onPress={toggleMapToImg}>
+          <EntypoIcon name="map" style={styles.mapIcon} />
+        </TouchableOpacity>
+        : <></>
+        }
+
+        {/* Carousel Image */}
         <Image
-          style={{width: 368, height: 368, resizeMode: 'cover'}}
+          style={{width: 368, height: 368, resizeMode: 'cover', display: isConvertedMap ? 'none' : 'flex',}}
           source={item.source}
         />
+
+        {/* Carousel Map */}
+        {isDetailed ?
+        <View style={{width: 368, height: 368, display: isConvertedMap ? 'flex' : 'none', 
+          justifyContent: 'center', alignItems: 'center', backgroundColor: 'darkgray'}}>
+          <Text style={{fontSize: 24, color: 'white',}}>There is a KakaoMap here.</Text>
+        </View>
+        : <></>
+        }
       </TouchableOpacity>
     );
   };
@@ -133,6 +160,18 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     lineHeight: 24,
   },
+  convertBtn: {
+    position: 'absolute',
+    right: 16,
+    top: 16,
+    elevation: (Platform.os === 'android') ? 50 : 0,
+    zIndex: 10,
+  },
+  mapIcon: {
+    color: 'rgba(255,255,255,1)',
+    fontSize: 30,
+    position: 'relative',
+  }
 });
 
 export default Feed;
