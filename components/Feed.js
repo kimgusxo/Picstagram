@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import Carousel, {Pagination} from 'react-native-snap-carousel';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 
 const sampleImagePathList = [
@@ -42,34 +42,55 @@ function Feed(props) {
 
   const toggleMapToImg = () => {
     setIsConvertedMap(!isConvertedMap);
-  }
+  };
 
-  const _renderItem = ({item, index}) => {
+  // eslint-disable-next-line no-unused-vars
+  const _renderItem = ({ item, index }) => {
     return (
       <TouchableOpacity
-       onPress={() => !isDetailed ? props.navigation.navigate('DetailPost') : props.navigation.navigate('DetailPicture')}
-       style={{alignItems: 'center'}}>
-        {isDetailed ?
-        <TouchableOpacity style={styles.convertBtn} onPress={toggleMapToImg}>
-          <EntypoIcon name="map" style={styles.mapIcon} />
-        </TouchableOpacity>
-        : <></>
+        onPress={() =>
+          !isDetailed
+            ? props.navigation.navigate('DetailPost')
+            : props.navigation.navigate('DetailPicture')
         }
+        style={{ alignItems: 'center' }}
+      >
+        {isDetailed ? (
+          <TouchableOpacity style={styles.convertBtn} onPress={toggleMapToImg}>
+            <EntypoIcon name="map" style={styles.mapIcon} />
+          </TouchableOpacity>
+        ) : (
+          <></>
+        )}
 
         {/* Carousel Image */}
         <Image
-          style={{width: 368, height: 368, resizeMode: 'cover', display: isConvertedMap ? 'none' : 'flex',}}
+          style={{
+            width: 368,
+            height: 368,
+            resizeMode: 'cover',
+            display: isConvertedMap ? 'none' : 'flex',
+          }}
           source={item.source}
         />
 
         {/* Carousel Map */}
-        {isDetailed ?
-        <View style={{width: 368, height: 368, display: isConvertedMap ? 'flex' : 'none', 
-          justifyContent: 'center', alignItems: 'center', backgroundColor: 'darkgray'}}>
-          <Text style={{fontSize: 24, color: 'white',}}>There is a KakaoMap here.</Text>
-        </View>
-        : <></>
-        }
+        {isDetailed ? (
+          <View
+            style={{
+              width: 368,
+              height: 368,
+              display: isConvertedMap ? 'flex' : 'none',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'darkgray',
+            }}
+          >
+            <Text style={{ fontSize: 24, color: 'white' }}>There is a KakaoMap here.</Text>
+          </View>
+        ) : (
+          <></>
+        )}
       </TouchableOpacity>
     );
   };
@@ -86,7 +107,7 @@ function Feed(props) {
           renderItem={_renderItem}
           sliderWidth={sliderWidth}
           itemWidth={itemWidth}
-          onSnapToItem={index => setIndex(index)}
+          onSnapToItem={(index) => setIndex(index)}
           layout={'default'}
         />
       </View>
@@ -112,7 +133,7 @@ function Feed(props) {
           Aimyon is my favorite Japanese Singer~~!!! {'\n'}
           She is famous Singer-song writer in japan~! {'\n'}
           Do u know her song? {'\n'}
-          My favorite song of hers is "Marigold" ❤❤
+          My favorite song of hers is Marigold ❤❤
         </Text>
       ) : (
         <></>
@@ -164,14 +185,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 16,
     top: 16,
-    elevation: (Platform.os === 'android') ? 50 : 0,
+    elevation: Platform.os === 'android' ? 50 : 0,
     zIndex: 10,
   },
   mapIcon: {
     color: 'rgba(255,255,255,1)',
     fontSize: 30,
     position: 'relative',
-  }
+  },
 });
 
 export default Feed;

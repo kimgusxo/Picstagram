@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 
@@ -11,18 +11,17 @@ const Comment = () => {
       </TouchableOpacity>
       <View style={styles.txtCommentContainer}>
         <Text styles={styles.txtComment}>
-          She is so cute😁💕{"\n"}
-          I hope she becomes famous in Korea, too!🥺
-        </Text>  
+          She is so cute😁💕{'\n'}I hope she becomes famous in Korea, too!🥺
+        </Text>
       </View>
     </View>
   );
-}
+};
 
 function Comments(props) {
   return (
     <>
-      {props.isDetailed ? 
+      {props.isDetailed ? (
         <>
           <Comment />
           <Comment />
@@ -32,8 +31,9 @@ function Comments(props) {
           <Comment />
           <Comment />
         </>
-        : <></>
-      }
+      ) : (
+        <></>
+      )}
     </>
   );
 }
@@ -66,15 +66,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginRight: 16,
   },
-  txtComment: {
-    
-  },
+  txtComment: {},
   txtCommentContainer: {
     // alignItems: 'center',
     paddingHorizontal: 16,
-    width: "75%",
-  }
-
+    width: '75%',
+  },
 });
 
 export default Comments;

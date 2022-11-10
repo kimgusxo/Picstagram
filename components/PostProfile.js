@@ -1,5 +1,5 @@
-import React, {Component, useState} from 'react';
-import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
+import React from 'react';
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
@@ -15,10 +15,7 @@ function PostProfile(props) {
           <FontAwesomeIcon name="lock" style={styles.lockIcon} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.etcButton}>
-          <EntypoIcon
-            name="dots-three-horizontal"
-            style={styles.postUpdateIcon}
-          />
+          <EntypoIcon name="dots-three-horizontal" style={styles.postUpdateIcon} />
         </TouchableOpacity>
       </View>
     </View>

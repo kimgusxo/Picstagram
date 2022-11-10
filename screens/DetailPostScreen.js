@@ -1,15 +1,15 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, Text, ScrollView, StatusBar} from 'react-native';
+import React from 'react';
+import { StyleSheet, View, ScrollView, StatusBar } from 'react-native';
 import HeaderMain from '../components/HeaderMain';
 import PostComponent from '../components/PostComponent';
 import FooterMain from '../components/FooterMain';
 
-function DetailPostScreen({navigation, route}) {
+function DetailPostScreen({ navigation }) {
   return (
     <>
       <View>
         <StatusBar hidden />
-        <HeaderMain style={styles.headerMain} navigation={navigation}/>
+        <HeaderMain style={styles.headerMain} navigation={navigation} />
       </View>
       <ScrollView style={styles.container}>
         <PostComponent style={styles.postComponent} navigation={navigation} isDetailed={true} />
@@ -39,4 +39,3 @@ const styles = StyleSheet.create({
 });
 
 export default DetailPostScreen;
-

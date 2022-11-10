@@ -1,32 +1,40 @@
-import React, {Component, useEffect, useState} from 'react';
-import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
 function PostFooter(props) {
+  // eslint-disable-next-line no-unused-vars
   const [likeCnt, setLikeCnt] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [commentCnt, setCommentCnt] = useState(0);
 
   useEffect(() => {
     // 좋아요 숫자 변경 로직
-  }, [isLiked])
+  }, [isLiked]);
 
   const toggleLike = () => {
     setIsLiked(!isLiked);
-  }
+  };
 
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.likeButtonRow}>
         {/* like button */}
         <TouchableOpacity style={styles.likeButton} onPress={toggleLike}>
-          <EntypoIcon name={isLiked ? "heart" : "heart-outlined"} style={isLiked ? styles.redLikeIcon : styles.likeIcon} />
+          <EntypoIcon
+            name={isLiked ? 'heart' : 'heart-outlined'}
+            style={isLiked ? styles.redLikeIcon : styles.likeIcon}
+          />
           <View style={styles.likeIconFiller} />
           <Text style={styles.txtLikeCount}>{likeCnt}</Text>
         </TouchableOpacity>
         {/* comment button : navigation */}
-        <TouchableOpacity style={styles.commentButton} onPress={() => props.navigation.navigate('DetailPost')} >
+        <TouchableOpacity
+          style={styles.commentButton}
+          onPress={() => props.navigation.navigate('DetailPost')}
+        >
           <FontAwesomeIcon name="comments-o" style={styles.commentIcon} />
           <View style={styles.commentIconFiller} />
           <Text style={styles.txtCommentCount}>{commentCnt}</Text>
