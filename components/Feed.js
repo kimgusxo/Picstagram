@@ -36,12 +36,14 @@ function Feed(props) {
 
   const _renderItem = ({item, index}) => {
     return (
-      <View style={{alignItems: 'center'}}>
+      <TouchableOpacity
+       onPress={() => !isDetailed ? props.navigation.navigate('DetailPost') : props.navigation.navigate('DetailPicture')}
+       style={{alignItems: 'center'}}>
         <Image
           style={{width: 368, height: 368, resizeMode: 'cover'}}
           source={item.source}
         />
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -50,9 +52,7 @@ function Feed(props) {
       <Text style={styles.txtPostTitle}>
         Aimyon Daisuki~!😍😍😍 {'\n\n'}#Japan #Singer-song Writer
       </Text>
-      <TouchableOpacity
-        style={styles.imgContainer}
-        onPress={() => !isDetailed ? props.navigation.navigate('DetailPost') : props.navigation.navigate('DetailPicture')}>
+      <View style={styles.imgContainer}>
         <Carousel
           ref={carouselRef}
           data={imagePathList}
@@ -62,7 +62,7 @@ function Feed(props) {
           onSnapToItem={index => setIndex(index)}
           layout={'default'}
         />
-      </TouchableOpacity>
+      </View>
       <View style={styles.pagingContainer}>
         <Pagination
           dotsLength={imagePathList.length}
