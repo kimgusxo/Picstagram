@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
+import React from 'react';
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
@@ -12,7 +12,10 @@ function PostFooter(props) {
           <View style={styles.likeIconFiller} />
           <Text style={styles.txtLikeCount}>0</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.commentButton}>
+        <TouchableOpacity
+          style={styles.commentButton}
+          onPress={() => props.navigation.navigate('DetailPost')}
+        >
           <FontAwesomeIcon name="comments-o" style={styles.commentIcon} />
           <View style={styles.commentIconFiller} />
           <Text style={styles.txtCommentCount}>0</Text>

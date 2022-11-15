@@ -1,6 +1,6 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {StyleSheet, View, Image, Text, Dimensions} from 'react-native';
-import Carousel, {Pagination} from 'react-native-snap-carousel';
+import React, { useEffect, useRef, useState } from 'react';
+import { StyleSheet, View, Image, Text, Dimensions } from 'react-native';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
 
 // 원래 위치
 const sampleImagePathList = [
@@ -27,16 +27,14 @@ function Feed(props) {
   const sliderWidth = Dimensions.get('window').width;
   const itemWidth = Dimensions.get('window').width;
 
-  const _renderItem = ({item, index}) => {
+  // eslint-disable-next-line no-unused-vars
+  const _renderItem = ({ item, index }) => {
     return (
       <View style={{ alignItems: 'center' }}>
-      <Image
-        style={{width: 368, height: 368, resizeMode: 'cover'}}
-        source={item.source}
-        />
-    </View>
+        <Image style={{ width: 368, height: 368, resizeMode: 'cover' }} source={item.source} />
+      </View>
     );
-  } 
+  };
 
   return (
     <View style={[styles.container, props.style]}>
@@ -54,21 +52,21 @@ function Feed(props) {
       </View>
       <View style={styles.pagingContainer}>
         <Pagination
-            dotsLength={imagePathList.length}
-            activeDotIndex={index}
-            carouselRef={carouselRef}
-            dotStyle={{
-              width: 15,
-              height: 5,
-              borderRadius: 5,
-              marginHorizontal: 0,
-              backgroundColor: 'rgba(255, 255, 255, 0.92)'
-            }}
-            inactiveDotOpacity={0.4}
-            inactiveDotScale={0.6}
-            tappableDots={true}
-          />
-        </View>
+          dotsLength={imagePathList.length}
+          activeDotIndex={index}
+          carouselRef={carouselRef}
+          dotStyle={{
+            width: 15,
+            height: 5,
+            borderRadius: 5,
+            marginHorizontal: 0,
+            backgroundColor: 'rgba(255, 255, 255, 0.92)',
+          }}
+          inactiveDotOpacity={0.4}
+          inactiveDotScale={0.6}
+          tappableDots={true}
+        />
+      </View>
     </View>
   );
 }
