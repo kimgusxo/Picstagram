@@ -1,4 +1,4 @@
-package com.example_rn;
+package com.kumoh.fusion;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
