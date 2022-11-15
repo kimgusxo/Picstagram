@@ -1,8 +1,16 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {StyleSheet, View, Image, Text, Dimensions} from 'react-native';
-import Carousel, {Pagination} from 'react-native-snap-carousel';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  Dimensions,
+  TouchableOpacity,
+  Platform,
+} from 'react-native';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
+import EntypoIcon from 'react-native-vector-icons/Entypo';
 
-// 원래 위치
 const sampleImagePathList = [
   {
     source: require('../assets/images/aimyon.jpg'),
@@ -16,31 +24,82 @@ const sampleImagePathList = [
 ];
 
 function Feed(props) {
+  // props
+  const isDetailed = props.isDetailed;
+
+  // state & ref
   const [imagePathList, setImagePathList] = useState([]);
   const [index, setIndex] = useState(0);
+  const [isConvertedMap, setIsConvertedMap] = useState(false);
   const carouselRef = useRef(null);
+
+  const sliderWidth = Dimensions.get('window').width;
+  const itemWidth = Dimensions.get('window').width;
 
   useEffect(() => {
     setImagePathList(sampleImagePathList);
   }, []);
 
-  const sliderWidth = Dimensions.get('window').width;
-  const itemWidth = Dimensions.get('window').width;
+  const toggleMapToImg = () => {
+    setIsConvertedMap(!isConvertedMap);
+  };
 
-  const _renderItem = ({item, index}) => {
+  // eslint-disable-next-line no-unused-vars
+  const _renderItem = ({ item, index }) => {
     return (
-      <View style={{ alignItems: 'center' }}>
-      <Image
-        style={{width: 368, height: 368, resizeMode: 'cover'}}
-        source={item.source}
+      <TouchableOpacity
+        onPress={() =>
+          !isDetailed
+            ? props.navigation.navigate('DetailPost')
+            : props.navigation.navigate('DetailPicture')
+        }
+        style={{ alignItems: 'center' }}
+      >
+        {isDetailed ? (
+          <TouchableOpacity style={styles.convertBtn} onPress={toggleMapToImg}>
+            <EntypoIcon name="map" style={styles.mapIcon} />
+          </TouchableOpacity>
+        ) : (
+          <></>
+        )}
+
+        {/* Carousel Image */}
+        <Image
+          style={{
+            width: 368,
+            height: 368,
+            resizeMode: 'cover',
+            display: isConvertedMap ? 'none' : 'flex',
+          }}
+          source={item.source}
         />
-    </View>
+
+        {/* Carousel Map */}
+        {isDetailed ? (
+          <View
+            style={{
+              width: 368,
+              height: 368,
+              display: isConvertedMap ? 'flex' : 'none',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'darkgray',
+            }}
+          >
+            <Text style={{ fontSize: 24, color: 'white' }}>There is a KakaoMap here.</Text>
+          </View>
+        ) : (
+          <></>
+        )}
+      </TouchableOpacity>
     );
-  } 
+  };
 
   return (
     <View style={[styles.container, props.style]}>
-      <Text style={styles.txtPostTitle}>Aimyon Daisuki~!😍😍😍</Text>
+      <Text style={styles.txtPostTitle}>
+        Aimyon Daisuki~!😍😍😍 {'\n\n'}#Japan #Singer-song Writer
+      </Text>
       <View style={styles.imgContainer}>
         <Carousel
           ref={carouselRef}
@@ -54,21 +113,31 @@ function Feed(props) {
       </View>
       <View style={styles.pagingContainer}>
         <Pagination
-            dotsLength={imagePathList.length}
-            activeDotIndex={index}
-            carouselRef={carouselRef}
-            dotStyle={{
-              width: 15,
-              height: 5,
-              borderRadius: 5,
-              marginHorizontal: 0,
-              backgroundColor: 'rgba(255, 255, 255, 0.92)'
-            }}
-            inactiveDotOpacity={0.4}
-            inactiveDotScale={0.6}
-            tappableDots={true}
-          />
-        </View>
+          dotsLength={imagePathList.length}
+          activeDotIndex={index}
+          carouselRef={carouselRef}
+          dotStyle={{
+            width: 15,
+            height: 5,
+            borderRadius: 5,
+            marginHorizontal: 0,
+            backgroundColor: 'rgba(255, 255, 255, 0.92)',
+          }}
+          inactiveDotOpacity={0.4}
+          inactiveDotScale={0.6}
+          tappableDots={true}
+        />
+      </View>
+      {isDetailed ? (
+        <Text style={styles.txtContent}>
+          Aimyon is my favorite Japanese Singer~~!!! {'\n'}
+          She is famous Singer-song writer in japan~! {'\n'}
+          Do u know her song? {'\n'}
+          My favorite song of hers is Marigold ❤❤
+        </Text>
+      ) : (
+        <></>
+      )}
     </View>
   );
 }
@@ -92,8 +161,37 @@ const styles = StyleSheet.create({
   txtPostTitle: {
     fontFamily: 'roboto-regular',
     color: '#121212',
+    fontSize: 16,
+    fontWeight: 'bold',
+    backgroundColor: 'white',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     marginVertical: 10,
     marginHorizontal: 16,
+  },
+  txtContent: {
+    fontFamily: 'roboto-regular',
+    color: '#121212',
+    backgroundColor: 'white',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginVertical: 10,
+    marginHorizontal: 16,
+    lineHeight: 24,
+  },
+  convertBtn: {
+    position: 'absolute',
+    right: 16,
+    top: 16,
+    elevation: Platform.os === 'android' ? 50 : 0,
+    zIndex: 10,
+  },
+  mapIcon: {
+    color: 'rgba(255,255,255,1)',
+    fontSize: 30,
+    position: 'relative',
   },
 });
 

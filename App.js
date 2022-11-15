@@ -12,6 +12,7 @@ import RegisteryPostScreen from './screens/RegisteryPostScreen';
 import UpdateProfileScreen from './screens/UpdateProfileScreen';
 import UserSearchScreen from './screens/UserSearchScreen';
 import PostSearchScreen from './screens/PostSearchScreen';
+import DetailPostScreen from './screens/DetailPostScreen';
 
 function App() {
   const Stack = createStackNavigator();
@@ -35,8 +36,9 @@ function App() {
         initialRouteName="Main"
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Main" component={MainScreen} />
+        <Stack.Screen name="DetailPost" component={DetailPostScreen} />
         <Stack.Screen name="FollowList" component={FollowListScreen} />
-        {/* <Stack.Screen name="Posting" component={PostingScreen} /> */}
+        <Stack.Screen name="Posting" component={PostingScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="RegisteryPost" component={RegisteryPostScreen} />
         <Stack.Screen name="UpdateProfile" component={UpdateProfileScreen} />
