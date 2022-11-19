@@ -9,7 +9,9 @@ import {
   Platform,
 } from 'react-native';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
+
 import EntypoIcon from 'react-native-vector-icons/Entypo';
+import FeedMapView from './FeedMapView';
 
 const sampleImagePathList = [
   {
@@ -44,6 +46,8 @@ function Feed(props) {
     setIsConvertedMap(!isConvertedMap);
   };
 
+  const mapTest = true;
+
   // eslint-disable-next-line no-unused-vars
   const _renderItem = ({ item, index }) => {
     return (
@@ -55,14 +59,6 @@ function Feed(props) {
         }
         style={{ alignItems: 'center' }}
       >
-        {isDetailed ? (
-          <TouchableOpacity style={styles.convertBtn} onPress={toggleMapToImg}>
-            <EntypoIcon name="map" style={styles.mapIcon} />
-          </TouchableOpacity>
-        ) : (
-          <></>
-        )}
-
         {/* Carousel Image */}
         <Image
           style={{
@@ -73,24 +69,6 @@ function Feed(props) {
           }}
           source={item.source}
         />
-
-        {/* Carousel Map */}
-        {isDetailed ? (
-          <View
-            style={{
-              width: 368,
-              height: 368,
-              display: isConvertedMap ? 'flex' : 'none',
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'darkgray',
-            }}
-          >
-            <Text style={{ fontSize: 24, color: 'white' }}>There is a KakaoMap here.</Text>
-          </View>
-        ) : (
-          <></>
-        )}
       </TouchableOpacity>
     );
   };
@@ -101,6 +79,16 @@ function Feed(props) {
         Aimyon Daisuki~!😍😍😍 {'\n\n'}#Japan #Singer-song Writer
       </Text>
       <View style={styles.imgContainer}>
+        {/* ConvertBtn */}
+        {isDetailed ? (
+          <TouchableOpacity style={styles.convertBtn} onPress={toggleMapToImg}>
+            <EntypoIcon name="map" style={styles.mapIcon} />
+          </TouchableOpacity>
+        ) : (
+          <></>
+        )}
+
+        {/* CarouselImg */}
         <Carousel
           ref={carouselRef}
           data={imagePathList}
@@ -110,7 +98,12 @@ function Feed(props) {
           onSnapToItem={(index) => setIndex(index)}
           layout={'default'}
         />
+
+        {/* Map */}
+        {isDetailed ? <FeedMapView isConvertedMap={isConvertedMap} /> : <></>}
       </View>
+
+      {/* Pagination */}
       <View style={styles.pagingContainer}>
         <Pagination
           dotsLength={imagePathList.length}
@@ -128,6 +121,8 @@ function Feed(props) {
           tappableDots={true}
         />
       </View>
+
+      {/* Post Content */}
       {isDetailed ? (
         <Text style={styles.txtContent}>
           Aimyon is my favorite Japanese Singer~~!!! {'\n'}
