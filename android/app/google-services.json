@@ -14,22 +14,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "241043291018-1so6p28gmkja10h9qamv4mpm8mtoea55.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.kumoh.fusion",
-            "certificate_hash": "5efb2cfe60530794d0d0363a87debc6097bce5cd"
-          }
-        },
-        {
-          "client_id": "241043291018-u495ecvpoqnuhg8jisrc5i1vls3co33n.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.kumoh.fusion",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
-          }
-        },
-        {
           "client_id": "241043291018-5s7tnpolhpghc20psd546s64abmegka3.apps.googleusercontent.com",
           "client_type": 3
         }
