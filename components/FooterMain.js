@@ -1,21 +1,30 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, TouchableOpacity} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 
 function FooterMain(props) {
   return (
     <View style={[styles.container, props.style]}>
-        <View style={styles.homeButtonRow}>
-          <TouchableOpacity style={styles.homeButton} onPress={() => props.navigation.navigate('Main')}>
-            <EntypoIcon name="home" style={styles.homeIcon} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.cameraButton} onPress={() => console.log('go to camera')}>
-            <EntypoIcon name="camera" style={styles.cameraIcon} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.profileButton} onPress={() => props.navigation.navigate('Profile')}>
-            <EntypoIcon name="user" style={styles.myProfileIcon} />
-          </TouchableOpacity>
-        </View>
+      <View style={styles.homeButtonRow}>
+        <TouchableOpacity
+          style={styles.homeButton}
+          onPress={() => props.navigation.navigate('Main')}
+        >
+          <EntypoIcon name="home" style={styles.homeIcon} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.cameraButton}
+          onPress={() => props.navigation.navigate('RegisteryPost')}
+        >
+          <EntypoIcon name="camera" style={styles.cameraIcon} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.profileButton}
+          onPress={() => props.navigation.navigate('Profile')}
+        >
+          <EntypoIcon name="user" style={styles.myProfileIcon} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
