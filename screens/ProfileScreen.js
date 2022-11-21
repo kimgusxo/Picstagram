@@ -18,6 +18,7 @@ const dataList = [
   { key: '10', source: require('../assets/images/aimyon9.jpg') },
   { key: '11', source: require('../assets/images/aimyon10.jpg') },
 ];
+const ITEM_MARGIN = 4;
 const numColumns = 3;
 const DEVICE_WIDTH = Dimensions.get('window').width;
 
@@ -42,7 +43,7 @@ function ProfileScreen({ navigation, route }) {
 
     return (
       <TouchableOpacity style={styles.item}>
-        <Image style={styles.itemImg} source={item.source} resizeMode={'contain'} />
+        <Image style={styles.imageThumbnail} source={item.source}/>
       </TouchableOpacity>
     );
   };
@@ -54,7 +55,7 @@ function ProfileScreen({ navigation, route }) {
         <ProfileHeader style={styles.profileHeader} navigation={navigation} />
         <ProfileInfomation style={styles.profileInfomation} navigation={navigation} />
       </View>
-      <View style={{ padding: 4, flex: 1 }}>
+      <View style={{ flex: 1, flexDirection: 'column', alignItems:'center' }}>
         <FlatList
           data={formatData(dataList, numColumns)}
           renderItem={_renderItem}
@@ -70,19 +71,22 @@ function ProfileScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
   item: {
-    backgroundColor: '#6666ff',
     alignItems: 'center',
     justifyContent: 'center',
-    width: DEVICE_WIDTH / numColumns,
-    height: DEVICE_WIDTH / numColumns,
-    margin: 4,
+    backgroundColor: '#000',
+    width: DEVICE_WIDTH / numColumns - ITEM_MARGIN * 3,
+    height: DEVICE_WIDTH / numColumns - ITEM_MARGIN * 3,
+    margin: ITEM_MARGIN,
+    
     flex: 1,
   },
   blankItem: {
     backgroundColor: 'transparent',
   },
-  itemImg: {
+  imageThumbnail: {
+    flex: 1,
     width: DEVICE_WIDTH / numColumns,
+    resizeMode: 'cover',
   },
   container: {
     flex: 1,
