@@ -54,10 +54,10 @@ function App() {
   ) : (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Main" screenOptions={{ headerShown: false }}>
-        {/* <Stack.Screen name="NickName" component={NickNameScreen} />
+        <Stack.Screen name="NickName" component={NickNameScreen} />
         <Stack.Screen name="Main" component={MainScreen} />
         <Stack.Screen name="DetailPost" component={DetailPostScreen} />
-        <Stack.Screen name="FollowList" component={FollowListScreen} /> */}
+        <Stack.Screen name="FollowList" component={FollowListScreen} />
         <Stack.Screen name="Posting" component={PostingScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="RegisteryPost" component={RegisteryPostScreen} />
