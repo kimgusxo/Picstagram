@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, StatusBar, Text } from 'react-native';
 import HeaderLogo from '../components/HeaderLogo';
-import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
+import InputUserInfo from '../components/InputUserInfo';
+import SubmitButton from '../components/SubmitButton';
 
-function LoginScreen(props) {
+function NickNameScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar hidden />
       <HeaderLogo style={styles.headerLogo} />
-      <Text style={styles.login}>로그인</Text>
-      <GoogleSigninButton onPress={props.onGoogleButtonPress} />
+      <Text style={styles.NickName}>닉네임</Text>
+      <InputUserInfo style={styles.InputUserInfo} />
+      <SubmitButton style={styles.submitButton} navigation={navigation} />
     </View>
   );
 }
@@ -26,7 +28,7 @@ const styles = StyleSheet.create({
     height: 110,
     alignSelf: 'center',
   },
-  login: {
+  NickName: {
     height: 120,
     marginTop: 100,
     fontFamily: 'roboto-700',
@@ -45,4 +47,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default NickNameScreen;
