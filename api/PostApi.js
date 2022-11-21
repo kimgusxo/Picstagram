@@ -1,5 +1,5 @@
 import firestore from "@react-native-firebase/firestore"
-import { getUserDocId } from './LogicApi'
+import { getPostDocId, getCommentsDocId } from './LogicApi'
 
 // 매개변수: 유저ID
 async function findPostById(email) { //유저ID로 게시물 찾기
@@ -185,4 +185,5 @@ function isMyComments({comments, myId}) { // 내가 쓴 댓글인지 확인하�
   return myComments;
 }
 
-export {}
+export {findPostById, findPostByTitle, findPostList, createPost, deletePost,
+        postRangeUpdate, likeUpdate, createComments, deleteComments, isMyPost, isMyComments}
