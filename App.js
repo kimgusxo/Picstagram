@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import React, { Component } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import FirstScreen from './screens/FirstScreen';
 import LoginScreen from './screens/LoginScreen';
 import SignUpScreen from './screens/SignUpScreen';
@@ -19,22 +19,17 @@ function App() {
 
   const isLogined = true;
 
-  return (
-    !isLogined ? (
+  return !isLogined ? (
     <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="First"
-        screenOptions={{headerShown: false}}>
+      <Stack.Navigator initialRouteName="First" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="First" component={FirstScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="SignUp" component={SignUpScreen} />
       </Stack.Navigator>
     </NavigationContainer>
-    ) : (
-      <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Main"
-        screenOptions={{headerShown: false}}>
+  ) : (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Main" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Main" component={MainScreen} />
         <Stack.Screen name="DetailPost" component={DetailPostScreen} />
         <Stack.Screen name="FollowList" component={FollowListScreen} />
@@ -46,7 +41,6 @@ function App() {
         <Stack.Screen name="PostSearch" component={PostSearchScreen} />
       </Stack.Navigator>
     </NavigationContainer>
-    )
   );
 }
 
