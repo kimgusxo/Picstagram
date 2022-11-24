@@ -1,9 +1,9 @@
 import firestore from "@react-native-firebase/firestore"
 
 // 매개변수: 유저ID
-async function getUserDocId(email) { // 유저ID로 유저 문서 참조를 위해 문서 아이디 리턴
+async function getUserDocId(userId) { // 유저ID로 유저 문서 참조를 위해 문서 아이디 리턴
   const userDocIdList = await firestore().collection('User')
-  .where('id', '==', email).get();
+  .where('id', '==', userId).get();
   
   if(userDocIdList.empty) { // 유저문서가 비어있을때 널값 리턴
     console.log("해당하는 문서가 없습니다.");
@@ -21,9 +21,9 @@ async function getUserDocId(email) { // 유저ID로 유저 문서 참조를 위�
 
 //이슈!: 포스트부분의 유일성을 가지는 필드가 없누!
 // 매개변수: 게시물 시간
-async function getPostDocId(index) { // 게시물의 docID 찾기
+async function getPostDocId(date) { // 게시물의 docID 찾기
   const postDocIdList = await firestore().collection('Post')
-  .where('date', '==', index).get();
+  .where('date', '==', date).get();
   
   if(postDocIdList.empty) { // 게시물 비어있을때 널값 리턴
     console.log("해당하는 게시물이 없습니다.");
@@ -40,11 +40,11 @@ async function getPostDocId(index) { // 게시물의 docID 찾기
 }
 
 // 매개변수: 게시물 시간, 댓글 시간
-async function getCommentsDocId({index1, index2}) { // 댓글의 docId를 가져오는 함수
-  const postDocId = await getPostDocId(index1); // 상위컬렉션인 Post의 docId를 가져옴
+async function getCommentsDocId({postDate, commentsDate}) { // 댓글의 docId를 가져오는 함수
+  const postDocId = await getPostDocId(postDate); // 상위컬렉션인 Post의 docId를 가져옴
 
   const commentsDocIdList = await firestore().collection('Post').doc(postDocId).collection('Comments')
-  .where('date', '==', index2).get();
+  .where('date', '==', commentsDate).get();
   
   if(commentsDocIdList.empty) { // 댓글이 비어있을때 널값 리턴
     console.log("해당하는 댓글이 없습니다.");

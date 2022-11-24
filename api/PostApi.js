@@ -1,10 +1,11 @@
 import firestore from "@react-native-firebase/firestore"
 import { getPostDocId, getCommentsDocId } from './LogicApi'
+import { findFollowingById } from './UserApi'
 
 // 매개변수: 유저ID
-async function findPostById(email) { //유저ID로 게시물 찾기
+async function findPostById(userId) { //유저ID로 게시물 찾기
   const postList = await firestore().collection('Post')
-  .where('writer', '==', email).orderBy('date', 'desc').get() // 두 개 이상의 조건 사용 시 콘솔에서 복합색인 만들어야 함
+  .where('writer', '==', userId).orderBy('date', 'desc').get() // 두 개 이상의 조건 사용 시 콘솔에서 복합색인 만들어야 함
   
   if(postList.empty) { // 게시물이 없을때 출력문
     console.log("해당하는 게시물이 없습니다.");
@@ -19,10 +20,10 @@ async function findPostById(email) { //유저ID로 게시물 찾기
 }
 
 // 매개변수: 게시물 제목
-async function findPostByTitle(email) { // 게시물 제목으로 게시물 찾기
+async function findPostByTitle(title) { // 게시물 제목으로 게시물 찾기
   // limit부분을 start와 end로 바꿀 것
   const postList = await firestore().collection('Post')
-  .where('title', '==', email).limit(10).get(); // 게시물 검색 시 사용함으로 10개씩 받아옴
+  .where('title', '==', title).limit(10).get(); // 게시물 검색 시 사용함으로 10개씩 받아옴
   
   if(postList.empty) {
     console.log("해당하는 게시물이 없습니다.");
@@ -36,17 +37,17 @@ async function findPostByTitle(email) { // 게시물 제목으로 게시물 찾�
 }
 
 // 매개변수: 유저ID
-async function findPostList(email) { // 맨 처음 메인페이지에다가 게시물 출력함  
+async function findPostList(userId) { // 맨 처음 메인페이지에다가 게시물 출력함  
   const postList = [];
   
   // 0. 나의 게시물을 배열에 푸쉬
-  const myPost = await findPostById(email)
+  const myPost = await findPostById(userId)
   myPost.forEach(doc => {
     postList.push(doc)
   })
     
   // 1. 이메일로 following들을 받아옴
-  const following = await findFollowingById(email)
+  const following = await findFollowingById(userId)
   
   // 2. 팔로잉 리스트들의 아이디를 통해 게시물들을 받아옴
   for(const index of following) { // forEach는 await을 기다려주지 않아 for ...of문으로 대체했습니다.
@@ -72,13 +73,13 @@ async function findPostList(email) { // 맨 처음 메인페이지에다가 게�
 }
 
 // 매개변수: 게시물 제목, 게시물 내용, 게시물 작성자
-async function createPost({email, password, writer}) { // 게시물 생성
+async function createPost({title, content, writer}) { // 게시물 생성
   await firestore().collection('Post').add({
-    content: password,
+    content: content,
     date: new Date(), // 이건 내장함수로 처리가능하니 객체로 프론트에서 받는게 나을듯?? 아니다 걍 Date로 들가노 ㅋㅋ
     like: 0,
     range: "All",
-    title: email,
+    title: title,
     writer: writer
   })
   // 그룹이미지를 받으면 url만 추출해서 넣고 사진은 스토리지에 넣음
@@ -91,8 +92,8 @@ async function createPost({email, password, writer}) { // 게시물 생성
 // 따라서 게시물과 댓글에 Date()를 통한 값을 유일성으로 생각하고 작성하겠습니다.
 
 // 매개변수: 게시물 시간
-async function deletePost(index) { // 게시물 삭제
-  const postDocId = await getPostDocId(index); // 해당 상위컬렉션인 게시물의 docId 획득
+async function deletePost(date) { // 게시물 삭제
+  const postDocId = await getPostDocId(date); // 해당 상위컬렉션인 게시물의 docId 획득
   
   const commentsDocIdList = await firestore().collection('Post') // 해당 하위 컬렉션의 docId를 전부 획득
   .doc(postDocId).collection('Comments').get();
@@ -108,19 +109,19 @@ async function deletePost(index) { // 게시물 삭제
 }
 
 // 매개변수: 게시물 시간, 설정한 범위
-async function postRangeUpdate(index, range) { // 게시물 범위를 업데이트하는 함수
-  const postDocId = await getPostDocId(index);
+async function postRangeUpdate(date, range) { // 게시물 범위를 업데이트하는 함수
+  const postDocId = await getPostDocId(date);
   
   await firestore().collection('Post').doc(postDocId).update({
     range: range
   })
 }
 
-// 매개변수: 게시물 시간, 좋아요 토큰
-async function likeUpdate({email, password}) { // 좋아요 받는 함수
-  const postDocId = await getPostDocId(email)
+// 매개변수: 게시물 시간, 좋아요 토큰, 좋아요 개수
+async function likeUpdate({date, likeToken, like}) { // 좋아요 받는 함수
+  const postDocId = await getPostDocId(date)
   
-  if(password == 'a') {
+  if(likeToken == 'a') {
     await firestore().collection('Post').doc(postDocId).update({
       like: like+1
     })
@@ -131,13 +132,13 @@ async function likeUpdate({email, password}) { // 좋아요 받는 함수
   }
 }
 
-// 매개변수: 댓글 작성자, 댓글 내용
-async function createComments({email, password}) { // 댓글 작성자와 댓글 내용을 넣어 댓글 생성
-  const postDocId = await getPostDocId(index);
+// 매개변수: 댓글 작성자, 댓글 내용, 게시물 시간
+async function createComments({commentWriter, commentContent, date}) { // 댓글 작성자와 댓글 내용을 넣어 댓글 생성
+  const postDocId = await getPostDocId(date);
   
   await firestore().collection('Post').doc(postDocId).collection('Comments').add({
-    commentWriter: email,
-    commentContent: password,
+    commentWriter: commentWriter,
+    commentContent: commentContent,
     date: new Date(),
     type: true
   })
@@ -145,9 +146,9 @@ async function createComments({email, password}) { // 댓글 작성자와 댓글
 
 // 이슈!: 댓글도 유일성을 보장하는 필드가 없음!
 // 매개변수: 게시물 시간, 댓글 시간
-async function deleteComments({index1, index2}) {
-  const postDocId = await getPostDocId(index1); // 해당 상위컬렉션인 게시물의 docId 획득
-  const commentsDocId = await getCommentsDocId({index1, index2}); // 해당 하위컬렉션인 댓글의 docId 획득
+async function deleteComments({postDate, commentsDate}) {
+  const postDocId = await getPostDocId(postDate); // 해당 상위컬렉션인 게시물의 docId 획득
+  const commentsDocId = await getCommentsDocId({postDate, commentsDate}); // 해당 하위컬렉션인 댓글의 docId 획득
     
   deleteCommentsByDocId({postDocId, commentsDocId});
 }
