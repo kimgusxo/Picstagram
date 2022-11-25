@@ -46,8 +46,6 @@ function Feed(props) {
     setIsConvertedMap(!isConvertedMap);
   };
 
-  const mapTest = true;
-
   // eslint-disable-next-line no-unused-vars
   const _renderItem = ({ item, index }) => {
     return (
@@ -100,7 +98,11 @@ function Feed(props) {
         />
 
         {/* Map */}
-        {isDetailed ? <FeedMapView isConvertedMap={isConvertedMap} /> : <></>}
+        {isDetailed ? (
+          <FeedMapView isConvertedMap={isConvertedMap} navigation={props.navigation} />
+        ) : (
+          <></>
+        )}
       </View>
 
       {/* Pagination */}
