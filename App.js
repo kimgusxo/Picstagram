@@ -12,6 +12,7 @@ import UpdateProfileScreen from './screens/UpdateProfileScreen';
 import UserSearchScreen from './screens/UserSearchScreen';
 import PostSearchScreen from './screens/PostSearchScreen';
 import DetailPostScreen from './screens/DetailPostScreen';
+import DetailPictureScreen from './screens/DetailPictureScreen';
 import firebase from '@react-native-firebase/app';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
@@ -57,6 +58,7 @@ function App() {
         <Stack.Screen name="NickName" component={NickNameScreen} />
         <Stack.Screen name="Main" component={MainScreen} />
         <Stack.Screen name="DetailPost" component={DetailPostScreen} />
+        <Stack.Screen name="DetailPicture" component={DetailPictureScreen} />
         <Stack.Screen name="FollowList" component={FollowListScreen} />
         <Stack.Screen name="Posting" component={PostingScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
