@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
-import { StyleSheet, View, StatusBar, FlatList, Text, Dimensions, Image } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, StatusBar, FlatList, Dimensions } from 'react-native';
 import ProfileHeader from '../components/ProfileHeader';
 import ProfileInfomation from '../components/ProfileInfomation';
 import FooterMain from '../components/FooterMain';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import FastImage from 'react-native-fast-image';
 
 const dataList = [
   { key: '1', source: require('../assets/images/aimyon.jpg') },
@@ -43,7 +44,10 @@ function ProfileScreen({ navigation, route }) {
 
     return (
       <TouchableOpacity style={styles.item}>
-        <Image style={styles.imageThumbnail} source={item.source}/>
+        <FastImage
+          style={{ width: DEVICE_WIDTH / numColumns, height: DEVICE_WIDTH / numColumns }}
+          source={item.source}
+        />
       </TouchableOpacity>
     );
   };
@@ -55,7 +59,7 @@ function ProfileScreen({ navigation, route }) {
         <ProfileHeader style={styles.profileHeader} navigation={navigation} />
         <ProfileInfomation style={styles.profileInfomation} navigation={navigation} />
       </View>
-      <View style={{ flex: 1, flexDirection: 'column', alignItems:'center' }}>
+      <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
         <FlatList
           data={formatData(dataList, numColumns)}
           renderItem={_renderItem}
@@ -77,16 +81,11 @@ const styles = StyleSheet.create({
     width: DEVICE_WIDTH / numColumns - ITEM_MARGIN * 3,
     height: DEVICE_WIDTH / numColumns - ITEM_MARGIN * 3,
     margin: ITEM_MARGIN,
-    
+
     flex: 1,
   },
   blankItem: {
     backgroundColor: 'transparent',
-  },
-  imageThumbnail: {
-    flex: 1,
-    width: DEVICE_WIDTH / numColumns,
-    resizeMode: 'cover',
   },
   container: {
     flex: 1,
