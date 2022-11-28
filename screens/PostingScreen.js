@@ -10,10 +10,10 @@ import {
   Text,
 } from 'react-native';
 import CreatePostHeader from '../components/CreatePostHeader';
-import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import ContentsWrite from '../components/ContentsWrite';
 import TitleWrite from '../components/TitleWrite';
+import ImageCropPicker from 'react-native-image-crop-picker';
 
 const width = Dimensions.get('window').width;
 const IMAGE_WIDTH = 100;
@@ -24,41 +24,39 @@ function PostingScreen({ navigation }) {
 
   const openPicker = async () => {
     try {
-      const response = await MultipleImagePicker.openPicker({
-        selectedAssets: images,
-        usedCameraButton: false,
-        maxVideo: 1,
-        isExportThumbnail: true,
-        isCrop: true,
-        isCropCircle: true,
+      ImageCropPicker.openPicker({
+        width: 368,
+        height: 368,
+        multiple: true,
+        cropping: true,
+        includeExif: true,
+      }).then((images) => {
+        setImages(images);
       });
-
-      console.log('response: ', response);
-      setImages(response);
+      //setImages(response);
     } catch (e) {
       console.log(e.code, e.message);
     }
   };
 
   const onDelete = (value) => {
-    const data = images.filter(
-      (item) => item?.localIdentifier && item?.localIdentifier !== value?.localIdentifier,
-    );
+    const data = images.filter((item) => item?.path !== value?.path);
     setImages(data);
   };
 
   const renderItem = ({ item, index }) => {
+    console.log(item);
     return (
       <View>
         <Image
           width={IMAGE_WIDTH}
           source={{
-            uri: 'file://' + item.realPath,
+            uri: item.path,
           }}
           style={styles.media}
         />
         <TouchableOpacity
-          onPress={() => onDelete(item)}
+          onPress={() => onDelete(item, index)}
           activeOpacity={0.9}
           style={styles.buttonDelete}
         >
