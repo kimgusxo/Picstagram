@@ -1,42 +1,41 @@
-<<<<<<< Updated upstream
-import React, { Component } from 'react';
-import { StyleSheet, View, StatusBar, Text } from 'react-native';
-import HeaderLogo from '../components/HeaderLogo';
-import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
-=======
 import React, {Component, createContext, useState} from 'react';
-import {StyleSheet, View, StatusBar, Text} from 'react-native';
+import {StyleSheet, View, StatusBar, Text, Image} from 'react-native';
 import HeaderLogo from '../components/HeaderLogo';
-import InputLoginInfo from '../components/InputLoginInfo';
 import SubmitButton from '../components/SubmitButton';
 import {findPostById, findPostByTitle, findPostList, createPost, deletePost,
   postRangeUpdate, likeUpdate, createComments, deleteComments, isMyPost, isMyComments} from '../api/PostApi';
 import {createUser, findUserById, addFollowing, findFollowingById, findFollowerById, countFollowing,
   countFollower, deleteFollowing, deleteFollower, duplicationId} from '../api/UserApi';
->>>>>>> Stashed changes
+import { getImageUrl, imageUpload, setMetadata, metadataImage } from '../api/StorageImage';
 
-function LoginScreen(props) {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("");
-  
+function TestScreen(props) {
 
   function signInSubmit() {
-    const info = email;
-    countFollower(info);
+    // 유저 아이디로 할 수 있는 것
+    //const email = "dong_hui"
+    // findUserById(email)
+    // findFollowerById(email)
+    // countFollower(email)
+    //findPostById(email)
+
+    // 게시물 찾기
+    // const title = "2박3일 대구 여행"
+    // findPostByTitle(title);
+
+    // const imgName = 'CeVrRv4FyTN.jfif'
+    // metadataImage(imgName)
+
+    // 사진 불러오기
+    // imageUpload()
   }
+
+  
 
   return (
     <View style={styles.container}>
       <StatusBar hidden />
       <HeaderLogo style={styles.headerLogo} />
-<<<<<<< Updated upstream
-      <Text style={styles.login}>로그인</Text>
-      <GoogleSigninButton onPress={props.onGoogleButtonPress} />
-=======
-      <InputLoginInfo style={styles.InputUserInfo} setEmail={setEmail} setPassword={setPassword}/>
-      <Text style={styles.로그인}>로그인</Text>
       <SubmitButton style={styles.submitButton} signInSubmit={signInSubmit}/>
->>>>>>> Stashed changes
     </View>
   );
 }
@@ -53,8 +52,8 @@ const styles = StyleSheet.create({
     height: 110,
     alignSelf: 'center',
   },
-  login: {
-    height: 120,
+  로그인: {
+    height : 120,
     marginTop: 100,
     fontFamily: 'roboto-700',
     color: '#121212',
@@ -64,7 +63,7 @@ const styles = StyleSheet.create({
     marginTop: -226,
     alignSelf: 'center',
   },
-  submitButton: {
+  submitButton: {    
     width: 100,
     height: 36,
     marginTop: 120,
@@ -73,6 +72,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignSelf: 'center',
   },
+  image: {
+    width: 200,
+    height: 300
+  }
 });
 
-export default LoginScreen;
+export default TestScreen;

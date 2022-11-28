@@ -3,11 +3,17 @@ import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 
 function SubmitButton(props) {
   return (
+<<<<<<< Updated upstream
     <View style={[styles.container, props.style]}>
       <TouchableOpacity onPress={() => props.navigation.navigate('Main')}>
         <Text style={styles.submit}>Submit</Text>
       </TouchableOpacity>
     </View>
+=======
+    <TouchableOpacity style={[styles.container, props.style]} onPress={ props.signInSubmit }>
+      <Text style={styles.submit}>Submit</Text>
+    </TouchableOpacity>
+>>>>>>> Stashed changes
   );
 }
 
