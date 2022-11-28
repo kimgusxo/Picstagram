@@ -61,4 +61,4 @@ async function getCommentsDocId({postDate, commentsDate}) { // 댓글의 docId�
   return commentsDocId[0];
 }
 
-export {getUserDocId, getPostDocId, getCommentsDocId}
+export { getUserDocId, getPostDocId, getCommentsDocId }

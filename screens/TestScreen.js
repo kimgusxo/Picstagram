@@ -10,32 +10,14 @@ import { getImageUrl, imageUpload, setMetadata, metadataImage } from '../api/Sto
 
 function TestScreen(props) {
 
-  function signInSubmit() {
     // 유저 아이디로 할 수 있는 것
-    //const email = "dong_hui"
-    // findUserById(email)
-    // findFollowerById(email)
-    // countFollower(email)
-    //findPostById(email)
-
-    // 게시물 찾기
-    // const title = "2박3일 대구 여행"
-    // findPostByTitle(title);
-
-    // const imgName = 'CeVrRv4FyTN.jfif'
-    // metadataImage(imgName)
-
-    // 사진 불러오기
-    // imageUpload()
-  }
-
-  
+     const email = "dong_hui"
+     findUserById(email)
 
   return (
     <View style={styles.container}>
       <StatusBar hidden />
       <HeaderLogo style={styles.headerLogo} />
-      <SubmitButton style={styles.submitButton} signInSubmit={signInSubmit}/>
     </View>
   );
 }

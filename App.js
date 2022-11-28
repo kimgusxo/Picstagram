@@ -12,6 +12,7 @@ import UpdateProfileScreen from './screens/UpdateProfileScreen';
 import UserSearchScreen from './screens/UserSearchScreen';
 import PostSearchScreen from './screens/PostSearchScreen';
 import DetailPostScreen from './screens/DetailPostScreen';
+import TestScreen from './screens/TestScreen';
 import DetailPictureScreen from './screens/DetailPictureScreen';
 import firebase from '@react-native-firebase/app';
 import auth from '@react-native-firebase/auth';
@@ -43,7 +44,8 @@ function App() {
 
   return !loggedIn ? (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+      <Stack.Navigator initialRouteName="Test" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Test" component={TestScreen} />
         <Stack.Screen
           name={'Login'}
           children={({ navigation }) => (
@@ -55,6 +57,7 @@ function App() {
   ) : (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Main" screenOptions={{ headerShown: false }}>
+
         <Stack.Screen name="NickName" component={NickNameScreen} />
         <Stack.Screen name="Main" component={MainScreen} />
         <Stack.Screen name="DetailPost" component={DetailPostScreen} />

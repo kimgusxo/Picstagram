@@ -12,6 +12,8 @@ async function createUser(userId, email) {
 
 // 매개변수: 유저ID
 async function findUserById(userId) { // 유저ID로 유저 찾기
+    const result = [];
+
     const user = await firestore().collection('User')
     .where('id', '==', userId).get();
 
@@ -21,10 +23,10 @@ async function findUserById(userId) { // 유저ID로 유저 찾기
     }
 
     user.forEach(doc => { // 콘솔 출력문
-      console.log(doc.id, '=>', doc.data());
+      result.push(doc.data())
     });
 
-    return user;
+    return result;
 }
 
 // 매개변수: 나의ID, 상대방ID
@@ -43,6 +45,8 @@ async function addFollowing({myId, yourId}) { //내 유저ID와 상대방의 유
 
 // 매개변수: 유저ID
 async function findFollowingById(userId) { // 유저ID를 기반으로 팔로잉 찾기
+  const result = [];
+
   const userDocId = await getUserDocId(userId) // 유저 DocId가 필요하므로 호출
   
   const following = await firestore().collection('User')
@@ -53,15 +57,17 @@ async function findFollowingById(userId) { // 유저ID를 기반으로 팔로잉
     return;
   }
   
-  following.forEach(doc => { // 콘솔 출력문
-    console.log(doc.id, '=>', doc.data());
+  following.forEach(doc => { // 배열에 넣기
+    result.push(doc.data())
   });
   
-  return following;
+  return result;
 }
   
 // 매개변수: 유저ID
 async function findFollowerById(userId) { // 유저ID를 기반으로 팔로워 찾기
+  const result = [];
+
   const userDocId = await getUserDocId(userId) // 유저 DocId가 필요하므로 호출
   
   const follower = await firestore().collection('User')
@@ -72,11 +78,11 @@ async function findFollowerById(userId) { // 유저ID를 기반으로 팔로워 
     return;
   }
  
-  follower.forEach(doc => { // 콘솔 출력문
-    console.log(doc.id, '=>', doc.data());
+  follower.forEach(doc => { // 배열에 넣기
+    result.push(doc.data())
   });
  
-  return follower;
+  return result;
 }
 
 // 이슈!: 작성하다가 생각난 건데 굳이 팔로잉/팔로워를 찾을때 문서를 읽는게 맞는 것인가??
