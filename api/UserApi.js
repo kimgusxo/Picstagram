@@ -88,6 +88,8 @@ async function countFollowing(userId) { // 팔로잉 몇 명 인지 찾는 함�
   const followingCount = await findFollowingById(userId)
 
   console.log(followingCount.size)
+
+  return followingCount.size
 }
   
 // 매개변수: 유저ID
@@ -95,6 +97,8 @@ async function countFollower(userId) { // 팔로워가 몇 명인지 찾는 함�
   const followerCount = await findFollowerById(userId)
   
   console.log(followerCount.size)
+  
+  return followerCount.size 
 }
 
 // 매개변수: 나의 유저ID, 상대방 유저ID

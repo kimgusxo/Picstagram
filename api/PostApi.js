@@ -1,6 +1,7 @@
 import firestore from "@react-native-firebase/firestore"
 import { getPostDocId, getCommentsDocId } from './LogicApi'
 import { findFollowingById } from './UserApi'
+import { getImageUrl, imageUpload, metadataImage, setMetadata, deleteImage } from './StorageImage'
 
 // 매개변수: 유저ID
 async function findPostById(userId) { //유저ID로 게시물 찾기
@@ -23,7 +24,7 @@ async function findPostById(userId) { //유저ID로 게시물 찾기
 async function findPostByTitle(title) { // 게시물 제목으로 게시물 찾기
   // limit부분을 start와 end로 바꿀 것
   const postList = await firestore().collection('Post')
-  .where('title', '==', title).limit(10).get(); // 게시물 검색 시 사용함으로 10개씩 받아옴
+  .where('title', '==', title).orderBy('date', 'desc').limit(10).get(); // 게시물 검색 시 사용함으로 10개씩 받아옴
   
   if(postList.empty) {
     console.log("해당하는 게시물이 없습니다.");
@@ -73,18 +74,55 @@ async function findPostList(userId) { // 맨 처음 메인페이지에다가 게
 }
 
 // 매개변수: 게시물 제목, 게시물 내용, 게시물 작성자
-async function createPost({title, content, writer}) { // 게시물 생성
+async function createPost({title, content, writer, images}) { // 게시물 생성
+  const date = new Date()
+
   await firestore().collection('Post').add({
     content: content,
-    date: new Date(), // 이건 내장함수로 처리가능하니 객체로 프론트에서 받는게 나을듯?? 아니다 걍 Date로 들가노 ㅋㅋ
+    date: date, // 이건 내장함수로 처리가능하니 객체로 프론트에서 받는게 나을듯?? 아니다 걍 Date로 들가노 ㅋㅋ
     like: 0,
     range: "All",
     title: title,
     writer: writer
   })
+
   // 그룹이미지를 받으면 url만 추출해서 넣고 사진은 스토리지에 넣음
   // url을 추출해서 넣는게 아니라 스토리지에 박아넣고 url을 가져와서 입히는 건가??
   // 쨋든 그 작업을 상위 컬렉션의 필드가 채워진 후 넣는 식으로 작성함
+
+  await addDatabaseImages(data, images) // 이미지를 데이터베이스에 넣는 함수
+  await addStorageImages(images) // 이미지를 스토리지에 넣는 함수
+}
+
+// 게시물 수정 함수
+async function updatePost() {
+  // 여기는 합치고 나서 생각좀,,  
+}
+
+// images가 배열이므로 반복문 돌려야함
+async function addStorageImages(images) {
+  for(const index of images) {
+    // images에서 추출한 메타데이터가 매개변수로 들어가야함
+    // 이건 이미지 이름 필요
+    await imageUpload(index);
+    // 이건 나머지 커스텀 메타데이터 필요
+    await setMetadata(index);
+  }
+}
+
+// images가 배열이므로 반복문 돌려야함
+async function addDatabaseImages(date, images) {
+  const postDocId = getPostDocId(date) // 사진을 넣기 위한 DocId 추출
+
+  for(const index of images) {
+    // images에서 메타데이터 추출
+    await firestore().collection('Post').doc(postDocId).collection('Images').add({
+      imgDate: imgDate,
+      latitude: latitude,
+      longtitude: longtitude,
+      url: url
+    }) 
+  }
 }
 
 // 이슈!: 파이어베이스는 유일성필드를 지원하지 않는다.
@@ -97,10 +135,18 @@ async function deletePost(date) { // 게시물 삭제
   
   const commentsDocIdList = await firestore().collection('Post') // 해당 하위 컬렉션의 docId를 전부 획득
   .doc(postDocId).collection('Comments').get();
+
+  const imageDocIdList = await firestore().collection('Post') // 해당 하위 컬렉션의 docId를 전부 획득
+  .doc(postDocId).collection('Images').get();
   
   commentsDocIdList.forEach(doc => { // 반복문으로 하위 컬렉션의 문서를 전부 삭제
     const commentsDocId = doc.id;
     deleteCommentsByDocId({postDocId, commentsDocId})
+  })
+
+  imageDocIdList.forEach(doc => { // 반복문으로 하위 컬렉션의 문서를 전부 삭제
+    const imagesDocId = doc.id;
+    deleteImagesByDocId({postDocId, imagesDocId})
   })
 
   // 이슈!: 하위 컬렉션이 있는 문서의 경우 하위컬렉션의 모든 문서를 제거한 뒤
@@ -118,10 +164,11 @@ async function postRangeUpdate(date, range) { // 게시물 범위를 업데이�
 }
 
 // 매개변수: 게시물 시간, 좋아요 토큰, 좋아요 개수
+// 증분함수나 집계함수가 안먹힙니다....
 async function likeUpdate({date, likeToken, like}) { // 좋아요 받는 함수
   const postDocId = await getPostDocId(date)
   
-  if(likeToken == 'a') {
+  if(likeToken == 'a') { // 토큰 부분은 어케할지 합치면서 수정이다요~
     await firestore().collection('Post').doc(postDocId).update({
       like: like+1
     })
@@ -151,6 +198,30 @@ async function deleteComments({postDate, commentsDate}) {
   const commentsDocId = await getCommentsDocId({postDate, commentsDate}); // 해당 하위컬렉션인 댓글의 docId 획득
     
   deleteCommentsByDocId({postDocId, commentsDocId});
+}
+
+async function updateComments({postDate, commentsDate, commentContent}) {
+  const postDocId = await getPostDocId(postDate); // 해당 상위컬렉션인 게시물의 docId 획득
+  const commentsDocId = await getCommentsDocId({postDate, commentsDate}); // 해당 하위컬렉션인 댓글의 docId 획득
+
+  await firestore().collection('Post').doc(postDocId)
+  .collection('Comments').doc(commentsDocId).set({
+    commentContent: commentContent
+  })
+}
+
+// 게시물의 삭제를 위해 어쩔 수 없이 docId로 삭제하는 방향으로 작성
+// 내부로직 함수
+async function deleteCommentsByDocId({postDocId, commentsDocId}) {
+  await firestore().collection('Post').doc(postDocId)
+  .collection('Comments').doc(commentsDocId).delete();
+}
+
+// 내부로직 함수
+async function deleteImagesByDocId({postDocId, imagesDocId}) {
+  await deleteImage() // 스토리지 사진 지우는 것
+  await firestore().collection('Post').doc(postDocId) // 파이어베이스 DB 정보 지우는 것
+  .collection('Images').doc(imagesDocId).delete();
 }
 
 // 어차피 매개변수 두개받아서 프로필 검사하는데 그게 함수로 빼야하나???
@@ -187,4 +258,5 @@ function isMyComments({comments, myId}) { // 내가 쓴 댓글인지 확인하�
 }
 
 export {findPostById, findPostByTitle, findPostList, createPost, deletePost,
-        postRangeUpdate, likeUpdate, createComments, deleteComments, isMyPost, isMyComments}
+        postRangeUpdate, likeUpdate, createComments, deleteComments, updateComments, 
+        isMyPost, isMyComments}

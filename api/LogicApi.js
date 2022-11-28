@@ -56,6 +56,7 @@ async function getCommentsDocId({postDate, commentsDate}) { // 댓글의 docId�
   commentsDocIdList.forEach(doc => { // 콘솔 출력문
     commentsDocId.push(doc.id);
   });
+  
   return commentsDocId[0];
 }
 
