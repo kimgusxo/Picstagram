@@ -1,9 +1,12 @@
-import React, {Component} from 'react';
-import {StyleSheet, TouchableOpacity, Text} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, TouchableOpacity, Text } from 'react-native';
 
 function SignUpButton(props) {
   return (
-    <TouchableOpacity style={[styles.container, props.style]} onPress={() => props.navigation.navigate('SignUp')}>
+    <TouchableOpacity
+      style={[styles.container, props.style]}
+      onPress={() => props.navigation.navigate('SignUp')}
+    >
       <Text style={styles.signUp}>Sign Up</Text>
     </TouchableOpacity>
   );
