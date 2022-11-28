@@ -7,14 +7,14 @@ function InputLoginInfo(props) {
   return (
     <View style={[styles.container, props.style]}>
       <IdTextBox
+        inputStyle="Placeholder"
         inputStyle="ID"
         style={styles.idTextBox}
-        setEmail={props.setEmail}
       />
       <PasswordTextBox
+        inputStyle="Placeholder"
         inputStyle="PW"
         style={styles.passwordTextBox}
-        setPassword={props.setPassword}
       />
     </View>
   );

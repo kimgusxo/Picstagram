@@ -7,7 +7,7 @@ function PasswordTextBox(props) {
       <TextInput
         placeholder={props.inputStyle || 'PW'}
         style={styles.inputStyle}
-        onChange={(e) => props.setPassword(e.nativeEvent.text)}
+        secureTextEntry={true}
       />
     </View>
   );

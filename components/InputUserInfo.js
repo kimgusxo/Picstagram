@@ -7,26 +7,9 @@ function InputUserInfo(props) {
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.idTextBoxRow}>
-<<<<<<< Updated upstream
         <IdTextBox inputStyle="Placeholder" inputStyle="Nickname1" style={styles.idTextBox} />
         <DuplicationCheckButton 중복확인="중복확인" style={styles.duplicateCheckButton} />
       </View>
-=======
-        <IdTextBox
-          inputStyle="ID"
-          style={styles.idTextBox}
-        />
-        <DuplicationCheckButton
-          중복확인="중복확인"
-          style={styles.duplicateCheckButton}
-        />
-      </View>
-      <PasswordTextBox
-        inputStyle="PW"
-        style={styles.pWTextBox}
-      />
-      <DuplicateCheckPasswordTextInput style={styles.pWCheckTextBox} />
->>>>>>> Stashed changes
     </View>
   );
 }

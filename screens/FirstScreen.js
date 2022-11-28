@@ -8,10 +8,10 @@ function FirstScreen({navigation, route}) {
   return (
     <View style={styles.container}>
       <StatusBar hidden backgroundColor="rgba(255,255,255,1)" />
-      <HeaderLogo style={styles.headerLogo} />
+      <HeaderLogo style={styles.headerLogo}></HeaderLogo>
       <Text style={styles.txtPicstagram}>Picstagram</Text>
-      <LoginButton style={styles.loginButton} />
-      <SignUpButton style={styles.signUpButton} />
+      <LoginButton style={styles.loginButton} navigation={navigation}></LoginButton>
+      <SignUpButton style={styles.signUpButton} navigation={navigation}></SignUpButton>
     </View>
   );
 }

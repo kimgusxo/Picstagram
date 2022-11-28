@@ -7,7 +7,6 @@ function IdTextBox(props) {
       <TextInput
         placeholder={props.inputStyle || 'ID'}
         style={styles.inputStyle}
-        onChange={(e) => props.setEmail(e.nativeEvent.text)}
       />
     </View>
   );
