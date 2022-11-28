@@ -143,6 +143,7 @@ async function deletePost(date) { // 게시물 삭제
     const commentsDocId = doc.id;
     deleteCommentsByDocId({postDocId, commentsDocId})
   })
+  
 
   imageDocIdList.forEach(doc => { // 반복문으로 하위 컬렉션의 문서를 전부 삭제
     const imagesDocId = doc.id;

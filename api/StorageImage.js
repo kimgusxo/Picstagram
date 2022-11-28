@@ -10,6 +10,7 @@ async function getImageUrl(imgName) {
     return url
 }
 
+
 // 갤러리 접근 권한이 안넘어와짐,,, 그것만 되면 해결완료!
 // 매개변수에 이미지받고 imageName에 이미지 이름 추출해서 박으면 됨
 // 레퍼런스에 들가는 이름도 이름 추출해서 쓸거임!!

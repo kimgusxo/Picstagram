@@ -101,6 +101,7 @@ async function countFollower(userId) { // 팔로워가 몇 명인지 찾는 함�
   return followerCount.size 
 }
 
+
 // 매개변수: 나의 유저ID, 상대방 유저ID
 async function deleteFollowing({myId, yourId}) { // 내 팔로잉 삭제
   const myFollowing = await getUserDocId(myId) // 내 문서ID
