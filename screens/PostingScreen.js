@@ -1,43 +1,92 @@
-import React, {Component} from 'react';
+import React, { Component, useState } from 'react';
 import {
   StyleSheet,
   View,
   StatusBar,
-  ScrollView,
   TouchableOpacity,
   Image,
   Dimensions,
+  FlatList,
+  Text,
 } from 'react-native';
 import CreatePostHeader from '../components/CreatePostHeader';
+import MultipleImagePicker from '@baronha/react-native-multiple-image-picker';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import EntypoIcon from 'react-native-vector-icons/Entypo';
 import ContentsWrite from '../components/ContentsWrite';
 import TitleWrite from '../components/TitleWrite';
 
-const windowWidth = Dimensions.get("window").width;
+const width = Dimensions.get('window').width;
+const IMAGE_WIDTH = 100;
 
-function PostingScreen(props) {
+function PostingScreen({ navigation }) {
+  //Multiple-image 선택
+  const [images, setImages] = useState([]);
+
+  const openPicker = async () => {
+    try {
+      const response = await MultipleImagePicker.openPicker({
+        selectedAssets: images,
+        usedCameraButton: false,
+        maxVideo: 1,
+        isExportThumbnail: true,
+        isCrop: true,
+        isCropCircle: true,
+      });
+
+      console.log('response: ', response);
+      setImages(response);
+    } catch (e) {
+      console.log(e.code, e.message);
+    }
+  };
+
+  const onDelete = (value) => {
+    const data = images.filter(
+      (item) => item?.localIdentifier && item?.localIdentifier !== value?.localIdentifier,
+    );
+    setImages(data);
+  };
+
+  const renderItem = ({ item, index }) => {
+    return (
+      <View>
+        <Image
+          width={IMAGE_WIDTH}
+          source={{
+            uri: 'file://' + item.realPath,
+          }}
+          style={styles.media}
+        />
+        <TouchableOpacity
+          onPress={() => onDelete(item)}
+          activeOpacity={0.9}
+          style={styles.buttonDelete}
+        >
+          <Text style={styles.titleDelete}>X</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar hidden />
-      <CreatePostHeader style={styles.createPostHeader} />
+      <CreatePostHeader style={styles.createPostHeader} navigation={navigation} />
       <TitleWrite style={styles.titleWrite} />
       <ContentsWrite style={styles.contentsWrite} />
       <View style={styles.addImageStack}>
         <View style={styles.addImage}>
-          <TouchableOpacity style={styles.addImageButton}>
+          <TouchableOpacity style={styles.addImageButton} onPress={openPicker}>
             <FeatherIcon name="plus-square" style={styles.addImageIcon} />
           </TouchableOpacity>
         </View>
-        <ScrollView horizontal={true} style={styles.scrollArea}>
-          <View style={styles.imageStack}>
-            <Image
-              source={require('../assets/images/Capture001.png')}
-              resizeMode="contain"
-              style={styles.image}
-            />
-          </View>
-        </ScrollView>
+        <FlatList
+          style={styles.container}
+          data={images}
+          keyExtractor={(item, index) => (item?.filename ?? item?.path) + index}
+          renderItem={renderItem}
+          horizontal={true}
+        />
       </View>
     </View>
   );
@@ -49,7 +98,7 @@ const styles = StyleSheet.create({
   },
   createPostHeader: {
     height: 56,
-    width : windowWidth,
+    width: width,
   },
   scrollArea: {
     width: '100%',
@@ -61,7 +110,7 @@ const styles = StyleSheet.create({
     height: 100,
   },
   addImageButton: {
-    flex:1,
+    flex: 1,
     width: 100,
     height: 100,
   },
@@ -89,11 +138,39 @@ const styles = StyleSheet.create({
     paddingVertical: 210.8,
   },
   titleWrite: {
-    width: windowWidth,
+    width: width,
   },
   addImageStack: {
-    flexDirection : 'row',
-    width: windowWidth,
+    flex: 1,
+    flexDirection: 'row',
+    width: width,
+  },
+  buttonDelete: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    position: 'absolute',
+    top: 6,
+    right: 6,
+    backgroundColor: '#ffffff92',
+    borderRadius: 4,
+  },
+  titleDelete: {
+    fontWeight: 'bold',
+    fontSize: 12,
+    color: '#000',
+  },
+  imageView: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingVertical: 24,
+  },
+  media: {
+    marginLeft: 6,
+    width: IMAGE_WIDTH,
+    height: IMAGE_WIDTH,
+    marginBottom: 6,
+    backgroundColor: 'rgba(0,0,0,0.2)',
   },
 });
 

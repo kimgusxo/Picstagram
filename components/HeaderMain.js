@@ -10,7 +10,7 @@ function HeaderMain(props) {
         <Text style={styles.picstagram}>Picstagram</Text>
         <TouchableOpacity
           style={styles.addPostButton}
-          onPress={() => props.navigation.navigate('RegisteryPost')}
+          onPress={() => props.navigation.navigate('Posting')}
         >
           <FeatherIcon name="plus" style={styles.addPostIcon} />
         </TouchableOpacity>

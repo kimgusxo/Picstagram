@@ -1,20 +1,20 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, TouchableOpacity} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIconsIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 function CreatePostHeader(props) {
   return (
     <View style={[styles.container, props.style]}>
-      <TouchableOpacity style={styles.cancelButton}>
+      <TouchableOpacity
+        style={styles.cancelButton}
+        onPress={() => props.navigation.navigate('Main')}
+      >
         <EntypoIcon name="cross" style={styles.cancelIcon} />
       </TouchableOpacity>
       <View style={styles.cancelButtonFiller} />
-      <TouchableOpacity style={styles.nextButton}>
-        <MaterialCommunityIconsIcon
-          name="arrow-right"
-          style={styles.nextIcon}
-        />
+      <TouchableOpacity style={styles.nextButton} onPress={() => props.navigation.navigate('Main')}>
+        <MaterialCommunityIconsIcon name="arrow-right" style={styles.nextIcon} />
       </TouchableOpacity>
     </View>
   );
