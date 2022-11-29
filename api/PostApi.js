@@ -28,7 +28,7 @@ async function findPostById(userId) {
 
   postList.forEach((doc) => {
     // 콘솔 출력문
-    result.push(doc.data());
+    result.push(doc);
   });
 
   return result;
@@ -56,6 +56,24 @@ async function findPostByTitle({ title, start }) {
   postList.forEach((doc) => {
     // 콘솔 출력문
     result.push(doc.data());
+  });
+
+  return result;
+}
+
+async function loadingMainPage(userId) {
+  const postList = await findPostList(userId);
+
+  const result = [];
+
+  postList.forEach(async (doc) => {
+    const postDate = doc.data().date;
+
+    const commentsList = await readComments(postDate);
+    const imageList = await readImages(postDate);
+
+    const post = { doc, commentsList, imageList };
+    result.push(post);
   });
 
   return result;
@@ -90,12 +108,12 @@ async function findPostList(userId) {
 
   // 3. temp배열에 있는 doc들을 전부 시간순으로 재정렬
   postList.sort(function compare(a, b) {
-    return a.date - b.date;
+    return b.data().date - a.data().date;
   });
 
   postList.forEach((doc) => {
     // 콘솔 출력문
-    console.log(doc.data());
+    console.log(doc);
   });
 
   // 4. 최종리스트를 10개씩 뽑아서 출력 --> 이 부분을 잘 모르겠음,,,
