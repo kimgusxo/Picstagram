@@ -11,6 +11,18 @@ async function createUser(userId, email) {
   });
 }
 
+async function findMyInfoByEmail(email) {
+  const result = [];
+
+  const myInfo = await firestore().collection('User').where('email', '==', email).get();
+
+  myInfo.forEach((doc) => {
+    result.push(doc.data());
+  });
+
+  return result;
+}
+
 // 매개변수: 유저ID
 async function findUserById(userId) {
   // 유저ID로 유저 찾기
@@ -179,6 +191,7 @@ async function duplicationId(userId) {
 
 export {
   createUser,
+  findMyInfoByEmail,
   findUserById,
   addFollowing,
   findFollowingById,
