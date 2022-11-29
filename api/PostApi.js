@@ -141,7 +141,7 @@ async function createPost({ title, content, range, writer, images }) {
   // 쨋든 그 작업을 상위 컬렉션의 필드가 채워진 후 넣는 식으로 작성함
 
   await addStorageImages(images); // 이미지를 스토리지에 넣는 함수
-  await addDatabaseImages({ date, metadata }); // 이미지를 데이터베이스에 넣는 함수
+  await addDatabaseImages(images); // 이미지를 데이터베이스에 넣는 함수
 }
 
 // 게시물 수정 함수
@@ -172,10 +172,10 @@ async function addStorageImages(images) {
 }
 
 // images가 배열이므로 반복문 돌려야함
-async function addDatabaseImages({ postDate, metadata }) {
-  const postDocId = getPostDocId(postDate); // 사진을 넣기 위한 DocId 추출
+async function addDatabaseImages(images) {
+  const postDocId = getPostDocId(images.Datetime); // 사진을 넣기 위한 DocId 추출
 
-  for (const index of metadata) {
+  for (const index of images) {
     // images에서 메타데이터 추출
     const arSplitUrl = index.path.split('/'); //   "/" 로 전체 url 을 나눈다
     let nArLength = arSplitUrl.length;
@@ -186,10 +186,10 @@ async function addDatabaseImages({ postDate, metadata }) {
       .doc(postDocId)
       .collection('Images')
       .add({
-        imgDate: index.imgDate,
+        imgDate: index.Datetime,
         latitude: index.latitude,
         longtitude: index.longtitude,
-        url: getImageUrl(arFileName),
+        url: await getImageUrl(arFileName),
       });
   }
 }
@@ -223,23 +223,13 @@ async function deletePost(postDate) {
     .collection('Comments')
     .get();
 
-  const imageDocIdList = await firestore()
-    .collection('Post') // 해당 하위 컬렉션의 docId를 전부 획득
-    .doc(postDocId)
-    .collection('Images')
-    .get();
-
   commentsDocIdList.forEach((doc) => {
     // 반복문으로 하위 컬렉션의 문서를 전부 삭제
     const commentsDocId = doc.id;
     deleteCommentsByDocId({ postDocId, commentsDocId });
   });
 
-  imageDocIdList.forEach((doc) => {
-    // 반복문으로 하위 컬렉션의 문서를 전부 삭제
-    const imagesDocId = doc.id;
-    deleteImagesByDocId({ postDocId, imagesDocId });
-  });
+  deleteImage(postDocId); // 이미지 db랑 스토리지에 있는거 삭제
 
   // 이슈!: 하위 컬렉션이 있는 문서의 경우 하위컬렉션의 모든 문서를 제거한 뒤
   // 삭제해야하므로 for문을 통해 하위컬렉션의 문서들을 전부 삭제해야한다.
@@ -338,7 +328,7 @@ async function readComments(postDate) {
 // 매개변수: 게시물 시간
 async function readImages(postDate) {
   // 게시물의 이미지 불러오는 함수
-  const postDocId = await getPostDocId(postDate); // 게시물의 DocId 가져옴
+  const postDocId = getPostDocId(postDate); // 게시물의 DocId 가져옴
 
   const result = [];
 
@@ -413,7 +403,6 @@ async function deleteImagesByDocId({ postDocId, imagesDocId }) {
 }
 
 export {
-  loadingMainPage,
   findPostById,
   findPostByTitle,
   findPostList,
