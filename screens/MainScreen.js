@@ -1,17 +1,11 @@
 import React, { useEffect, useRef } from 'react';
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  StatusBar,
-  RefreshControl,
-  Dimensions,
-  Text,
-} from 'react-native';
+import { StyleSheet, View, ScrollView, StatusBar, RefreshControl, Dimensions } from 'react-native';
+import { firebase } from '@react-native-firebase/auth';
 import HeaderMain from '../components/HeaderMain';
 import PostComponent from '../components/PostComponent';
 import FooterMain from '../components/FooterMain';
 import { findPostList } from '../api/PostApi';
+import { findMyInfoByEmail } from '../api/UserApi';
 import { ActivityIndicator } from '@react-native-material/core';
 
 // timeout for refreshing
@@ -24,11 +18,12 @@ function MainScreen({ navigation, route }) {
   const [refreshing, setRefreshing] = React.useState(false);
   const [postList, setPostList] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  const POST_OFFSET = 10;
+  const POST_OFFSET = 2;
   const initialPostList = useRef([]);
+  const userToken = useRef();
+  const userInfo = useRef({ id: '' });
   let cursor = useRef(0);
-  const MY_ID = 'dong_hui';
-  let isLastPost = false;
+  let isLastPost = useRef(false);
 
   useEffect(() => {
     //
@@ -44,31 +39,46 @@ function MainScreen({ navigation, route }) {
      */
 
     // Get my Id
-    fetchData().then(() => {
-      printState().then(() => setIsLoading(false));
+
+    fetchData().then(async () => {
+      await printState().then(() => setIsLoading(false));
     });
   }, []);
 
   const printState = async () => {
     console.log('initialPostList', initialPostList.current);
-    console.log('MY_ID', MY_ID);
-    console.log('isLastPost', isLastPost);
+    console.log('userInfo', userInfo.current);
+    console.log('cursor', cursor.current);
+    console.log('isLastPost', isLastPost.current);
+    console.log('\n\n');
   };
 
   // Fetching Data
   async function fetchData() {
-    initialPostList.current = await findPostList(MY_ID);
+    // Get userToken
+    userToken.current = firebase.auth().currentUser;
+
+    // Set user information by userToken
+    userInfo.current = await findMyInfoByEmail(userToken.current.email);
+    userInfo.current = userInfo.current[0];
+
+    // Get Initail PostList and Set Current PostList
+    initialPostList.current = await findPostList(userInfo.current.id);
     setPostList(await getNextPostList());
   }
 
   const getNextPostList = async () => {
     let temp;
-    if (cursor + POST_OFFSET <= initialPostList.current.length)
-      temp = initialPostList.current.slice(cursor, cursor + POST_OFFSET);
-    else {
-      temp = initialPostList.current.slice(cursor, initialPostList.length);
-      isLastPost = true;
+    console.log('cursor', cursor.current);
+    if (cursor.current + POST_OFFSET <= initialPostList.current.length) {
+      temp = initialPostList.current.slice(cursor.current, cursor.current + POST_OFFSET);
+      cursor.current += POST_OFFSET;
+    } else {
+      temp = initialPostList.current.slice(cursor.current, initialPostList.current.length);
+      cursor.current += initialPostList.current.length - cursor.current;
+      isLastPost.current = true;
     }
+
     return temp;
   };
 
@@ -77,6 +87,7 @@ function MainScreen({ navigation, route }) {
 
     // Initialazation
     cursor.current = 0;
+    isLastPost.current = false;
     initialPostList.current.length = 0;
 
     // Refetching Data
@@ -105,13 +116,14 @@ function MainScreen({ navigation, route }) {
             offset = e.nativeEvent.contentOffset.y;
 
           if (windowHeight + offset >= height) {
-            if (isLastPost) {
-              // 마지막 포스트임을 어떻게 나타낼까.
-              console.log('맨 마지막 포스트 리스트입니다.');
+            if (isLastPost.current) {
+              // End of PostList
+              console.log('End of PostList');
             } else {
               // ScrollEnd, do sth...
-              console.log('맨 아래에 닿으면 새 게시물 가져오기');
-              getNextPostList();
+              // isLoadingMorePostList 등으로 detecting을 동기적으로 처리하면 너무 많은 포스트를 가져오지 않게 할 수 있음
+              console.log('Get more PostList');
+              setPostList(postList.concat(await getNextPostList()));
             }
           }
         }}
@@ -122,13 +134,18 @@ function MainScreen({ navigation, route }) {
               key={index}
               style={styles.postComponent}
               navigation={navigation}
+              userInfo={userInfo}
               post={post.data()}
             />
           );
         })}
       </ScrollView>
       <View>
-        <FooterMain style={styles.footerMain} navigation={navigation} route={{ MY_ID: MY_ID }} />
+        <FooterMain
+          style={styles.footerMain}
+          navigation={navigation}
+          route={{ userInfo: userInfo }}
+        />
       </View>
     </>
   );
