@@ -7,7 +7,7 @@ function InputUserInfo(props) {
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.idTextBoxRow}>
-        <IdTextBox inputStyle="Placeholder" inputStyle="Nickname1" style={styles.idTextBox} />
+        <IdTextBox inputStyle="Placeholder" inputStyle="Nickname" style={styles.idTextBox} />
         <DuplicationCheckButton 중복확인="중복확인" style={styles.duplicateCheckButton} />
       </View>
     </View>
@@ -15,7 +15,7 @@ function InputUserInfo(props) {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  userInfocontainer: {},
   idTextBox: {
     height: 43,
     width: 218,
@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
   idTextBoxRow: {
     height: 43,
     flexDirection: 'row',
+    alignSelf: 'center',
   },
 });
 

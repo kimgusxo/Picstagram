@@ -1,26 +1,23 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, TextInput} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, View, TextInput } from 'react-native';
 
 function IdTextBox(props) {
   return (
-    <View style={[styles.container, props.style]}>
-      <TextInput
-        placeholder={props.inputStyle || 'ID'}
-        style={styles.inputStyle}
-      />
+    <View style={[styles.idtextboxcontainer, props.style]}>
+      <TextInput placeholder={props.inputStyle || 'ID'} style={styles.inputStyle} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  idtextboxcontainer: {
     borderBottomWidth: 1,
     borderColor: '#D9D5DC',
     backgroundColor: 'transparent',
     flexDirection: 'row',
     alignItems: 'center',
   },
-  inputStyle: {
+  idinputStyle: {
     color: '#000',
     paddingRight: 5,
     fontSize: 16,

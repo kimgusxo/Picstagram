@@ -4,7 +4,12 @@ import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 function SubmitButton(props) {
   return (
     <View style={[styles.container, props.style]}>
-      <TouchableOpacity onPress={() => props.navigation.navigate('Main')}>
+      <TouchableOpacity
+        onPress={() => {
+          props.registerUser();
+          props.navigation.navigate('Main');
+        }}
+      >
         <Text style={styles.submit}>Submit</Text>
       </TouchableOpacity>
     </View>
