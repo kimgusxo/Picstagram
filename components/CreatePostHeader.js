@@ -5,7 +5,7 @@ import MaterialCommunityIconsIcon from 'react-native-vector-icons/MaterialCommun
 
 function CreatePostHeader(props) {
   return (
-    <View style={[styles.container, props.style]}>
+    <View style={[styles.headercontainer, props.style]}>
       <TouchableOpacity
         style={styles.cancelButton}
         onPress={() => props.navigation.navigate('Main')}
@@ -13,7 +13,13 @@ function CreatePostHeader(props) {
         <EntypoIcon name="cross" style={styles.cancelIcon} />
       </TouchableOpacity>
       <View style={styles.cancelButtonFiller} />
-      <TouchableOpacity style={styles.nextButton} onPress={() => props.navigation.navigate('Main')}>
+      <TouchableOpacity
+        style={styles.nextButton}
+        onPress={() => {
+          props.registerPost();
+          props.navigation.navigate('Main');
+        }}
+      >
         <MaterialCommunityIconsIcon name="arrow-right" style={styles.nextIcon} />
       </TouchableOpacity>
     </View>
@@ -21,7 +27,7 @@ function CreatePostHeader(props) {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  headercontainer: {
     backgroundColor: '#3F51B5',
     flexDirection: 'row',
     alignItems: 'center',
