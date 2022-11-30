@@ -16,6 +16,7 @@ import DetailPictureScreen from './screens/DetailPictureScreen';
 import firebase from '@react-native-firebase/app';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import UserApi, { authUser } from './api/UserApi';
 
 function App() {
   const Stack = createStackNavigator();
@@ -50,12 +51,12 @@ function App() {
             <LoginScreen onGoogleButtonPress={onGoogleButtonPress} navigation={navigation} />
           )}
         />
+        <Stack.Screen name="NickName" component={NickNameScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   ) : (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Main" screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="NickName" component={NickNameScreen} />
         <Stack.Screen name="Main" component={MainScreen} />
         <Stack.Screen name="DetailPost" component={DetailPostScreen} />
         <Stack.Screen name="DetailPicture" component={DetailPictureScreen} />

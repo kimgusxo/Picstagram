@@ -9,7 +9,7 @@ function LoginScreen(props) {
       <StatusBar hidden />
       <HeaderLogo style={styles.headerLogo} />
       <Text style={styles.login}>로그인</Text>
-      <GoogleSigninButton onPress={props.onGoogleButtonPress} />
+      <GoogleSigninButton style={styles.GoogleSigninButton} onPress={props.onGoogleButtonPress} />
     </View>
   );
 }
@@ -41,6 +41,9 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderColor: '#000000',
     borderRadius: 5,
+    alignSelf: 'center',
+  },
+  GoogleSigninButton: {
     alignSelf: 'center',
   },
 });
