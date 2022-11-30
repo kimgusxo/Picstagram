@@ -11,7 +11,7 @@ function PostFooter(props) {
   const [commentCnt, setCommentCnt] = useState(0);
 
   useEffect(() => {
-    // 좋아요 숫자 변경 로직
+    // 내가 좋아요를 누른 적 있다면, setIsLiked(true)
   }, [isLiked]);
 
   const toggleLike = () => {
@@ -28,8 +28,9 @@ function PostFooter(props) {
             style={isLiked ? styles.redLikeIcon : styles.likeIcon}
           />
           <View style={styles.likeIconFiller} />
-          <Text style={styles.txtLikeCount}>{likeCnt}</Text>
+          <Text style={styles.txtLikeCount}>{props.likes}</Text>
         </TouchableOpacity>
+
         {/* comment button : navigation */}
         <TouchableOpacity
           style={styles.commentButton}

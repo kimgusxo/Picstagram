@@ -6,13 +6,37 @@ import PostFooter from './PostFooter';
 import Comments from './Comments';
 import InputComment from './InputComment';
 
+/**
+ * Post를 출력하는 componen
+ * t
+ * @param {navigation, post} props
+ * @returns
+ * presentaion_
+ *  PostProfile: userId
+ *  Feed: postTitle, pictures, likes, comments count, / Detailpost인 경우 추가적으로 postContent
+ *
+ *  DetailPost인 경우 Comments 컴포넌트에서 comments
+ */
 function PostComponent(props) {
   return (
     <View style={[styles.container, props.style]}>
-      <PostProfile style={styles.postProfile} navigation={props.navigation} />
-      <Feed navigation={props.navigation} isDetailed={props.isDetailed} />
-      <PostFooter style={styles.postFooter} navigation={props.navigation} />
-      <Comments navigation={props.navigation} isDetailed={props.isDetailed} />
+      <PostProfile
+        style={styles.postProfile}
+        navigation={props.navigation}
+        writer={props.post.writer}
+      />
+      <Feed navigation={props.navigation} isDetailed={props.isDetailed} post={props.post} />
+      <PostFooter
+        style={styles.postFooter}
+        navigation={props.navigation}
+        likes={props.post.like}
+        //commentCount={props.commentCount}
+      />
+      <Comments
+        navigation={props.navigation}
+        isDetailed={props.isDetailed}
+        //comments={props.post.comments}
+      />
       <InputComment isDetailed={props.isDetailed} />
     </View>
   );

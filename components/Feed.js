@@ -33,6 +33,7 @@ function Feed(props) {
   const [imagePathList, setImagePathList] = useState([]);
   const [index, setIndex] = useState(0);
   const [isConvertedMap, setIsConvertedMap] = useState(false);
+  const [firstItem, setFirstItem] = useState(0);
   const carouselRef = useRef(null);
 
   const sliderWidth = Dimensions.get('window').width;
@@ -40,6 +41,7 @@ function Feed(props) {
 
   useEffect(() => {
     setImagePathList(sampleImagePathList);
+    setFirstItem(props.firstItem);
   }, []);
 
   const toggleMapToImg = () => {
@@ -52,8 +54,8 @@ function Feed(props) {
       <TouchableOpacity
         onPress={() =>
           !isDetailed
-            ? props.navigation.navigate('DetailPost')
-            : props.navigation.navigate('DetailPicture')
+            ? props.navigation.navigate('DetailPost', { firstItem: index, post: props.post })
+            : props.navigation.navigate('DetailPicture', { firstItem: index, post: props.post })
         }
         style={{ alignItems: 'center' }}
       >
@@ -73,9 +75,7 @@ function Feed(props) {
 
   return (
     <View style={[styles.container, props.style]}>
-      <Text style={styles.txtPostTitle}>
-        Aimyon Daisuki~!😍😍😍 {'\n\n'}#Japan #Singer-song Writer
-      </Text>
+      <Text style={styles.txtPostTitle}>{props.post.title}</Text>
       <View style={styles.imgContainer}>
         {/* ConvertBtn */}
         {isDetailed ? (
@@ -94,6 +94,13 @@ function Feed(props) {
           sliderWidth={sliderWidth}
           itemWidth={itemWidth}
           onSnapToItem={(index) => setIndex(index)}
+          firstItem={firstItem}
+          initialScrollIndex={firstItem}
+          getItemLayout={(data, index) => ({
+            length: itemWidth,
+            offset: itemWidth * index,
+            index,
+          })}
           layout={'default'}
         />
 
@@ -125,16 +132,7 @@ function Feed(props) {
       </View>
 
       {/* Post Content */}
-      {isDetailed ? (
-        <Text style={styles.txtContent}>
-          Aimyon is my favorite Japanese Singer~~!!! {'\n'}
-          She is famous Singer-song writer in japan~! {'\n'}
-          Do u know her song? {'\n'}
-          My favorite song of hers is Marigold ❤❤
-        </Text>
-      ) : (
-        <></>
-      )}
+      {isDetailed ? <Text style={styles.txtContent}>{props.post.content}</Text> : <></>}
     </View>
   );
 }

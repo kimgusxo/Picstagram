@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, Dimensions, Alert } from 'react-native';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
 function PostProfile(props) {
-  let isMyPost = true;
   const [isLockedPost, setIsLockedPost] = useState(false);
+  const [isMyPost, setIsMyPost] = useState(true);
+
+  useEffect(() => {
+    //if(props.writer == 유저정보) setIsMyPost(true);
+  }, [isMyPost]);
 
   const alertLockBtn = () => {
     if (isLockedPost) {
@@ -57,7 +61,7 @@ function PostProfile(props) {
       <View style={styles.profileButtonRow}>
         <TouchableOpacity style={styles.profileButton}>
           <EntypoIcon name="user" style={styles.profileIcon} />
-          <Text style={styles.txtProfileUserId}>user_ID</Text>
+          <Text style={styles.txtProfileUserId}>{props.writer}</Text>
         </TouchableOpacity>
         {isMyPost ? (
           <View style={styles.etcContainer}>

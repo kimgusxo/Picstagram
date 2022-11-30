@@ -4,7 +4,8 @@ import HeaderMain from '../components/HeaderMain';
 import PostComponent from '../components/PostComponent';
 import FooterMain from '../components/FooterMain';
 
-function DetailPostScreen({ navigation }) {
+function DetailPostScreen({ navigation, route }) {
+  console.log(route);
   return (
     <>
       <View>
@@ -12,7 +13,12 @@ function DetailPostScreen({ navigation }) {
         <HeaderMain style={styles.headerMain} navigation={navigation} />
       </View>
       <ScrollView style={styles.container}>
-        <PostComponent style={styles.postComponent} navigation={navigation} isDetailed={true} />
+        <PostComponent
+          style={styles.postComponent}
+          navigation={navigation}
+          isDetailed={true}
+          post={route.params.post}
+        />
       </ScrollView>
       <View>
         <FooterMain style={styles.footerMain} navigation={navigation} />
