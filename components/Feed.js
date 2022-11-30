@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import React, { useEffect, useRef, useState } from 'react';
 import {
   StyleSheet,
@@ -54,7 +55,11 @@ function Feed(props) {
       <TouchableOpacity
         onPress={() =>
           !isDetailed
-            ? props.navigation.navigate('DetailPost', { firstItem: index, post: props.post })
+            ? props.navigation.navigate('DetailPost', {
+                firstItem: index,
+                post: props.post,
+                userInfo: props.userInfo,
+              })
             : props.navigation.navigate('DetailPicture', { firstItem: index, post: props.post })
         }
         style={{ alignItems: 'center' }}

@@ -1,41 +1,74 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text, Dimensions, Alert } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Text,
+  Dimensions,
+  Alert,
+  ProgressViewIOSComponent,
+} from 'react-native';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import { deletePost, postRangeUpdate, updatePost } from '../api/PostApi';
 
 function PostProfile(props) {
-  const [isLockedPost, setIsLockedPost] = useState(false);
-  const [isMyPost, setIsMyPost] = useState(true);
+  const [curRange, setCurRange] = useState('All');
+  const [isMyPost, setIsMyPost] = useState(false);
 
   useEffect(() => {
-    //if(props.writer == 유저정보) setIsMyPost(true);
-  }, [isMyPost]);
+    if (props.userInfo.current.id == props.post.writer) setIsMyPost(true);
+    if (props.post.range == 'Private') setCurRange('Private');
+  }, []);
 
   const alertLockBtn = () => {
-    if (isLockedPost) {
+    if (curRange == 'Private') {
       Alert.alert('게시물 공개범위 변경', '게시물을 공개하겠습니까?', [
         {
           text: '취소',
-          onPress: () => console.log('Opened for all'),
+          onPress: () => {
+            console.log('Cancel Pressed');
+          },
         },
         {
           text: '모두에게',
-          onPress: () => console.log('Cancel Pressed'),
+          onPress: () => {
+            console.log('Opened All');
+            postRangeUpdate({ postDate: props.post.date, range: 'All' });
+            props.post.range = 'All';
+            setCurRange('All');
+          },
           style: 'cancel',
         },
-        { text: '팔로워만', onPress: () => console.log('Opened just Follower') },
+        {
+          text: '팔로워만',
+          onPress: () => {
+            console.log('Opened just Follower');
+            postRangeUpdate({ postDate: props.post.date, range: 'Follower' });
+            props.post.range = 'Follower';
+            setCurRange('Follower');
+          },
+        },
       ]);
     } else {
       Alert.alert('게시물 공개범위 변경', '게시물을 비공개하겠습니까?', [
         {
           text: '취소',
-          onPress: () => console.log('Private btn Pressed'),
+          onPress: () => console.log('Cancel Pressed'),
         },
         {
           text: '',
           style: 'cancel',
         },
-        { text: '비공개', onPress: () => console.log('privite') },
+        {
+          text: '비공개',
+          onPress: () => {
+            console.log('Private btn Pressed');
+            postRangeUpdate({ postDate: props.post.date, range: 'Private' });
+            props.post.range = 'Private';
+            setCurRange('Private');
+          },
+        },
       ]);
     }
   };
@@ -49,10 +82,19 @@ function PostProfile(props) {
       },
       {
         text: '수정',
-        onPress: () => console.log('Update the post'),
+        onPress: () => {
+          console.log('Update the post');
+          props.navigation.navigate(); // Navigate to UpdatePostScreen With a Post Data. if...isDetailedPostScreen -> navigation.goback()
+        },
         style: 'cancel',
       },
-      { text: '삭제', onPress: () => console.log('Delete the post') },
+      {
+        text: '삭제',
+        onPress: () => {
+          console.log('Delete the post');
+          deletePost(props.post.date); // Delete a Post (need Rerendering)
+        },
+      },
     ]);
   };
 
@@ -61,12 +103,18 @@ function PostProfile(props) {
       <View style={styles.profileButtonRow}>
         <TouchableOpacity style={styles.profileButton}>
           <EntypoIcon name="user" style={styles.profileIcon} />
-          <Text style={styles.txtProfileUserId}>{props.writer}</Text>
+          <Text style={styles.txtProfileUserId}>{props.post.writer}</Text>
         </TouchableOpacity>
         {isMyPost ? (
           <View style={styles.etcContainer}>
             <TouchableOpacity style={styles.lockButton} onPress={alertLockBtn}>
-              <FontAwesomeIcon name="lock" style={styles.lockIcon} />
+              {curRange == 'Private' ? (
+                <FontAwesomeIcon name="lock" style={styles.lockIcon} />
+              ) : curRange == 'Follower' ? (
+                <FontAwesomeIcon name="unlock-alt" style={styles.lockIcon} />
+              ) : (
+                <FontAwesomeIcon name="unlock" style={styles.lockIcon} />
+              )}
             </TouchableOpacity>
             <TouchableOpacity style={styles.dotButton} onPress={alertEtcBtn}>
               <EntypoIcon name="dots-three-horizontal" style={styles.dotIcon} />

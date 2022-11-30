@@ -17,7 +17,6 @@ function PostFooter(props) {
   const toggleLike = () => {
     setIsLiked(!isLiked);
   };
-
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.likeButtonRow}>
@@ -34,7 +33,9 @@ function PostFooter(props) {
         {/* comment button : navigation */}
         <TouchableOpacity
           style={styles.commentButton}
-          onPress={() => props.navigation.navigate('DetailPost')}
+          onPress={() =>
+            props.navigation.navigate('DetailPost', { post: props.post, userInfo: props.userInfo })
+          }
         >
           <FontAwesomeIcon name="comments-o" style={styles.commentIcon} />
           <View style={styles.commentIconFiller} />

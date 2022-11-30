@@ -5,7 +5,6 @@ import PostComponent from '../components/PostComponent';
 import FooterMain from '../components/FooterMain';
 
 function DetailPostScreen({ navigation, route }) {
-  console.log(route);
   return (
     <>
       <View>
@@ -18,6 +17,7 @@ function DetailPostScreen({ navigation, route }) {
           navigation={navigation}
           isDetailed={true}
           post={route.params.post}
+          userInfo={route.params.userInfo}
         />
       </ScrollView>
       <View>
