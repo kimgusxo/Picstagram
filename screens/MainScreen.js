@@ -4,7 +4,7 @@ import { firebase } from '@react-native-firebase/auth';
 import HeaderMain from '../components/HeaderMain';
 import PostComponent from '../components/PostComponent';
 import FooterMain from '../components/FooterMain';
-import { findPostList } from '../api/PostApi';
+import { findPostList, loadingMainPage } from '../api/PostApi';
 import { findMyInfoByEmail } from '../api/UserApi';
 import { ActivityIndicator } from '@react-native-material/core';
 
@@ -46,11 +46,14 @@ function MainScreen({ navigation, route }) {
   }, []);
 
   const printState = async () => {
-    console.log('initialPostList', initialPostList.current);
+    console.log('================================================');
     console.log('userInfo', userInfo.current);
+    console.log('initialPostList.length', initialPostList.current.length);
+    console.log('curPostList\n');
+    postList.forEach((e) => console.log(e, '\n'));
     console.log('cursor', cursor.current);
     console.log('isLastPost', isLastPost.current);
-    console.log('\n\n');
+    console.log('================================================\n\n');
   };
 
   // Fetching Data
@@ -63,13 +66,12 @@ function MainScreen({ navigation, route }) {
     userInfo.current = userInfo.current[0];
 
     // Get Initail PostList and Set Current PostList
-    initialPostList.current = await findPostList(userInfo.current.id);
+    initialPostList.current = await loadingMainPage(userInfo.current.id);
     setPostList(await getNextPostList());
   }
 
   const getNextPostList = async () => {
-    let temp;
-    console.log('cursor', cursor.current);
+    let temp = [];
     if (cursor.current + POST_OFFSET <= initialPostList.current.length) {
       temp = initialPostList.current.slice(cursor.current, cursor.current + POST_OFFSET);
       cursor.current += POST_OFFSET;
@@ -123,6 +125,7 @@ function MainScreen({ navigation, route }) {
               // ScrollEnd, do sth...
               // isLoadingMorePostList 등으로 detecting을 동기적으로 처리하면 너무 많은 포스트를 가져오지 않게 할 수 있음
               console.log('Get more PostList');
+              console.log('cursor', cursor.current);
               setPostList(postList.concat(await getNextPostList()));
             }
           }
@@ -135,7 +138,7 @@ function MainScreen({ navigation, route }) {
               style={styles.postComponent}
               navigation={navigation}
               userInfo={userInfo}
-              post={post.data()}
+              post={post}
             />
           );
         })}

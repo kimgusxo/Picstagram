@@ -35,17 +35,14 @@ function PostComponent(props) {
       <PostFooter
         style={styles.postFooter}
         navigation={props.navigation}
-        likes={props.post.like}
         post={props.post}
         userInfo={props.userInfo}
-        //commentCount={props.commentCount}
       />
       <Comments
         navigation={props.navigation}
         isDetailed={props.isDetailed}
         post={props.post}
         userInfo={props.userInfo}
-        //comments={props.post.comments}
       />
       <InputComment isDetailed={props.isDetailed} />
     </View>

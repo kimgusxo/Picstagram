@@ -11,10 +11,13 @@ function PostFooter(props) {
   const [commentCnt, setCommentCnt] = useState(0);
 
   useEffect(() => {
+    setLikeCnt(props.post.like);
+    setCommentCnt(props.post.commentList.length);
     // 내가 좋아요를 누른 적 있다면, setIsLiked(true)
-  }, [isLiked]);
+  }, []);
 
   const toggleLike = () => {
+    isLiked ? setLikeCnt(likeCnt - 1) : setLikeCnt(likeCnt + 1);
     setIsLiked(!isLiked);
   };
   return (
@@ -27,7 +30,7 @@ function PostFooter(props) {
             style={isLiked ? styles.redLikeIcon : styles.likeIcon}
           />
           <View style={styles.likeIconFiller} />
-          <Text style={styles.txtLikeCount}>{props.likes}</Text>
+          <Text style={styles.txtLikeCount}>{likeCnt}</Text>
         </TouchableOpacity>
 
         {/* comment button : navigation */}

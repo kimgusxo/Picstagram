@@ -2,17 +2,18 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 
-const Comment = () => {
+const Comment = (props) => {
+  /**
+   * 내 댓글일 때 삭제 기능 추가 필요
+   */
   return (
     <View style={styles.profileButtonRow}>
       <TouchableOpacity style={styles.profileButton}>
         <EntypoIcon name="user" style={styles.profileIcon} />
-        <Text styles={styles.txtUserId}>user_ID</Text>
+        <Text styles={styles.txtUserId}>{props.comment.commentWriter}</Text>
       </TouchableOpacity>
       <View style={styles.txtCommentContainer}>
-        <Text styles={styles.txtComment}>
-          She is so cute😁💕{'\n'}I hope she becomes famous in Korea, too!🥺
-        </Text>
+        <Text styles={styles.txtComment}>{props.comment.commentContent}</Text>
       </View>
     </View>
   );
@@ -22,15 +23,7 @@ function Comments(props) {
   return (
     <>
       {props.isDetailed ? (
-        <>
-          <Comment />
-          <Comment />
-          <Comment />
-          <Comment />
-          <Comment />
-          <Comment />
-          <Comment />
-        </>
+        props.post.commentList.map((comment, index) => <Comment key={index} comment={comment} />)
       ) : (
         <></>
       )}
