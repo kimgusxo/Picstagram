@@ -1,6 +1,17 @@
 import firestore from '@react-native-firebase/firestore';
 import { getUserDocId } from './LogicApi';
 
+// 매개변수: google이메일
+async function authUser(email) {
+  const authToken = await firestore().collection('User').where('email', '==', email).get();
+
+  if (authToken.empty) {
+    return true; // 이미 등록된 이메일이라면 true 반환
+  }
+
+  return false; // 아니면 false 반환
+}
+
 // 매개변수: 구글 auth, 유저ID
 async function createUser(userId, email) {
   //유저ID를 기반으로 유저 생성
@@ -33,7 +44,7 @@ async function findUserById(userId) {
   if (user.empty) {
     // 유저가 비어있을때 널값 리턴
     console.log('해당하는 유저가 없습니다.');
-    return;
+    return [];
   }
 
   user.forEach((doc) => {
@@ -75,7 +86,7 @@ async function findFollowingById(userId) {
   if (following.empty) {
     // 비어있을때 출력문
     console.log('해당하는 유저가 없습니다.');
-    return;
+    return [];
   }
 
   following.forEach((doc) => {
@@ -98,7 +109,7 @@ async function findFollowerById(userId) {
   if (follower.empty) {
     // 비어있을 때 출력문
     console.log('해당하는 유저가 없습니다.');
-    return;
+    return [];
   }
 
   follower.forEach((doc) => {
@@ -118,8 +129,6 @@ async function countFollowing(userId) {
   // 팔로잉 몇 명 인지 찾는 함수
   const followingCount = await findFollowingById(userId);
 
-  console.log(followingCount.size);
-
   return followingCount.size;
 }
 
@@ -127,8 +136,6 @@ async function countFollowing(userId) {
 async function countFollower(userId) {
   // 팔로워가 몇 명인지 찾는 함수
   const followerCount = await findFollowerById(userId);
-
-  console.log(followerCount.size);
 
   return followerCount.size;
 }
@@ -180,9 +187,9 @@ async function duplicationId(userId) {
   // 아이디 중복을 검사하는 함수
   const user = await findUserById(userId);
 
-  const token = true;
+  let token = true;
 
-  if (user.empty) {
+  if (user === null) {
     token = false;
   }
 
@@ -190,6 +197,7 @@ async function duplicationId(userId) {
 }
 
 export {
+  authUser,
   createUser,
   findMyInfoByEmail,
   findUserById,

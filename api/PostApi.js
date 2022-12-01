@@ -1,13 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
-import { getPostDocId, getCommentsDocId, getImageDocId } from './LogicApi';
+import { getPostDocId, getCommentsDocId } from './LogicApi';
 import { findFollowingById } from './UserApi';
-import {
-  getImageUrl,
-  imageUpload,
-  metadataImage,
-  setMetadata,
-  deleteStorageImage,
-} from './StorageImage';
+import { getImageUrl, imageUpload, deleteStorageImage } from './StorageImage';
 
 // 매개변수: 유저ID
 async function findPostById(userId) {
@@ -23,7 +17,7 @@ async function findPostById(userId) {
   if (postList.empty) {
     // 게시물이 없을때 출력문
     console.log('해당하는 게시물이 없습니다.');
-    return;
+    return [];
   }
 
   postList.forEach((doc) => {
@@ -36,7 +30,7 @@ async function findPostById(userId) {
 
 // 매개변수: 게시물 제목, 시작구간
 // 시작 구간을 받으면 거기부터 10개 출력
-async function findPostByTitle({ title, start }) {
+async function findPostByTitle(title) {
   // 게시물 제목으로 게시물 찾기
   const result = [];
 
@@ -45,13 +39,12 @@ async function findPostByTitle({ title, start }) {
     .collection('Post')
     .where('title', '==', title)
     .orderBy('date', 'desc')
-    .start(start)
-    .end(start + 10)
+    .limit(10)
     .get(); // 게시물 검색 시 사용함으로 10개씩 받아옴
 
   if (postList.empty) {
     console.log('해당하는 게시물이 없습니다.');
-    return;
+    return [];
   }
   postList.forEach((doc) => {
     // 콘솔 출력문
@@ -66,17 +59,22 @@ async function loadingMainPage(userId) {
 
   const result = [];
 
-  postList.forEach(async (doc) => {
-    const postDate = doc.data().date;
+  const fetchCommentsAndImages = async (postDate) => {
+    return { commentList: await readComments(postDate), imageList: await readImages(postDate) };
+  };
 
-    const commentsList = await readComments(postDate);
-    const imageList = await readImages(postDate);
+  const fetchResult = async () => {
+    for (const index of postList) {
+      let post = index.data();
 
-    const post = { doc, commentsList, imageList };
-    result.push(post);
-  });
+      await fetchCommentsAndImages(post.date).then(({ commentList, imageList }) => {
+        post = { ...post, commentList, imageList };
+        result.push(post);
+      });
+    }
+  };
 
-  return result;
+  return fetchResult().then(() => result);
 }
 
 // 매개변수: 유저ID
@@ -116,14 +114,11 @@ async function findPostList(userId) {
     console.log(doc);
   });
 
-  // 4. 최종리스트를 10개씩 뽑아서 출력 --> 이 부분을 잘 모르겠음,,,
-  // 이슈!: 이거는 값을 최대로 가져오게 되는데, 최적화를 위해 포인터를 설정하는 등의 작업이 필요할 듯 합니다.
-  // start와 end로 뽑아오는 방식도 고려중,,,
   return postList;
 }
 
 // 매개변수: 게시물 제목, 게시물 내용, 게시물 작성자
-async function createPost({ title, content, range, writer, images }) {
+async function createPost({ title, content, writer, images }) {
   // 게시물 생성
   const date = new Date();
 
@@ -328,7 +323,7 @@ async function readComments(postDate) {
 // 매개변수: 게시물 시간
 async function readImages(postDate) {
   // 게시물의 이미지 불러오는 함수
-  const postDocId = getPostDocId(postDate); // 게시물의 DocId 가져옴
+  const postDocId = await getPostDocId(postDate); // 게시물의 DocId 가져옴
 
   const result = [];
 
@@ -392,8 +387,8 @@ async function deleteCommentsByDocId({ postDocId, commentsDocId }) {
 }
 
 // 내부로직 함수
-async function deleteImagesByDocId({ postDocId, imagesDocId }) {
-  await deleteImage(imgName); // 스토리지 사진 지우는 것
+async function deleteImagesByDocId({ postDocId, imagesDocId, imgName }) {
+  await deleteStorageImage(imgName); // 스토리지 사진 지우는 것
   await firestore()
     .collection('Post')
     .doc(postDocId) // 파이어베이스 DB 정보 지우는 것
@@ -404,6 +399,7 @@ async function deleteImagesByDocId({ postDocId, imagesDocId }) {
 
 export {
   findPostById,
+  loadingMainPage,
   findPostByTitle,
   findPostList,
   createPost,
