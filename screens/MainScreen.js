@@ -167,11 +167,7 @@ function MainScreen({ navigation, route }) {
         })}
       </ScrollView>
       <View>
-        <FooterMain
-          style={styles.footerMain}
-          navigation={navigation}
-          route={{ userInfo: userInfo }}
-        />
+        <FooterMain style={styles.footerMain} navigation={navigation} userInfo={userInfo} />
       </View>
     </>
   );

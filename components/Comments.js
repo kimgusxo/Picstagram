@@ -8,7 +8,10 @@ const Comment = (props) => {
    */
   return (
     <View style={styles.profileButtonRow}>
-      <TouchableOpacity style={styles.profileButton}>
+      <TouchableOpacity
+        style={styles.profileButton}
+        onPress={() => props.navigation.navigate('Profile')}
+      >
         <EntypoIcon name="user" style={styles.profileIcon} />
         <Text styles={styles.txtUserId}>{props.comment.commentWriter}</Text>
       </TouchableOpacity>
@@ -23,7 +26,9 @@ function Comments(props) {
   return (
     <>
       {props.isDetailed ? (
-        props.post.commentList.map((comment, index) => <Comment key={index} comment={comment} />)
+        props.post.commentList.map((comment, index) => (
+          <Comment key={index} comment={comment} navigation={props.navigation} />
+        ))
       ) : (
         <></>
       )}

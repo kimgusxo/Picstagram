@@ -101,7 +101,12 @@ function PostProfile(props) {
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.profileButtonRow}>
-        <TouchableOpacity style={styles.profileButton}>
+        <TouchableOpacity
+          style={styles.profileButton}
+          onPress={() => {
+            props.navigation.navigate('Profile');
+          }}
+        >
           <EntypoIcon name="user" style={styles.profileIcon} />
           <Text style={styles.txtProfileUserId}>{props.post.writer}</Text>
         </TouchableOpacity>

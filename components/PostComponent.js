@@ -42,7 +42,6 @@ function PostComponent(props) {
           userInfo={props.userInfo}
         />
       )}
-
       <PostFooter
         style={styles.postFooter}
         navigation={props.navigation}

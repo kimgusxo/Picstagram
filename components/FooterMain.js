@@ -20,8 +20,9 @@ function FooterMain(props) {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.profileButton}
-          onPress={() => props.navigation.navigate('Profile')}
-          userInfo={props.userInfo}
+          onPress={() =>
+            props.navigation.navigate('Profile', { userInfo: props.userInfo, isMyProfile: true })
+          }
         >
           <EntypoIcon name="user" style={styles.myProfileIcon} />
         </TouchableOpacity>

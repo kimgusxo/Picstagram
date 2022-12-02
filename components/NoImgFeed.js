@@ -7,9 +7,6 @@ function NoImgFeed(props) {
   const isDetailed = props.isDetailed;
 
   // state & ref
-  {
-    console.log(props.post);
-  }
   return (
     <View style={[styles.container, props.style]}>
       <Text style={styles.txtPostTitle}>{props.post.title}</Text>
