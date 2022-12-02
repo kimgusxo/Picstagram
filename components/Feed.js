@@ -24,25 +24,13 @@ function Feed(props) {
   const isDetailed = props.isDetailed;
 
   // state & ref
-  const [imagePathList, setImagePathList] = useState([]);
   const [index, setIndex] = useState(0);
   const [isConvertedMap, setIsConvertedMap] = useState(false);
   const [firstItem, setFirstItem] = useState(0);
-  const [isExistImage, setIsExistImage] = useState(false);
   const carouselRef = useRef(null);
 
   const sliderWidth = Dimensions.get('window').width;
   const itemWidth = Dimensions.get('window').width;
-
-  useEffect(() => {
-    setImagePathList(
-      props.post.imageList.map((e) => {
-        return e.url;
-      }),
-    );
-    0 < imagePathList.length ? setIsExistImage(true) : setIsExistImage(false);
-    setFirstItem(props.firstItem);
-  }, []);
 
   const toggleMapToImg = () => {
     setIsConvertedMap(!isConvertedMap);
@@ -64,15 +52,14 @@ function Feed(props) {
         style={{ alignItems: 'center' }}
       >
         {/* Carousel Image */}
-        {console.log(item)}
         <FastImage
           style={{
             width: 368,
             height: 368,
-            resizeMode: 'cover',
             display: isConvertedMap ? 'none' : 'flex',
           }}
-          source={{ uri: item.path }}
+          resizeMode={FastImage.resizeMode.cover}
+          source={{ uri: item.url }}
         />
       </TouchableOpacity>
     );
@@ -92,57 +79,58 @@ function Feed(props) {
         )}
 
         {/* CarouselImg */}
-        {isExistImage ? (
-          <Carousel
-            ref={carouselRef}
-            data={imagePathList}
-            renderItem={_renderItem}
-            sliderWidth={sliderWidth}
-            itemWidth={itemWidth}
-            onSnapToItem={(index) => setIndex(index)}
-            firstItem={firstItem}
-            initialScrollIndex={firstItem}
-            getItemLayout={(data, index) => ({
-              length: itemWidth,
-              offset: itemWidth * index,
-              index,
-            })}
-            layout={'default'}
-          />
-        ) : (
-          <></>
-        )}
+        <Carousel
+          ref={carouselRef}
+          data={props.post.imageList}
+          renderItem={_renderItem}
+          sliderWidth={sliderWidth}
+          itemWidth={itemWidth}
+          onSnapToItem={(index) => setIndex(index)}
+          firstItem={firstItem}
+          initialScrollIndex={firstItem}
+          getItemLayout={(data, index) => ({
+            length: itemWidth,
+            offset: itemWidth * index,
+            index,
+          })}
+          layout={'default'}
+        />
 
         {/* Map */}
-        {isDetailed && isExistImage ? (
-          <FeedMapView isConvertedMap={isConvertedMap} navigation={props.navigation} />
+        {isDetailed ? (
+          <FeedMapView
+            isConvertedMap={isConvertedMap}
+            navigation={props.navigation}
+            post={props.post}
+          />
         ) : (
           <></>
         )}
       </View>
 
       {/* Pagination */}
-      {isExistImage ? (
-        <View style={styles.pagingContainer}>
-          <Pagination
-            dotsLength={imagePathList.length}
-            activeDotIndex={index}
-            carouselRef={carouselRef}
-            dotStyle={{
-              width: 15,
-              height: 5,
-              borderRadius: 5,
-              marginHorizontal: 0,
-              backgroundColor: 'rgba(255, 255, 255, 0.92)',
-            }}
-            inactiveDotOpacity={0.4}
-            inactiveDotScale={0.6}
-            tappableDots={true}
-          />
-        </View>
-      ) : (
-        <></>
-      )}
+      <View
+        style={{
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          marginTop: props.post.imageList.length <= 1 ? 0 : -65,
+        }}
+      >
+        <Pagination
+          dotsLength={props.post.imageList.length}
+          activeDotIndex={index}
+          carouselRef={carouselRef}
+          dotStyle={{
+            width: 15,
+            height: 5,
+            borderRadius: 5,
+            marginHorizontal: 0,
+            backgroundColor: 'rgba(255, 255, 255, 0.92)',
+          }}
+          inactiveDotOpacity={0.4}
+          inactiveDotScale={0.6}
+          tappableDots={true}
+        />
+      </View>
 
       {/* Post Content */}
       {isDetailed ? <Text style={styles.txtContent}>{props.post.content}</Text> : <></>}
@@ -156,10 +144,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     flexDirection: 'row',
     justifyContent: 'center',
-  },
-  pagingContainer: {
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    marginTop: -65,
   },
   image: {
     widht: '100%',

@@ -5,6 +5,7 @@ import Feed from './Feed';
 import PostFooter from './PostFooter';
 import Comments from './Comments';
 import InputComment from './InputComment';
+import NoImgFeed from './NoImgFeed';
 
 /**
  * Post를 출력하는 componen
@@ -26,16 +27,27 @@ function PostComponent(props) {
         post={props.post}
         userInfo={props.userInfo}
       />
-      <Feed
-        navigation={props.navigation}
-        isDetailed={props.isDetailed}
-        post={props.post}
-        userInfo={props.userInfo}
-      />
+      {props.post.imageList.length > 0 ? (
+        <Feed
+          navigation={props.navigation}
+          isDetailed={props.isDetailed}
+          post={props.post}
+          userInfo={props.userInfo}
+        />
+      ) : (
+        <NoImgFeed
+          navigation={props.navigation}
+          isDetailed={props.isDetailed}
+          post={props.post}
+          userInfo={props.userInfo}
+        />
+      )}
+
       <PostFooter
         style={styles.postFooter}
         navigation={props.navigation}
         post={props.post}
+        likeCnt={props.likeCnt}
         userInfo={props.userInfo}
       />
       <Comments

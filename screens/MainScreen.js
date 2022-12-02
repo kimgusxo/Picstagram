@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { StyleSheet, View, ScrollView, StatusBar, RefreshControl, Dimensions } from 'react-native';
 import { firebase } from '@react-native-firebase/auth';
 import HeaderMain from '../components/HeaderMain';
 import PostComponent from '../components/PostComponent';
 import FooterMain from '../components/FooterMain';
-import { findPostList, loadingMainPage } from '../api/PostApi';
+import { loadingMainPage } from '../api/PostApi';
 import { findMyInfoByEmail } from '../api/UserApi';
 import { ActivityIndicator } from '@react-native-material/core';
 
@@ -18,7 +18,7 @@ function MainScreen({ navigation, route }) {
   const [refreshing, setRefreshing] = React.useState(false);
   const [postList, setPostList] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  const POST_OFFSET = 2;
+  const POST_OFFSET = 5;
   const initialPostList = useRef([]);
   const userToken = useRef();
   const userInfo = useRef({ id: '' });
@@ -38,51 +38,40 @@ function MainScreen({ navigation, route }) {
      * orderBy : date asc
      */
 
-    // Get my Id
+    // Fetching Data
+    async function fetchData() {
+      // Initailizaing
 
-    fetchData().then(async () => {
-      await printState().then(() => setIsLoading(false));
-    });
-  }, []);
+      // Get userToken
+      userToken.current = firebase.auth().currentUser;
 
-  const printState = async () => {
-    console.log('================================================');
-    console.log('userInfo', userInfo.current);
-    console.log('initialPostList.length', initialPostList.current.length);
-    console.log('curPostList\n');
-    postList.forEach((e) => console.log(e, '\n'));
-    console.log('cursor', cursor.current);
-    console.log('isLastPost', isLastPost.current);
-    console.log('================================================\n\n');
-  };
+      // Set user information by userToken
+      [userInfo.current] = await findMyInfoByEmail(userToken.current.email);
 
-  // Fetching Data
-  async function fetchData() {
-    // Get userToken
-    userToken.current = firebase.auth().currentUser;
+      // Get Initail PostList
+      initialPostList.current = await loadingMainPage(userInfo.current.id);
 
-    // Set user information by userToken
-    userInfo.current = await findMyInfoByEmail(userToken.current.email);
-    userInfo.current = userInfo.current[0];
-
-    // Get Initail PostList and Set Current PostList
-    initialPostList.current = await loadingMainPage(userInfo.current.id);
-    setPostList(await getNextPostList());
-  }
-
-  const getNextPostList = async () => {
-    let temp = [];
-    if (cursor.current + POST_OFFSET <= initialPostList.current.length) {
-      temp = initialPostList.current.slice(cursor.current, cursor.current + POST_OFFSET);
+      // Get Next PostList and Set Current PostList
+      let temp;
+      isLastPost.current = cursor.current + POST_OFFSET > initialPostList.current.length;
+      if (!isLastPost.current)
+        temp = initialPostList.current.slice(cursor.current, cursor.current + POST_OFFSET);
+      else temp = initialPostList.current.slice(cursor.current, initialPostList.current.length);
       cursor.current += POST_OFFSET;
-    } else {
-      temp = initialPostList.current.slice(cursor.current, initialPostList.current.length);
-      cursor.current += initialPostList.current.length - cursor.current;
-      isLastPost.current = true;
+      setPostList((postList) => [...postList, ...temp]);
     }
 
-    return temp;
-  };
+    fetchData().then(() => {
+      setIsLoading(false);
+    });
+
+    return () => {
+      cursor.current = 0;
+      isLastPost.current = false;
+      initialPostList.current.length = 0;
+      setPostList([]);
+    };
+  }, [initialPostList]);
 
   const onRefresh = React.useCallback(() => {
     console.log('리프레쉬 이후 작업을 이곳에 기술하세요.');
@@ -91,11 +80,32 @@ function MainScreen({ navigation, route }) {
     cursor.current = 0;
     isLastPost.current = false;
     initialPostList.current.length = 0;
+    setPostList([]);
+
+    // Fetching Data
+    async function fetchData() {
+      // Get userToken
+      userToken.current = firebase.auth().currentUser;
+
+      // Set user information by userToken
+      [userInfo.current] = await findMyInfoByEmail(userToken.current.email);
+
+      // Get Initail PostList and Set Current PostList
+      initialPostList.current = await loadingMainPage(userInfo.current.id);
+
+      let temp;
+      isLastPost.current = cursor.current + POST_OFFSET > initialPostList.current.length;
+      if (!isLastPost.current)
+        temp = initialPostList.current.slice(cursor.current, cursor.current + POST_OFFSET);
+      else temp = initialPostList.current.slice(cursor.current, initialPostList.current.length);
+      cursor.current += POST_OFFSET;
+      setPostList((postList) => [...postList, ...temp]);
+    }
 
     // Refetching Data
     setRefreshing(true);
     fetchData().then(() => {
-      printState();
+      console.log(initialPostList.current.length);
       wait(2000).then(() => setRefreshing(false));
     });
   }, []);
@@ -126,7 +136,19 @@ function MainScreen({ navigation, route }) {
               // isLoadingMorePostList 등으로 detecting을 동기적으로 처리하면 너무 많은 포스트를 가져오지 않게 할 수 있음
               console.log('Get more PostList');
               console.log('cursor', cursor.current);
-              setPostList(postList.concat(await getNextPostList()));
+
+              // Get Initail PostList and Set Current PostList
+              let temp;
+              isLastPost.current = cursor.current + POST_OFFSET > initialPostList.current.length;
+              if (!isLastPost.current)
+                temp = initialPostList.current.slice(cursor.current, cursor.current + POST_OFFSET);
+              else
+                temp = initialPostList.current.slice(
+                  cursor.current,
+                  initialPostList.current.length,
+                );
+              cursor.current += POST_OFFSET;
+              setPostList((postList) => [...postList, ...temp]);
             }
           }
         }}
@@ -139,6 +161,7 @@ function MainScreen({ navigation, route }) {
               navigation={navigation}
               userInfo={userInfo}
               post={post}
+              likeCnt={post.like}
             />
           );
         })}

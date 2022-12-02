@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import { likeUpdate } from '../api/PostApi';
 
 function PostFooter(props) {
   // eslint-disable-next-line no-unused-vars
@@ -11,13 +12,14 @@ function PostFooter(props) {
   const [commentCnt, setCommentCnt] = useState(0);
 
   useEffect(() => {
-    setLikeCnt(props.post.like);
+    setLikeCnt(props.likeCnt);
     setCommentCnt(props.post.commentList.length);
     // 내가 좋아요를 누른 적 있다면, setIsLiked(true)
   }, []);
 
   const toggleLike = () => {
     isLiked ? setLikeCnt(likeCnt - 1) : setLikeCnt(likeCnt + 1);
+    likeUpdate({ postDate: props.post.date, likeToken: 'a', like: likeCnt });
     setIsLiked(!isLiked);
   };
   return (
@@ -37,7 +39,11 @@ function PostFooter(props) {
         <TouchableOpacity
           style={styles.commentButton}
           onPress={() =>
-            props.navigation.navigate('DetailPost', { post: props.post, userInfo: props.userInfo })
+            props.navigation.navigate('DetailPost', {
+              post: props.post,
+              userInfo: props.userInfo,
+              likeCnt: likeCnt,
+            })
           }
         >
           <FontAwesomeIcon name="comments-o" style={styles.commentIcon} />

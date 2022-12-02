@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useCallback, useState, memo } from 'react';
-import { Dimensions, Platform, View, Image, StyleSheet, Text } from 'react-native';
+import { Dimensions, Platform, View, StyleSheet, Text, Image } from 'react-native';
 import MapView, { Callout, Marker, Polyline } from 'react-native-maps';
 import { Clusterer } from 'react-native-clusterer';
+import FastImage from 'react-native-fast-image';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 function FeedMapView(props) {
@@ -14,35 +15,25 @@ function FeedMapView(props) {
   // Variable
   const MAP_DIMENSIONS = { width: Dimensions.get('window').width, height: 368 };
 
-  const placesMarkers = [
-    {
-      type: 'Feature',
-      properties: {
-        id: 0,
-        identifier: '0',
-        source: require('../assets/images/aimyon.jpg'),
-      },
-      geometry: { type: 'Point', coordinates: [128.39141, 36.145667] },
-    },
-    {
-      type: 'Feature',
-      properties: {
-        id: 1,
-        identifier: '1',
-        source: require('../assets/images/aimyon1.jpg'),
-      },
-      geometry: { type: 'Point', coordinates: [128.39241, 36.145767] },
-    },
-    {
-      type: 'Feature',
-      properties: {
-        id: 2,
-        identifier: '2',
-        source: require('../assets/images/aimyon2.jpg'),
-      },
-      geometry: { type: 'Point', coordinates: [128.39341, 36.145867] },
-    },
-  ];
+  // props로 전달받은 데이터를 placesMarker로 변환하는 메소드가 필요함
+  const imgListToMarkers = () => {
+    let result = props.post.imageList.map((image) => {
+      return {
+        type: 'Feature,',
+        properties: {
+          id: image.url,
+          identifier: image.url,
+          source: image.url,
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: [Number(image.longitude), Number(image.latitude)],
+        },
+      };
+    });
+    return result;
+  };
+  const placesMarkers = imgListToMarkers();
 
   // Hooks
   useEffect(() => {
@@ -62,6 +53,7 @@ function FeedMapView(props) {
 
   // Methods
   const getInitialRegion = (markers) => {
+    //console.log(markers[0].geometry.coordinate);
     let size = markers.length;
     let sumOfLatitude = 0,
       sumOfLongitude = 0;
@@ -95,12 +87,12 @@ function FeedMapView(props) {
   return (
     <MapView
       ref={mapRef}
-      userInterfaceStyle={'dark'}
       region={initialRegion}
       onLayout={onMapLayout}
       onMapLoaded={fitAllMarksers}
       loadingEnabled={true}
       onRegionChangeComplete={setRegion}
+      zoomControlEnabled={true}
       style={{
         width: Dimensions.get('window').width,
         height: 368,
@@ -123,6 +115,7 @@ function FeedMapView(props) {
                 item={item}
                 navigation={props.navigation}
                 onPress={_handlePointPress}
+                post={props.post}
               />
             );
           }}
@@ -145,7 +138,7 @@ function FeedMapView(props) {
 export default FeedMapView;
 
 export const Point = memo(
-  ({ item, onPress, navigation }) => {
+  ({ item, onPress, navigation, post }) => {
     return (
       <Marker
         key={item.properties?.cluster_id ?? `point-${item.properties?.id}`}
@@ -155,7 +148,7 @@ export const Point = memo(
         }}
         tracksViewChanges={false}
         onPress={() => onPress(item)}
-        onCalloutPress={() => navigation.navigate('DetailPicture')}
+        onCalloutPress={() => navigation.navigate('DetailPicture', post)}
       >
         {item.properties?.cluster ? (
           // Render Cluster
@@ -163,16 +156,30 @@ export const Point = memo(
             <Text style={styles.clusterMarkerText}>{item.properties.point_count}</Text>
           </View>
         ) : (
-          // Else, use default behavior to render
-          // a marker and add a callout to it
+        // Else, use default behavior to render
+        // a marker and add a callout to it
+          /**
+           * 왜 아래처럼 짜여졌냐, Image가 지도 위에서는 첫 로드시에는 안 보임.
+           * 그래서 임의로 한번 로드하고 다시 보여주는건데... 시발ㄹ 나도 모르개ㅔㅆ따왜이러ㅏㄴ지 개빡친다
+           * FastImage도 지도상에 안 띄워짐.
+           */
           <>
             <View style={styles.markerImgContainer}>
+              <FastImage
+                style={{
+                  width: 0,
+                  height: 0,
+                  resizeMode: 'cover',
+                }}
+                source={{ uri: item.properties.source }}
+              />
               <Image
                 style={{
                   width: 80,
                   height: 80,
+                  resizeMode: 'cover',
                 }}
-                source={item.properties.source}
+                source={{ uri: item.properties.source }}
               />
             </View>
             <Callout>
@@ -200,7 +207,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,100,0.66)',
+    backgroundColor: 'rgba(255,255,255,0.66)',
   },
   calloutContainer: {
     width: 200,
