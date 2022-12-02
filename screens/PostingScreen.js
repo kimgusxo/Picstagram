@@ -13,8 +13,10 @@ import {
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import PostApi, { createPost } from '../api/PostApi';
+import UserApi, { findMyInfoByEmail } from '../api/UserApi';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
+import auth from '@react-native-firebase/auth';
 import MaterialCommunityIconsIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const width = Dimensions.get('window').width;
@@ -42,11 +44,21 @@ function PostingScreen({ navigation, props }) {
   const cropCurrent = async (props, images) => {
     if (props.current) {
       const cImg = await crop(images[props.length - props.current]);
-      cImg.exif.Latitude = images[props.length - props.current].exif.Latitude;
-      cImg.exif.Longitude = images[props.length - props.current].exif.Longitude;
-      cImg.exif.DateTime = images[props.length - props.current].exif.DateTime;
-      props.cropped.push(cImg);
-      props.current = props.current - 1;
+      if (images[props.length - props.current].exif.Latitude != undefined) {
+        cImg.exif.Latitude = images[props.length - props.current].exif.Latitude;
+        cImg.exif.Longitude = images[props.length - props.current].exif.Longitude;
+        cImg.exif.DateTime = images[props.length - props.current].exif.DateTime;
+
+        props.cropped.push(cImg);
+        props.current = props.current - 1;
+      } else {
+        cImg.exif.Latitude = null;
+        cImg.exif.Longitude = null;
+        cImg.exif.DateTime = images[props.length - props.current].exif.DateTime;
+
+        props.cropped.push(cImg);
+        props.current = props.current - 1;
+      }
     }
   };
 
@@ -83,7 +95,6 @@ function PostingScreen({ navigation, props }) {
           });
           const result = images.concat(temp);
           setImages(result);
-          console.log(result);
           const currentImageWidth = IMAGE_WIDTH * result.length + 8 * result.length; //padding = 8px
           currentImageWidth > ENABLED_SCROLL_WIDTH ? setIsScrollable(true) : setIsScrollable(false);
         });
@@ -134,8 +145,9 @@ function PostingScreen({ navigation, props }) {
       };
     });
     setForm(form);
+    const userId = await findMyInfoByEmail(auth().currentUser.email);
     //2. createpostApi 호출
-    await createPost(form.title, form.content, 'All', 'dong_hui', mappingImage);
+    await createPost(form.title, form.content, 'All', userId[0].id, mappingImage);
   };
 
   return (
@@ -286,10 +298,10 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
   },
   media: {
-    marginLeft: 6,
+    alignSelf: 'center',
     width: IMAGE_WIDTH,
     height: IMAGE_WIDTH,
-    marginBottom: 6,
+    margin: 2,
     backgroundColor: 'rgba(0,0,0,0.2)',
   },
   cancelButton: {
