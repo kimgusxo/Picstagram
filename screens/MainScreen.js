@@ -1,5 +1,13 @@
 import React, { useEffect, useRef, useCallback } from 'react';
-import { StyleSheet, View, ScrollView, StatusBar, RefreshControl, Dimensions } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  StatusBar,
+  RefreshControl,
+  Dimensions,
+  FlatList,
+} from 'react-native';
 import { firebase } from '@react-native-firebase/auth';
 import HeaderMain from '../components/HeaderMain';
 import PostComponent from '../components/PostComponent';
@@ -18,7 +26,8 @@ function MainScreen({ navigation, route }) {
   const [refreshing, setRefreshing] = React.useState(false);
   const [postList, setPostList] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  const POST_OFFSET = 5;
+  const [getMorePost, setGetMorePost] = React.useState(false);
+  const POST_OFFSET = 10;
   const initialPostList = useRef([]);
   const userToken = useRef();
   const userInfo = useRef({ id: '' });
@@ -118,54 +127,67 @@ function MainScreen({ navigation, route }) {
         <StatusBar hidden />
         <HeaderMain style={styles.headerMain} navigation={navigation} />
       </View>
-      <ScrollView
-        style={styles.container}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        // Detecting that the scroll touches the end of ScrollView
-        onScroll={async (e) => {
-          let windowHeight = Dimensions.get('window').height,
-            height = e.nativeEvent.contentSize.height + 60,
-            offset = e.nativeEvent.contentOffset.y;
-
-          if (windowHeight + offset >= height) {
-            if (isLastPost.current) {
-              // End of PostList
-              console.log('End of PostList');
-            } else {
-              // ScrollEnd, do sth...
-              // isLoadingMorePostList 등으로 detecting을 동기적으로 처리하면 너무 많은 포스트를 가져오지 않게 할 수 있음
-              console.log('Get more PostList');
-              console.log('cursor', cursor.current);
-
-              // Get Initail PostList and Set Current PostList
-              let temp;
-              isLastPost.current = cursor.current + POST_OFFSET > initialPostList.current.length;
-              if (!isLastPost.current)
-                temp = initialPostList.current.slice(cursor.current, cursor.current + POST_OFFSET);
-              else
-                temp = initialPostList.current.slice(
-                  cursor.current,
-                  initialPostList.current.length,
-                );
-              cursor.current += POST_OFFSET;
-              setPostList((postList) => [...postList, ...temp]);
-            }
-          }
-        }}
-      >
-        {postList.map((post, index) => {
+      <FlatList
+        keyExtractor={(postList, index) => postList.title + index}
+        data={postList}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
+        renderItem={(post) => {
           return (
             <PostComponent
-              key={index}
+              key={post.item.key}
               style={styles.postComponent}
               navigation={navigation}
               userInfo={userInfo}
-              post={post}
-              likeCnt={post.like}
+              post={post.item}
+              likeCnt={post.item.like}
             />
           );
-        })}
-      </ScrollView>
+        }}
+        onScrollEndDrag={async (e) => {
+          let windowHeight = Dimensions.get('window').height,
+            height = e.nativeEvent.contentSize.height + 100,
+            offset = e.nativeEvent.contentOffset.y;
+          console.log(height);
+          console.log(offset);
+          console.log(windowHeight + offset);
+
+          if (windowHeight + offset >= height) {
+            if (!getMorePost) {
+              if (isLastPost.current) {
+                // End of PostList
+                console.log('End of PostList');
+              } else {
+                // ScrollEnd, do sth...
+                // isLoadingMorePostList 등으로 detecting을 동기적으로 처리하면 너무 많은 포스트를 가져오지 않게 할 수 있음
+                console.log('Get more PostList');
+                console.log('cursor', cursor.current);
+
+                setGetMorePost(true);
+
+                // Get Initail PostList and Set Current PostList
+                let temp;
+                isLastPost.current = cursor.current + POST_OFFSET > initialPostList.current.length;
+                if (!isLastPost.current)
+                  temp = initialPostList.current.slice(
+                    cursor.current,
+                    cursor.current + POST_OFFSET,
+                  );
+                else
+                  temp = initialPostList.current.slice(
+                    cursor.current,
+                    initialPostList.current.length,
+                  );
+                cursor.current += POST_OFFSET;
+                setPostList((postList) => [...postList, ...temp]);
+                setTimeout(() => {
+                  setGetMorePost(false);
+                }, 3000);
+              }
+            }
+          }
+        }}
+      />
       <View>
         <FooterMain style={styles.footerMain} navigation={navigation} userInfo={userInfo} />
       </View>
