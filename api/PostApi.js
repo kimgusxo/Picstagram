@@ -40,8 +40,6 @@ async function findOnePostByPostDate(date) {
     arr.push(e.data());
   });
 
-  console.log(arr[0]);
-
   const fetchCommentsAndImages = async (postDate) => {
     return { commentList: await readComments(postDate), imageList: await readImages(postDate) };
   };

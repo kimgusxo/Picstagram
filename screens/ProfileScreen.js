@@ -14,6 +14,7 @@ import FooterMain from '../components/FooterMain';
 import FastImage from 'react-native-fast-image';
 import { firebase } from '@react-native-firebase/auth';
 import { ActivityIndicator } from '@react-native-material/core';
+import { useIsFocused } from '@react-navigation/native';
 import {
   findMyPostById,
   findOnePostById,
@@ -24,6 +25,7 @@ import {
   readImages,
 } from '../api/PostApi';
 import { findMyInfoByEmail } from '../api/UserApi';
+import { createIconSetFromFontello } from 'react-native-vector-icons';
 
 // const dataList = [
 //   { key: '1', source: require('../assets/images/aimyon.jpg') },
@@ -45,9 +47,14 @@ const DEVICE_WIDTH = Dimensions.get('window').width;
 function ProfileScreen({ navigation, route }) {
   const [dataList, setDataList] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
+  const isFocused = useIsFocused();
   const id = React.useRef('');
 
+  useEffect(() => {}, [isFocused]);
+
   useEffect(() => {
+    if (id.current == route.params.userInfo.id) return;
+
     id.current = route.params.userInfo.id;
     setIsLoading(true);
     let isMyPost = false;
@@ -106,10 +113,9 @@ function ProfileScreen({ navigation, route }) {
       setIsLoading(false);
     }
     getIsMyPost().then(() => {
-      console.log('dd', isMyPost);
       isMyPost ? getMyPost(id.current) : getPost(id.current);
     });
-  }, [id.current]);
+  }, [isFocused]);
 
   // Flatlist formatting
   const formatData = (dataList, numColumns) => {

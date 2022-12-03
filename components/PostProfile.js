@@ -104,7 +104,9 @@ function PostProfile(props) {
         <TouchableOpacity
           style={styles.profileButton}
           onPress={() => {
-            props.navigation.navigate('Profile');
+            props.navigation.navigate('Profile', {
+              userInfo: { email: '', id: props.post.writer },
+            });
           }}
         >
           <EntypoIcon name="user" style={styles.profileIcon} />
