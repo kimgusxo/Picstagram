@@ -22,6 +22,75 @@ async function findPostById(userId) {
 
   postList.forEach((doc) => {
     // 콘솔 출력문
+    if (doc.data().range != 'Private') result.push(doc);
+  });
+
+  return result;
+}
+
+async function findOnePostByPostDate(date) {
+  //console.log(date);
+  // 게시물의 docID 찾기
+  const temp = await firestore().collection('Post').where('date', '==', date).get();
+
+  let arr = [];
+  const result = [];
+
+  temp.forEach((e) => {
+    arr.push(e.data());
+  });
+
+  console.log(arr[0]);
+
+  const fetchCommentsAndImages = async (postDate) => {
+    return { commentList: await readComments(postDate), imageList: await readImages(postDate) };
+  };
+
+  const fetchResult = async () => {
+    let post = arr[0];
+
+    await fetchCommentsAndImages(date).then(({ commentList, imageList }) => {
+      post = { ...post, commentList, imageList };
+      result.push(post);
+    });
+  };
+
+  return fetchResult().then(() => result);
+}
+
+// const fetchCommentsAndImages = async (postDate) => {
+//   return { commentList: await readComments(postDate), imageList: await readImages(postDate) };
+// };
+
+// const fetchResult = async () => {
+//   let post = postDoc.data();
+
+//   await fetchCommentsAndImages(date).then(({ commentList, imageList }) => {
+//     post = { ...post[0], commentList, imageList };
+//   });
+// };
+
+// return fetchResult().then(() => post);
+
+// 매개변수: 유저ID
+async function findMyPostById(userId) {
+  //유저ID로 게시물 찾기
+  const result = [];
+
+  const postList = await firestore()
+    .collection('Post')
+    .where('writer', '==', userId)
+    .orderBy('date', 'desc')
+    .get(); // 두 개 이상의 조건 사용 시 콘솔에서 복합색인 만들어야 함
+
+  if (postList.empty) {
+    // 게시물이 없을때 출력문
+    console.log('해당하는 게시물이 없습니다.');
+    return [];
+  }
+
+  postList.forEach((doc) => {
+    // 콘솔 출력문
     result.push(doc);
   });
 
@@ -83,9 +152,9 @@ async function findPostList(userId) {
   const postList = [];
 
   // 0. 나의 게시물을 배열에 푸쉬
-  const myPost = await findPostById(userId);
+  const myPost = await findMyPostById(userId);
   myPost.forEach((doc) => {
-    postList.push(doc);
+    if (doc.data().range != 'Private') postList.push(doc);
   });
 
   // 1. 이메일로 following들을 받아옴
@@ -97,10 +166,7 @@ async function findPostList(userId) {
     const post = await findPostById(index.following); // 1차 반복문에서 팔로잉을 받아온 뒤
     post.forEach((doc) => {
       // 2차 반복문에서 팔로잉의 게시물을 전체 배열에 푸쉬
-      if (doc.data().range != 'Private') {
-        // 공개범위가 비공개가 아닐 때
-        postList.push(doc);
-      }
+      postList.push(doc);
     });
   }
 
@@ -111,7 +177,7 @@ async function findPostList(userId) {
 
   postList.forEach((doc) => {
     // 콘솔 출력문
-    console.log(doc);
+    //console.log(doc);
   });
 
   return postList;
@@ -399,6 +465,8 @@ async function deleteImagesByDocId({ postDocId, imagesDocId, imgName }) {
 
 export {
   findPostById,
+  findOnePostByPostDate,
+  findMyPostById,
   loadingMainPage,
   findPostByTitle,
   findPostList,

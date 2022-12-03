@@ -17,7 +17,7 @@ function PostProfile(props) {
   const [isMyPost, setIsMyPost] = useState(false);
 
   useEffect(() => {
-    if (props.userInfo.current.id == props.post.writer) setIsMyPost(true);
+    if (props.userInfo.id == props.post.writer) setIsMyPost(true);
     if (props.post.range == 'Private') setCurRange('Private');
   }, []);
 

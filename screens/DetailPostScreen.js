@@ -17,6 +17,7 @@ function DetailPostScreen({ navigation, route }) {
           navigation={navigation}
           isDetailed={true}
           post={route.params.post}
+          likeCnt={route.params.post.like}
           userInfo={route.params.userInfo}
         />
       </ScrollView>

@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 
 function ProfileHeader(props) {
@@ -9,7 +9,7 @@ function ProfileHeader(props) {
         <TouchableOpacity style={styles.backButton} onPress={() => props.navigation.goBack()}>
           <Icon name="cross" style={styles.backIcon} />
         </TouchableOpacity>
-        <Text style={styles.title}>Title</Text>
+        <Text style={styles.title}>{props.userId}</Text>
       </View>
     </View>
   );

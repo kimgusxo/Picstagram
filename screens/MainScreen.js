@@ -148,9 +148,6 @@ function MainScreen({ navigation, route }) {
           let windowHeight = Dimensions.get('window').height,
             height = e.nativeEvent.contentSize.height + 100,
             offset = e.nativeEvent.contentOffset.y;
-          console.log(height);
-          console.log(offset);
-          console.log(windowHeight + offset);
 
           if (windowHeight + offset >= height) {
             if (!getMorePost) {
@@ -189,7 +186,7 @@ function MainScreen({ navigation, route }) {
         }}
       />
       <View>
-        <FooterMain style={styles.footerMain} navigation={navigation} userInfo={userInfo} />
+        <FooterMain style={styles.footerMain} navigation={navigation} userInfo={userInfo.current} />
       </View>
     </>
   );

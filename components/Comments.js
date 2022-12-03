@@ -10,7 +10,11 @@ const Comment = (props) => {
     <View style={styles.profileButtonRow}>
       <TouchableOpacity
         style={styles.profileButton}
-        onPress={() => props.navigation.navigate('Profile')}
+        onPress={() =>
+          props.navigation.navigate('Profile', {
+            userInfo: { id: props.comment.commentWriter, email: '' },
+          })
+        }
       >
         <EntypoIcon name="user" style={styles.profileIcon} />
         <Text styles={styles.txtUserId}>{props.comment.commentWriter}</Text>
