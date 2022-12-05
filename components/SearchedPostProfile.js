@@ -12,7 +12,9 @@ function SearchedPostProfile(props) {
       <View style={styles.postButtonRow}>
         <TouchableOpacity
           style={styles.postButton}
-          onPress={() => props.navigation.navigate('DetailPost', { post: props.post })}
+          onPress={() =>
+            props.navigation.navigate('DetailPost', { post: props.post, userInfo: props.myInfo })
+          }
         >
           <View style={styles.postRow}>
             <View>

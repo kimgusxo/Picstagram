@@ -29,6 +29,7 @@ function PostSearchScreen({ navigation, route }) {
                 key={key}
                 style={styles.searchedPostProfile}
                 post={index}
+                myInfo={route.params.userInfo}
                 navigation={navigation}
               />
             ))
