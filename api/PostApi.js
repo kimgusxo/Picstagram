@@ -7,6 +7,7 @@ import { getImageUrl, imageUpload, deleteStorageImage } from './StorageImage';
 async function findPostById(userId) {
   //유저ID로 게시물 찾기
   const result = [];
+  const temp = [];
 
   const postList = await firestore()
     .collection('Post')
@@ -22,10 +23,25 @@ async function findPostById(userId) {
 
   postList.forEach((doc) => {
     // 콘솔 출력문
-    result.push(doc);
+    temp.push(doc);
   });
 
-  return result;
+  const fetchCommentsAndImages = async (postDate) => {
+    return { commentList: await readComments(postDate), imageList: await readImages(postDate) };
+  };
+
+  const fetchResult = async () => {
+    for (const index of postList) {
+      let post = index.data();
+
+      await fetchCommentsAndImages(post.date).then(({ commentList, imageList }) => {
+        post = { ...post, commentList, imageList };
+        result.push(post);
+      });
+    }
+  };
+
+  return fetchResult().then(() => result);
 }
 
 // 매개변수: 게시물 제목, 시작구간
@@ -33,6 +49,7 @@ async function findPostById(userId) {
 async function findPostByTitle(title) {
   // 게시물 제목으로 게시물 찾기
   const result = [];
+  const temp = [];
 
   // limit부분을 start와 end로 바꿀 것
   const postList = await firestore()
@@ -48,10 +65,25 @@ async function findPostByTitle(title) {
   }
   postList.forEach((doc) => {
     // 콘솔 출력문
-    result.push(doc.data());
+    temp.push(doc);
   });
 
-  return result;
+  const fetchCommentsAndImages = async (postDate) => {
+    return { commentList: await readComments(postDate), imageList: await readImages(postDate) };
+  };
+
+  const fetchResult = async () => {
+    for (const index of postList) {
+      let post = index.data();
+
+      await fetchCommentsAndImages(post.date).then(({ commentList, imageList }) => {
+        post = { ...post, commentList, imageList };
+        result.push(post);
+      });
+    }
+  };
+
+  return fetchResult().then(() => result);
 }
 
 async function loadingMainPage(userId) {
