@@ -1,42 +1,70 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
-
-const Comment = () => {
-  return (
-    <View style={styles.profileButtonRow}>
-      <TouchableOpacity style={styles.profileButton}>
-        <EntypoIcon name="user" style={styles.profileIcon} />
-        <Text styles={styles.txtUserId}>user_ID</Text>
-      </TouchableOpacity>
-      <View style={styles.txtCommentContainer}>
-        <Text styles={styles.txtComment}>
-          She is so cute😁💕{'\n'}I hope she becomes famous in Korea, too!🥺
-        </Text>
-      </View>
-    </View>
-  );
-};
+import { deleteComments } from '../api/PostApi';
 
 function Comments(props) {
   return (
     <>
       {props.isDetailed ? (
-        <>
-          <Comment />
-          <Comment />
-          <Comment />
-          <Comment />
-          <Comment />
-          <Comment />
-          <Comment />
-        </>
+        props.commentList.map((comment, index) => (
+          <Comment
+            key={index}
+            userInfo={props.userInfo}
+            post={props.post}
+            comment={comment}
+            setCommentList={props.setCommentList}
+            navigation={props.navigation}
+          />
+        ))
       ) : (
         <></>
       )}
     </>
   );
 }
+
+const Comment = (props) => {
+  /**
+   * 내 댓글일 때 삭제 기능 추가 필요
+   */
+  return (
+    <View style={styles.profileButtonRow}>
+      <TouchableOpacity
+        style={styles.profileButton}
+        onPress={() =>
+          props.navigation.navigate('Profile', {
+            userInfo: props.userInfo,
+            profileInfo: { id: props.comment.commentWriter, email: '' },
+          })
+        }
+      >
+        <EntypoIcon name="user" style={styles.profileIcon} />
+        <Text styles={styles.txtUserId}>{props.comment.commentWriter}</Text>
+      </TouchableOpacity>
+      <View style={styles.txtCommentContainer}>
+        <Text styles={styles.txtComment}>{props.comment.commentContent}</Text>
+      </View>
+      {props.userInfo.id == props.comment.commentWriter ? (
+        <TouchableOpacity
+          style={styles.cancleButton}
+          onPress={() => {
+            deleteComments(props.post.date, props.comment.date);
+            props.setCommentList((prev) =>
+              prev.filter((arr) => {
+                return arr.date !== props.comment.date;
+              }),
+            );
+          }}
+        >
+          <EntypoIcon name="cross" style={styles.cancleIcon} />
+        </TouchableOpacity>
+      ) : (
+        <></>
+      )}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -70,7 +98,16 @@ const styles = StyleSheet.create({
   txtCommentContainer: {
     // alignItems: 'center',
     paddingHorizontal: 16,
-    width: '75%',
+    width: '66%',
+  },
+  cancleIcon: {
+    fontSize: 25,
+    alignSelf: 'center',
+  },
+  cancleButton: {
+    width: 25,
+    height: 25,
+    justifyContent: 'center',
   },
 });
 

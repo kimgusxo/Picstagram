@@ -6,7 +6,6 @@ import { utils } from '@react-native-firebase/app';
 async function getImageUrl(imgName) {
   const reference = storage().ref(imgName);
   const url = await reference.getDownloadURL();
-  console.log(url);
   return url;
 }
 
@@ -44,9 +43,9 @@ async function metadataImage(imgName) {
   return metadata;
 }
 
-async function deleteImage(imgName) {
+async function deleteStorageImage(imgName) {
   const reference = storage().ref(imgName);
   await reference.delete();
 }
 
-export { getImageUrl, imageUpload, metadataImage, setMetadata, deleteImage };
+export { getImageUrl, imageUpload, metadataImage, setMetadata, deleteStorageImage };

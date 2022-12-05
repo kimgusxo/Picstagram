@@ -44,7 +44,7 @@ async function getPostDocId(date) {
 }
 
 // 매개변수: 게시물 시간, 댓글 시간
-async function getCommentsDocId({ postDate, commentsDate }) {
+async function getCommentsDocId(postDate, commentsDate) {
   // 댓글의 docId를 가져오는 함수
   const postDocId = await getPostDocId(postDate); // 상위컬렉션인 Post의 docId를 가져옴
 
