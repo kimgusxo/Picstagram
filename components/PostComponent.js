@@ -20,7 +20,8 @@ import NoImgFeed from './NoImgFeed';
  */
 function PostComponent(props) {
   const [commentList, setCommentList] = React.useState(props.post.commentList);
-  const txtInput = useRef();
+  const [txtInput, setTxtInput] = React.useState('');
+  const txtInputRef = useRef();
 
   return (
     <View style={[styles.container, props.style]}>
@@ -52,7 +53,7 @@ function PostComponent(props) {
         commentList={commentList}
         likeCnt={props.likeCnt}
         userInfo={props.userInfo}
-        txtInput={txtInput}
+        txtInputRef={txtInputRef}
       />
       <Comments
         navigation={props.navigation}
@@ -63,10 +64,12 @@ function PostComponent(props) {
         userInfo={props.userInfo}
       />
       <InputComment
-        txtInput={txtInput}
+        txtInputRef={txtInputRef}
         userInfo={props.userInfo}
         isDetailed={props.isDetailed}
         setCommentList={setCommentList}
+        tetInput={txtInput}
+        setTxtInput={setTxtInput}
         post={props.post}
       />
     </View>

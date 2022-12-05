@@ -7,21 +7,30 @@ function CommentSubmitButton(props) {
     <View style={[styles.container, props.style]}>
       <TouchableOpacity
         onPress={() => {
-          createComments(
-            props.comment.commentWriter,
-            props.comment.commentContent,
-            props.comment.postDate,
-          ).then((createdDate) => {
-            const temp = {
-              commentWriter: props.comment.commentWriter,
-              commentContent: props.comment.commentContent,
-              type: true,
-              date: createdDate,
-            };
-            props.setCommentList((prev) => {
-              return [...prev, temp];
+          if (props.comment.commentContent != '') {
+            createComments(
+              props.comment.commentWriter,
+              props.comment.commentContent,
+              props.comment.postDate,
+            ).then((createdDate) => {
+              const temp = {
+                commentWriter: props.comment.commentWriter,
+                commentContent: props.comment.commentContent,
+                type: true,
+                date: createdDate,
+              };
+              props.setCommentList((prev) => {
+                return [...prev, temp];
+              });
+
+              props.setComment({
+                commentWriter: '',
+                commentContent: '',
+                date: '',
+                postDate: props.post.date,
+              });
             });
-          });
+          }
         }}
       >
         <Text style={styles.submit}>Submit</Text>

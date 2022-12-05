@@ -13,8 +13,10 @@ function PostFooter(props) {
   const route = useRoute();
 
   const toggleLike = () => {
+    const token = '';
     isLiked ? setLikeCnt(likeCnt - 1) : setLikeCnt(likeCnt + 1);
-    likeUpdate({ postDate: props.post.date, likeToken: 'a', like: likeCnt });
+    isLiked ? (token = 'b') : (token = 'a');
+    likeUpdate(props.post.date, token, props.userInfo.id);
     setIsLiked(!isLiked);
   };
   return (
@@ -41,7 +43,7 @@ function PostFooter(props) {
                 likeCnt: likeCnt,
               });
             } else {
-              props.txtInput.current.focus();
+              props.txtInputRef.current.focus();
             }
           }}
         >

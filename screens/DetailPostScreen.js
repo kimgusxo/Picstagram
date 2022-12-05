@@ -26,6 +26,7 @@ function DetailPostScreen({ navigation, route }) {
           style={styles.footerMain}
           navigation={navigation}
           userInfo={route.params.userInfo}
+          profileInfo={route.params.userInfo}
         />
       </View>
     </>

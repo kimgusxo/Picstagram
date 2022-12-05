@@ -17,8 +17,9 @@ function InputComment(props) {
           <View style={styles.inputCommentContainer}>
             <View style={styles.inputComment}>
               <TextInput
-                ref={props.txtInput}
+                ref={props.txtInputRef}
                 multiline={true}
+                value={comment.commentContent}
                 placeholder=": Insert any comment..."
                 onChangeText={(text) => {
                   setComment({
@@ -32,6 +33,9 @@ function InputComment(props) {
             <CommentSubmitButton
               style={styles.submitButton}
               comment={comment}
+              txtInputRef={props.txtInputRef}
+              setTxtInput={props.setTxtInput}
+              post={props.post}
               setComment={setComment}
               setCommentList={props.setCommentList}
             />

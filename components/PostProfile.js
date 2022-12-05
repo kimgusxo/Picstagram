@@ -34,7 +34,7 @@ function PostProfile(props) {
           text: '모두에게',
           onPress: () => {
             console.log('Opened All');
-            postRangeUpdate({ postDate: props.post.date, range: 'All' });
+            postRangeUpdate(props.post.date, 'All');
             props.post.range = 'All';
             setCurRange('All');
           },
@@ -44,7 +44,7 @@ function PostProfile(props) {
           text: '팔로워만',
           onPress: () => {
             console.log('Opened just Follower');
-            postRangeUpdate({ postDate: props.post.date, range: 'Follower' });
+            postRangeUpdate(props.post.date, 'Follower');
             props.post.range = 'Follower';
             setCurRange('Follower');
           },
@@ -64,7 +64,7 @@ function PostProfile(props) {
           text: '비공개',
           onPress: () => {
             console.log('Private btn Pressed');
-            postRangeUpdate({ postDate: props.post.date, range: 'Private' });
+            postRangeUpdate(props.post.date, 'Private');
             props.post.range = 'Private';
             setCurRange('Private');
           },

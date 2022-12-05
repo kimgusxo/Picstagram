@@ -45,19 +45,23 @@ const Comment = (props) => {
       <View style={styles.txtCommentContainer}>
         <Text styles={styles.txtComment}>{props.comment.commentContent}</Text>
       </View>
-      <TouchableOpacity
-        style={styles.cancleButton}
-        onPress={() => {
-          deleteComments({ postDate: props.post.date, commentsDate: props.comment.date });
-          props.setCommentList((prev) =>
-            prev.filter((arr) => {
-              return arr.date !== props.comment.date;
-            }),
-          );
-        }}
-      >
-        <EntypoIcon name="cross" style={styles.cancleIcon} />
-      </TouchableOpacity>
+      {props.userInfo.id == props.comment.commentWriter ? (
+        <TouchableOpacity
+          style={styles.cancleButton}
+          onPress={() => {
+            deleteComments(props.post.date, props.comment.date);
+            props.setCommentList((prev) =>
+              prev.filter((arr) => {
+                return arr.date !== props.comment.date;
+              }),
+            );
+          }}
+        >
+          <EntypoIcon name="cross" style={styles.cancleIcon} />
+        </TouchableOpacity>
+      ) : (
+        <></>
+      )}
     </View>
   );
 };
