@@ -104,7 +104,7 @@ function FeedMapView(props) {
           zIndex: -1,
         }}
       >
-        {isMapReady && (
+        {isMapReady ? (
           <Clusterer
             data={placesMarkers}
             region={region}
@@ -122,8 +122,10 @@ function FeedMapView(props) {
               );
             }}
           />
+        ) : (
+          <></>
         )}
-        {isMapReady && (
+        {isMapReady ? (
           <Polyline
             coordinates={placesMarkers.map((marker) => ({
               latitude: marker.geometry.coordinates[1],
@@ -132,6 +134,8 @@ function FeedMapView(props) {
             strokeColor="rgba(0,0,222,0.33)"
             strokeWidth={8}
           />
+        ) : (
+          <></>
         )}
       </MapView>
     </>
@@ -142,7 +146,11 @@ export default FeedMapView;
 
 export const Point = memo(
   ({ item, onPress, navigation, post }) => {
-    const [uri, setUri] = useState(item.properties.source);
+    const [uri, setUri] = useState('');
+
+    useEffect(() => {
+      setUri(item.properties.source);
+    }, [uri]);
 
     return (
       <Marker

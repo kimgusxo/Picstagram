@@ -182,7 +182,7 @@ async function findPostList(userId) {
 }
 
 // 매개변수: 게시물 제목, 게시물 내용, 게시물 작성자
-async function createPost({ title, content, writer, images }) {
+async function createPost(title, content, writer, images) {
   // 게시물 생성
   const date = new Date();
 
@@ -200,7 +200,9 @@ async function createPost({ title, content, writer, images }) {
   // 쨋든 그 작업을 상위 컬렉션의 필드가 채워진 후 넣는 식으로 작성함
 
   await addStorageImages(images); // 이미지를 스토리지에 넣는 함수
-  await addDatabaseImages({ date, metadata }); // 이미지를 데이터베이스에 넣는 함수
+  await addDatabaseImages(date, images); // 이미지를 데이터베이스에 넣는 함수
+
+  return date;
 }
 
 // 게시물 수정 함수
@@ -330,16 +332,20 @@ async function likeUpdate({ postDate, likeToken, like }) {
 }
 
 // 매개변수: 댓글 작성자, 댓글 내용, 게시물 시간
-async function createComments({ commentWriter, commentContent, postDate }) {
+async function createComments(commentWriter, commentContent, postDate) {
   // 댓글 작성자와 댓글 내용을 넣어 댓글 생성
   const postDocId = await getPostDocId(postDate);
+
+  const date = new Date();
 
   await firestore().collection('Post').doc(postDocId).collection('Comments').add({
     commentWriter: commentWriter,
     commentContent: commentContent,
-    date: new Date(),
+    date: date,
     type: true,
   });
+
+  return date;
 }
 
 // 이슈!: 댓글도 유일성을 보장하는 필드가 없음!

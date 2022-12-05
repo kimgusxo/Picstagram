@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import PostProfile from './PostProfile';
 import Feed from './Feed';
@@ -19,6 +19,9 @@ import NoImgFeed from './NoImgFeed';
  *  DetailPost인 경우 Comments 컴포넌트에서 comments
  */
 function PostComponent(props) {
+  const [commentList, setCommentList] = React.useState(props.post.commentList);
+  const txtInput = useRef();
+
   return (
     <View style={[styles.container, props.style]}>
       <PostProfile
@@ -46,16 +49,26 @@ function PostComponent(props) {
         style={styles.postFooter}
         navigation={props.navigation}
         post={props.post}
+        commentList={commentList}
         likeCnt={props.likeCnt}
         userInfo={props.userInfo}
+        txtInput={txtInput}
       />
       <Comments
         navigation={props.navigation}
         isDetailed={props.isDetailed}
         post={props.post}
+        commentList={commentList}
+        setCommentList={setCommentList}
         userInfo={props.userInfo}
       />
-      <InputComment isDetailed={props.isDetailed} />
+      <InputComment
+        txtInput={txtInput}
+        userInfo={props.userInfo}
+        isDetailed={props.isDetailed}
+        setCommentList={setCommentList}
+        post={props.post}
+      />
     </View>
   );
 }

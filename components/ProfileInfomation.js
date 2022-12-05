@@ -28,7 +28,6 @@ function ProfileInfomation(props) {
                 <Text style={styles.followingCount}>0</Text>
               </TouchableOpacity>
             </View>
-            bx
           </View>
           <View style={styles.팔로워Row}>
             <Text style={styles.팔로워}>팔로워</Text>

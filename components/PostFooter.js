@@ -1,3 +1,4 @@
+import { useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
@@ -6,16 +7,10 @@ import { likeUpdate } from '../api/PostApi';
 
 function PostFooter(props) {
   // eslint-disable-next-line no-unused-vars
-  const [likeCnt, setLikeCnt] = useState(0);
+  const [likeCnt, setLikeCnt] = useState(props.likeCnt);
   const [isLiked, setIsLiked] = useState(false);
   // eslint-disable-next-line no-unused-vars
-  const [commentCnt, setCommentCnt] = useState(0);
-
-  useEffect(() => {
-    setLikeCnt(props.likeCnt);
-    setCommentCnt(props.post.commentList.length);
-    // 내가 좋아요를 누른 적 있다면, setIsLiked(true)
-  }, []);
+  const route = useRoute();
 
   const toggleLike = () => {
     isLiked ? setLikeCnt(likeCnt - 1) : setLikeCnt(likeCnt + 1);
@@ -38,17 +33,21 @@ function PostFooter(props) {
         {/* comment button : navigation */}
         <TouchableOpacity
           style={styles.commentButton}
-          onPress={() =>
-            props.navigation.navigate('DetailPost', {
-              post: props.post,
-              userInfo: props.userInfo,
-              likeCnt: likeCnt,
-            })
-          }
+          onPress={() => {
+            if (route.name != 'DetailPost') {
+              props.navigation.navigate('DetailPost', {
+                post: props.post,
+                userInfo: props.userInfo,
+                likeCnt: likeCnt,
+              });
+            } else {
+              props.txtInput.current.focus();
+            }
+          }}
         >
           <FontAwesomeIcon name="comments-o" style={styles.commentIcon} />
           <View style={styles.commentIconFiller} />
-          <Text style={styles.txtCommentCount}>{commentCnt}</Text>
+          <Text style={styles.txtCommentCount}>{props.commentList.length}</Text>
         </TouchableOpacity>
       </View>
     </View>

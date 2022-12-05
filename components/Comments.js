@@ -1,6 +1,28 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
+import { deleteComments } from '../api/PostApi';
+
+function Comments(props) {
+  return (
+    <>
+      {props.isDetailed ? (
+        props.commentList.map((comment, index) => (
+          <Comment
+            key={index}
+            userInfo={props.userInfo}
+            post={props.post}
+            comment={comment}
+            setCommentList={props.setCommentList}
+            navigation={props.navigation}
+          />
+        ))
+      ) : (
+        <></>
+      )}
+    </>
+  );
+}
 
 const Comment = (props) => {
   /**
@@ -23,28 +45,22 @@ const Comment = (props) => {
       <View style={styles.txtCommentContainer}>
         <Text styles={styles.txtComment}>{props.comment.commentContent}</Text>
       </View>
+      <TouchableOpacity
+        style={styles.cancleButton}
+        onPress={() => {
+          deleteComments({ postDate: props.post.date, commentsDate: props.comment.date });
+          props.setCommentList((prev) =>
+            prev.filter((arr) => {
+              return arr.date !== props.comment.date;
+            }),
+          );
+        }}
+      >
+        <EntypoIcon name="cross" style={styles.cancleIcon} />
+      </TouchableOpacity>
     </View>
   );
 };
-
-function Comments(props) {
-  return (
-    <>
-      {props.isDetailed ? (
-        props.post.commentList.map((comment, index) => (
-          <Comment
-            key={index}
-            userInfo={props.userInfo}
-            comment={comment}
-            navigation={props.navigation}
-          />
-        ))
-      ) : (
-        <></>
-      )}
-    </>
-  );
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -78,7 +94,16 @@ const styles = StyleSheet.create({
   txtCommentContainer: {
     // alignItems: 'center',
     paddingHorizontal: 16,
-    width: '75%',
+    width: '66%',
+  },
+  cancleIcon: {
+    fontSize: 25,
+    alignSelf: 'center',
+  },
+  cancleButton: {
+    width: 25,
+    height: 25,
+    justifyContent: 'center',
   },
 });
 

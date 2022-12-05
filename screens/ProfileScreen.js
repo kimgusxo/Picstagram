@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -12,34 +12,10 @@ import ProfileHeader from '../components/ProfileHeader';
 import ProfileInfomation from '../components/ProfileInfomation';
 import FooterMain from '../components/FooterMain';
 import FastImage from 'react-native-fast-image';
-import { firebase } from '@react-native-firebase/auth';
 import { ActivityIndicator } from '@react-native-material/core';
 import { useIsFocused } from '@react-navigation/native';
-import {
-  findMyPostById,
-  findOnePostById,
-  findOnePostByPostDate,
-  findPostById,
-  findPostList,
-  readComments,
-  readImages,
-} from '../api/PostApi';
-import { findMyInfoByEmail } from '../api/UserApi';
-import { createIconSetFromFontello } from 'react-native-vector-icons';
+import { findMyPostById, findOnePostByPostDate, readImages } from '../api/PostApi';
 
-// const dataList = [
-//   { key: '1', source: require('../assets/images/aimyon.jpg') },
-//   { key: '2', source: require('../assets/images/aimyon1.jpg') },
-//   { key: '3', source: require('../assets/images/aimyon2.jpg') },
-//   { key: '4', source: require('../assets/images/aimyon3.jpg') },
-//   { key: '5', source: require('../assets/images/aimyon4.jpg') },
-//   { key: '6', source: require('../assets/images/aimyon5.jpg') },
-//   { key: '7', source: require('../assets/images/aimyon6.jpg') },
-//   { key: '8', source: require('../assets/images/aimyon7.jpg') },
-//   { key: '9', source: require('../assets/images/aimyon8.jpg') },
-//   { key: '10', source: require('../assets/images/aimyon9.jpg') },
-//   { key: '11', source: require('../assets/images/aimyon10.jpg') },
-// ];
 const ITEM_MARGIN = 4;
 const numColumns = 3;
 const DEVICE_WIDTH = Dimensions.get('window').width;
@@ -65,6 +41,7 @@ function ProfileScreen({ navigation, route }) {
     // Comparison prevUser with curUser
     // 일치 시, fetch 없이 return.
     if (id.current == route.params.profileInfo.id) return;
+
     id.current = route.params.profileInfo.id;
 
     setIsLoading(true);
@@ -181,38 +158,33 @@ function ProfileScreen({ navigation, route }) {
     );
   };
 
-  return (
+  return isLoading ? (
+    <Loading profileId={route.params.profileInfo.id} />
+  ) : (
     <>
-      {isLoading ? (
-        <Loading profileId={route.params.profileInfo.id} />
-      ) : (
-        <>
-          <View>
-            <StatusBar hidden />
-            <ProfileHeader
-              style={styles.profileHeader}
-              navigation={navigation}
-              profileId={route.params.profileInfo.id}
-            />
-            <ProfileInfomation
-              style={styles.profileInfomation}
-              navigation={navigation}
-              isMyPost={isMyPost.current}
-            />
-          </View>
-          <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-            <FlatList
-              data={formatData(dataList, numColumns)}
-              style={{ width: DEVICE_WIDTH, margin: ITEM_MARGIN }}
-              renderItem={_renderItem}
-              keyExtractor={(item, index) => index.toString()}
-              numColumns={numColumns}
-            />
-          </View>
-
-          <FooterMain style={styles.footerMain} navigation={navigation} />
-        </>
-      )}
+      <View>
+        <StatusBar hidden />
+        <ProfileHeader
+          style={styles.profileHeader}
+          navigation={navigation}
+          profileId={route.params.profileInfo.id}
+        />
+        <ProfileInfomation
+          style={styles.profileInfomation}
+          navigation={navigation}
+          isMyPost={isMyPost.current}
+        />
+      </View>
+      <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+        <FlatList
+          data={formatData(dataList, numColumns)}
+          style={{ width: DEVICE_WIDTH, margin: ITEM_MARGIN }}
+          renderItem={_renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          numColumns={numColumns}
+        />
+      </View>
+      <FooterMain style={styles.footerMain} navigation={navigation} />
     </>
   );
 }
