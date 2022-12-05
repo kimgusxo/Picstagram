@@ -137,35 +137,39 @@ function ProfileScreen({ navigation, route }) {
 
     let colorCode = '#' + Math.round(Math.random() * 0xffffff).toString(16);
     return (
-      <TouchableOpacity
-        style={styles.item}
-        onPress={async () => {
-          return findOnePostByPostDate(item.date).then((post) => {
-            navigation.navigate('DetailPost', {
-              post: post[0],
-              userInfo: route.params.userInfo,
+      <View style={styles.container}>
+        <TouchableOpacity
+          style={styles.item}
+          onPress={async () => {
+            return findOnePostByPostDate(item.date).then((post) => {
+              navigation.navigate('DetailPost', {
+                post: post[0],
+                userInfo: route.params.userInfo,
+              });
             });
-          });
-        }}
-      >
-        {item.source == [] ? (
-          <View
-            style={{
-              width: DEVICE_WIDTH / numColumns,
-              height: DEVICE_WIDTH / numColumns,
-              padding: 16,
-              backgroundColor: colorCode,
-            }}
-          >
-            <Text style={{ fontSize: 32, color: 'white' }}>{item.title}</Text>
-          </View>
-        ) : (
-          <FastImage
-            style={{ width: DEVICE_WIDTH / numColumns, height: DEVICE_WIDTH / numColumns }}
-            source={{ uri: item.source }}
-          />
-        )}
-      </TouchableOpacity>
+          }}
+        >
+          {item.source == [] ? (
+            <View
+              style={{
+                width: DEVICE_WIDTH / numColumns - 2 * ITEM_MARGIN,
+                height: DEVICE_WIDTH / numColumns - 2 * ITEM_MARGIN,
+                backgroundColor: colorCode,
+              }}
+            >
+              <Text style={{ fontSize: 32, color: 'white' }}>{item.title}</Text>
+            </View>
+          ) : (
+            <FastImage
+              style={{
+                width: DEVICE_WIDTH / numColumns - 2 * ITEM_MARGIN,
+                height: DEVICE_WIDTH / numColumns - 2 * ITEM_MARGIN,
+              }}
+              source={{ uri: item.source }}
+            />
+          )}
+        </TouchableOpacity>
+      </View>
     );
   };
 
@@ -226,31 +230,20 @@ const Loading = () => {
 };
 
 const styles = StyleSheet.create({
-  item: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#000',
-    width: DEVICE_WIDTH / numColumns - ITEM_MARGIN * 3,
-    height: DEVICE_WIDTH / numColumns - ITEM_MARGIN * 3,
-
+  container: {
     flex: 1,
+  },
+  item: {
+    backgroundColor: '#fff',
+    flex: 1,
+    alignItems: 'center',
+    marginVertical: ITEM_MARGIN,
   },
   blankItem: {
     backgroundColor: 'transparent',
   },
-  container: {
-    flex: 1,
-  },
   profileHeader: {
     height: 56,
-  },
-  scrollArea: {
-    height: 380,
-    backgroundColor: 'rgba(230, 230, 230,1)',
-    marginTop: 148,
-  },
-  scrollArea_contentContainerStyle: {
-    height: 380,
   },
   profileInfomation: {
     height: 148,
