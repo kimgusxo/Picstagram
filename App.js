@@ -13,10 +13,10 @@ import UserSearchScreen from './screens/UserSearchScreen';
 import PostSearchScreen from './screens/PostSearchScreen';
 import DetailPostScreen from './screens/DetailPostScreen';
 import DetailPictureScreen from './screens/DetailPictureScreen';
+import PostingUpdateScreen from './screens/PostingUpdateScreen';
 import firebase from '@react-native-firebase/app';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import UserApi, { authUser } from './api/UserApi';
 
 function App() {
   const Stack = createStackNavigator();
@@ -62,6 +62,7 @@ function App() {
         <Stack.Screen name="DetailPicture" component={DetailPictureScreen} />
         <Stack.Screen name="FollowList" component={FollowListScreen} />
         <Stack.Screen name="Posting" component={PostingScreen} />
+        <Stack.Screen name="PostingUpdate" component={PostingUpdateScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="RegisteryPost" component={RegisteryPostScreen} />
         <Stack.Screen name="UpdateProfile" component={UpdateProfileScreen} />

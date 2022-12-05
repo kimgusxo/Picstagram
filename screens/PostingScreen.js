@@ -79,7 +79,6 @@ function PostingScreen({ navigation, props }) {
         includeExif: true,
       }).then((items) => {
         const temp = [];
-        // (''); 왜 있는거지 이거
         console.log(items);
         cropMulti(items).then((e) => {
           items = e;

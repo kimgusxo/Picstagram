@@ -12,7 +12,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import PostApi, { updatePost } from '../api/PostApi';
+import PostApi, { findPostByTitle, readImages, updatePost } from '../api/PostApi';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIconsIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -28,7 +28,7 @@ function PostingUpdateScreen({ navigation, props }) {
   const [isScrollable, setIsScrollable] = useState(false);
   const [oriImages, setOriImages] = useState([]);
   const [postDate, setPostDate] = useState('');
-  const { inputdata } = props;
+  // const { inputdata } = props;
   let oriImageLength = 0;
 
   //title, content, postDate, images,
@@ -38,14 +38,22 @@ function PostingUpdateScreen({ navigation, props }) {
   }, []);
 
   const beforePostData = async () => {
-    setForm({ title: inputdata.title, content: inputdata.content });
-    setImages(inputdata.images);
-    setOriImages(inputdata.images);
-    setPostDate(inputdata.postDate);
-    const originalImgArr = [];
-
+    // setForm({ title: inputdata.title, content: inputdata.content });
+    // setImages(inputdata.images);
+    // setOriImages(inputdata.images);
+    // setPostDate(inputdata.postDate);
+    const testTitle = '나는 도으히';
+    const con = await findPostByTitle(testTitle);
+    console.log('con' + con);
+    const originalImgArr = await readImages(con[0].date);
+    console.log('originalImgArr' + originalImgArr.date);
+    const temp = [];
+    setOriImages(originalImgArr);
+    console.log('oriImage' + oriImages);
     oriImages.forEach((img) => {
-      originalImgArr.push(img);
+      temp.push(img);
+      const result = images.concat(temp);
+      setImages(result);
     });
 
     oriImageLength = images.length;
@@ -221,6 +229,7 @@ function PostingUpdateScreen({ navigation, props }) {
 
       <View style={[styles.titleWriteContainer]}>
         <TextInput
+          defaultValue={form.title}
           placeholder="제목을 입력하세요."
           style={styles.titleinputStyle}
           onChangeText={(value) => {
@@ -230,6 +239,7 @@ function PostingUpdateScreen({ navigation, props }) {
       </View>
       <View style={[styles.contentsWritecontainer]}>
         <TextInput
+          defaultValue={form.content}
           multiline
           returnKeyType="next"
           placeholder="내용을 입력하세요."
