@@ -221,20 +221,13 @@ async function createPost(title, content, writer, images) {
 }
 
 // 게시물 수정 함수
-async function updatePost(postDate, title, content, addImages, deleteImages) {
-  const postDocId = getPostDocId(postDate);
+async function updatePost(postDate, title, content) {
+  const postDocId = await getPostDocId(postDate);
 
   await firestore().collection('Post').doc(postDocId).update({
     title: title,
     content: content,
   });
-
-  //이미지 처리 파트
-  await deleteStorageImage(deleteImages); // 스토리지 사진 지우는 것
-  await deleteDatabaseImage(postDocId); // 데이터베이스 사진 지우는 것
-
-  await addStorageImages(addImages); // 이미지를 스토리지에 넣는 함수
-  await addDatabaseImages(postDate, addImages); // 이미지를 데이터베이스에 넣는 함수
 }
 
 // images가 배열이므로 반복문 돌려야함

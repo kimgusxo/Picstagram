@@ -7,7 +7,6 @@ import {
   Image,
   Dimensions,
   FlatList,
-  Text,
   TextInput,
   TouchableWithoutFeedback,
 } from 'react-native';
@@ -21,191 +20,41 @@ const width = Dimensions.get('window').width;
 const IMAGE_WIDTH = 100;
 const ENABLED_SCROLL_WIDTH = Dimensions.get('window').width - IMAGE_WIDTH;
 
-function PostingUpdateScreen({ navigation, props }) {
+function PostingUpdateScreen({ navigation, props, route }) {
   //Multiple-image 선택
   const [images, setImages] = useState([]);
   const [form, setForm] = useState({ title: '', content: '' });
-  const [isScrollable, setIsScrollable] = useState(false);
-  const [oriImages, setOriImages] = useState([]);
+  const [isScrollable, setIsScrollable] = useState(true);
   const [postDate, setPostDate] = useState('');
   // const { inputdata } = props;
-  let oriImageLength = 0;
-
-  //title, content, postDate, images,
 
   useEffect(() => {
     beforePostData();
   }, []);
 
   const beforePostData = async () => {
-    // setForm({ title: inputdata.title, content: inputdata.content });
-    // setImages(inputdata.images);
-    // setOriImages(inputdata.images);
-    // setPostDate(inputdata.postDate);
-    const testTitle = '나는 도으히';
-    const con = await findPostByTitle(testTitle);
-    console.log('con' + con);
-    const originalImgArr = await readImages(con[0].date);
-    console.log('originalImgArr' + originalImgArr.date);
-    const temp = [];
-    setOriImages(originalImgArr);
-    console.log('oriImage' + oriImages);
-    oriImages.forEach((img) => {
-      temp.push(img);
-      const result = images.concat(temp);
-      setImages(result);
-    });
-
-    oriImageLength = images.length;
+    setImages(route.params.images);
+    setPostDate(route.params.date);
+    setForm({ title: route.params.title, content: route.params.content });
   };
 
-  const cropMulti = async (images) => {
-    const props = {
-      cropped: [],
-      length: images.length,
-      current: images.length,
-    };
-
-    for (let i = 0; i < images.length; i++) await cropCurrent(props, images);
-
-    return props.cropped;
-  };
-
-  const cropCurrent = async (props, images) => {
-    if (props.current) {
-      const cImg = await crop(images[props.length - props.current]);
-      if (images[props.length - props.current].exif.Latitude != undefined) {
-        cImg.exif.Latitude = images[props.length - props.current].exif.Latitude;
-        cImg.exif.Longitude = images[props.length - props.current].exif.Longitude;
-        cImg.exif.DateTime = images[props.length - props.current].exif.DateTime;
-
-        props.cropped.push(cImg);
-        props.current = props.current - 1;
-      } else {
-        cImg.exif.DateTime = images[props.length - props.current].exif.DateTime;
-
-        props.cropped.push(cImg);
-        props.current = props.current - 1;
-      }
-    }
-  };
-
-  const crop = async (img) => {
-    return await ImageCropPicker.openCropper({
-      path: img.path,
-      includeExif: true,
-      width: 368,
-      height: 368,
-    });
-  };
-
-  const openPicker = async () => {
-    try {
-      ImageCropPicker.openPicker({
-        width: 368,
-        height: 368,
-        multiple: true,
-        cropping: true,
-        includeExif: true,
-      }).then((items) => {
-        const temp = [];
-        ('');
-        cropMulti(items).then((e) => {
-          items = e;
-          items.forEach((item) => {
-            if (
-              images.filter((e) => {
-                console.log(item, e);
-                e.path === item.path;
-              }).length <= 0
-            )
-              temp.push(item);
-          });
-          const result = images.concat(temp);
-          setImages(result);
-          console.log(result);
-          const currentImageWidth =
-            IMAGE_WIDTH * (result.length + oriImageLength + 8) * (result.length + oriImageLength); //padding = 8px
-          currentImageWidth > ENABLED_SCROLL_WIDTH ? setIsScrollable(true) : setIsScrollable(false);
-        });
-      });
-    } catch (e) {
-      console.log(e.code, e.message);
-    }
-  };
-
-  const onDelete = (value) => {
-    const data = images.filter((item) => {
-      return item?.path !== value?.path;
-    });
-    setImages(data);
-    const currentImageWidth =
-      IMAGE_WIDTH * (data.length + oriImageLength + 8) * (data.length + oriImageLength); //padding = 8px
-    currentImageWidth > ENABLED_SCROLL_WIDTH ? setIsScrollable(true) : setIsScrollable(false);
-  };
-
-  const renderItem = ({ item, index }) => {
+  const renderItem = ({ item }) => {
     return (
       <View>
         <Image
           width={IMAGE_WIDTH}
           source={{
-            uri: item.path,
+            uri: item.url,
           }}
           style={styles.media}
         />
-        <TouchableOpacity
-          onPress={() => onDelete(item, index)}
-          activeOpacity={0.9}
-          style={styles.buttonDelete}
-        >
-          <Text style={styles.titleDelete}>X</Text>
-        </TouchableOpacity>
       </View>
     );
   };
 
-  const updatePost = async () => {
-    let deleteImages = [];
-    let addImages = [];
-
-    deleteImages = oriImages.filter((it) => !images.includes(it));
-    addImages = images.filter((it) => !oriImages.includes(it));
-    //1. 이미지 배열 정제
-    const mappingDeleteImage = deleteImages.map((e) => {
-      if (e.exif.Latitude != undefined) {
-        return {
-          path: e.path,
-          Latitude: e.exif.Latitude,
-          Longitude: e.exif.Longitude,
-          DateTime: e.exif.DateTime,
-        };
-      } else {
-        return {
-          path: e.path,
-          DateTime: e.exif.DateTime,
-        };
-      }
-    });
-    const mappingAddImage = addImages.map((e) => {
-      if (e.exif.Latitude != undefined) {
-        return {
-          path: e.path,
-          Latitude: e.exif.Latitude,
-          Longitude: e.exif.Longitude,
-          DateTime: e.exif.DateTime,
-        };
-      } else {
-        return {
-          path: e.path,
-          DateTime: e.exif.DateTime,
-        };
-      }
-    });
-    setForm(form);
-
+  const update = async () => {
     //2. updateP 호출
-    await updatePost(postDate, form.title, form.content, mappingAddImage, mappingDeleteImage);
+    await updatePost(postDate, form.title, form.content);
   };
 
   return (
@@ -219,7 +68,7 @@ function PostingUpdateScreen({ navigation, props }) {
         <TouchableOpacity
           style={styles.nextButton}
           onPress={() => {
-            updatePost();
+            update();
             navigation.navigate('Main');
           }}
         >
@@ -252,16 +101,10 @@ function PostingUpdateScreen({ navigation, props }) {
       </View>
 
       <View style={styles.addImageStack}>
-        <View style={styles.addImage}>
-          <TouchableOpacity style={styles.addImageButton} onPress={openPicker}>
-            <FeatherIcon name="plus-square" style={styles.addImageIcon} />
-          </TouchableOpacity>
-        </View>
         <TouchableWithoutFeedback>
           <FlatList
             style={styles.container}
             data={images}
-            keyExtractor={(item, index) => (item?.filename ?? item?.path) + index}
             renderItem={renderItem}
             horizontal={true}
             scrollEnabled={isScrollable}

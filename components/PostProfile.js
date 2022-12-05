@@ -84,10 +84,16 @@ function PostProfile(props) {
         text: '수정',
         onPress: () => {
           console.log('Update the post');
-          props.navigation.navigate(); // Navigate to UpdatePostScreen With a Post Data. if...isDetailedPostScreen -> navigation.goback()
+          props.navigation.navigate('PostingUpdate', {
+            date: props.post.date,
+            title: props.post.title,
+            content: props.post.content,
+            images: props.post.imageList,
+          }); // Navigate to UpdatePostScreen With a Post Data. if...isDetailedPostScreen -> navigation.goback()
         },
         style: 'cancel',
       },
+
       {
         text: '삭제',
         onPress: () => {
