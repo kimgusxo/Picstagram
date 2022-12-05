@@ -54,6 +54,7 @@ function ProfileScreen({ navigation, route }) {
   const [isLoading, setIsLoading] = React.useState(true);
   const isFocused = useIsFocused();
   const id = React.useRef('');
+  const isMyPost = React.useRef('');
 
   /**
    * depArr = isFocused
@@ -69,10 +70,9 @@ function ProfileScreen({ navigation, route }) {
     setIsLoading(true);
 
     // isMyPost => getMyPost or getPost 분기에 사용됨
-    let isMyPost;
     route.params.isMyPost == true
-      ? (isMyPost = true)
-      : (isMyPost = route.params.userInfo.id == id.current);
+      ? (isMyPost.current = true)
+      : (isMyPost.current = route.params.userInfo.id == id.current);
 
     // getMyPost
     async function getMyPost(id) {
@@ -119,7 +119,7 @@ function ProfileScreen({ navigation, route }) {
       setIsLoading(false);
     }
 
-    isMyPost ? getMyPost(id.current) : getPost(id.current);
+    isMyPost.current ? getMyPost(id.current) : getPost(id.current);
   }, [isFocused]);
 
   // Flatlist formatting
@@ -194,7 +194,11 @@ function ProfileScreen({ navigation, route }) {
               navigation={navigation}
               profileId={route.params.profileInfo.id}
             />
-            <ProfileInfomation style={styles.profileInfomation} navigation={navigation} />
+            <ProfileInfomation
+              style={styles.profileInfomation}
+              navigation={navigation}
+              isMyPost={isMyPost.current}
+            />
           </View>
           <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
             <FlatList

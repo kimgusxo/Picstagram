@@ -1,6 +1,7 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
+import ProfileFollowingButton from './ProfileFollowingButton';
 import UpdateProfileButton from './UpdateProfileButton';
 
 function ProfileInfomation(props) {
@@ -11,16 +12,23 @@ function ProfileInfomation(props) {
         <View style={styles.group}>
           <View style={styles.followerRow}>
             <View style={styles.follower}>
-              <TouchableOpacity style={styles.followerCheckButton} onPress={() => props.navigation.navigate('FollowList')}>
+              <TouchableOpacity
+                style={styles.followerCheckButton}
+                onPress={() => props.navigation.navigate('FollowList')}
+              >
                 <Text style={styles.followerCount}>0</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.followerFiller} />
             <View style={styles.following}>
-              <TouchableOpacity style={styles.followingCheckButton} onPress={() => props.navigation.navigate('FollowList')}>
+              <TouchableOpacity
+                style={styles.followingCheckButton}
+                onPress={() => props.navigation.navigate('FollowList')}
+              >
                 <Text style={styles.followingCount}>0</Text>
               </TouchableOpacity>
             </View>
+            bx
           </View>
           <View style={styles.팔로워Row}>
             <Text style={styles.팔로워}>팔로워</Text>
@@ -29,7 +37,11 @@ function ProfileInfomation(props) {
           </View>
         </View>
       </View>
-      <UpdateProfileButton style={styles.updateProfileButton} navigation={props.navigation} />
+      {props.isMyPost ? (
+        <UpdateProfileButton style={styles.updateProfileButton} navigation={props.navigation} />
+      ) : (
+        <ProfileFollowingButton style={styles.updateProfileButton} navigation={props.navigation} />
+      )}
     </View>
   );
 }
