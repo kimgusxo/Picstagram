@@ -79,7 +79,6 @@ function PostingScreen({ navigation, props }) {
         includeExif: true,
       }).then((items) => {
         const temp = [];
-        console.log(items);
         cropMulti(items).then((e) => {
           items = e;
           items.forEach((item) => {
@@ -93,7 +92,6 @@ function PostingScreen({ navigation, props }) {
           });
           const result = images.concat(temp);
           setImages(result);
-          console.log(result);
           const currentImageWidth = IMAGE_WIDTH * result.length + 8 * result.length; //padding = 8px
           currentImageWidth > ENABLED_SCROLL_WIDTH ? setIsScrollable(true) : setIsScrollable(false);
         });
@@ -152,8 +150,9 @@ function PostingScreen({ navigation, props }) {
     });
     setForm(form);
     const userId = await findMyInfoByEmail(auth().currentUser.email);
+    console.log(mappingImage);
     //2. createpostApi 호출
-    await createPost(form.title, form.content, 'All', userId[0].id, mappingImage);
+    await createPost(form.title, form.content, userId[0].id, mappingImage);
   };
 
   return (
@@ -167,7 +166,6 @@ function PostingScreen({ navigation, props }) {
         <TouchableOpacity
           style={styles.nextButton}
           onPress={() => {
-            //props.registerPost();
             registerPost();
             navigation.navigate('Main');
           }}
