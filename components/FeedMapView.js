@@ -33,10 +33,11 @@ function FeedMapView(props) {
     });
     return result;
   };
-  const placesMarkers = imgListToMarkers();
+  //const placesMarkers = imgListToMarkers();
 
   // Hooks
   useEffect(() => {
+    placesMarkers = imgListToMarkers();
     setInitialRegion(getInitialRegion(placesMarkers));
     setRegion(initialRegion);
   }, []);
@@ -85,53 +86,55 @@ function FeedMapView(props) {
 
   // Return
   return (
-    <MapView
-      ref={mapRef}
-      region={initialRegion}
-      onLayout={onMapLayout}
-      onMapLoaded={fitAllMarksers}
-      loadingEnabled={true}
-      onRegionChangeComplete={setRegion}
-      zoomControlEnabled={true}
-      style={{
-        width: Dimensions.get('window').width,
-        height: 368,
-        minHeight: 368,
-        display: props.isConvertedMap ? 'flex' : 'none',
-        elevation: Platform.os === 'android' ? 50 : 0,
-        zIndex: -1,
-      }}
-    >
-      {isMapReady && (
-        <Clusterer
-          data={placesMarkers}
-          region={region}
-          options={{ radius: 30, minPoints: 2 }}
-          mapDimensions={MAP_DIMENSIONS}
-          renderItem={(item) => {
-            return (
-              <Point
-                key={item.properties?.cluster_id ?? `point-${item.properties?.id}`}
-                item={item}
-                navigation={props.navigation}
-                onPress={_handlePointPress}
-                post={props.post}
-              />
-            );
-          }}
-        />
-      )}
-      {isMapReady && (
-        <Polyline
-          coordinates={placesMarkers.map((marker) => ({
-            latitude: marker.geometry.coordinates[1],
-            longitude: marker.geometry.coordinates[0],
-          }))}
-          strokeColor="rgba(0,0,222,0.33)"
-          strokeWidth={8}
-        />
-      )}
-    </MapView>
+    <>
+      <MapView
+        ref={mapRef}
+        region={initialRegion}
+        onLayout={onMapLayout}
+        onMapLoaded={fitAllMarksers}
+        loadingEnabled={true}
+        onRegionChangeComplete={setRegion}
+        zoomControlEnabled={true}
+        style={{
+          width: Dimensions.get('window').width,
+          height: 368,
+          minHeight: 368,
+          display: props.isConvertedMap ? 'flex' : 'none',
+          elevation: Platform.os === 'android' ? 50 : 0,
+          zIndex: -1,
+        }}
+      >
+        {isMapReady && (
+          <Clusterer
+            data={placesMarkers}
+            region={region}
+            options={{ radius: 30, minPoints: 2 }}
+            mapDimensions={MAP_DIMENSIONS}
+            renderItem={(item) => {
+              return (
+                <Point
+                  key={item.properties?.cluster_id ?? `point-${item.properties?.id}`}
+                  item={item}
+                  navigation={props.navigation}
+                  onPress={_handlePointPress}
+                  post={props.post}
+                />
+              );
+            }}
+          />
+        )}
+        {isMapReady && (
+          <Polyline
+            coordinates={placesMarkers.map((marker) => ({
+              latitude: marker.geometry.coordinates[1],
+              longitude: marker.geometry.coordinates[0],
+            }))}
+            strokeColor="rgba(0,0,222,0.33)"
+            strokeWidth={8}
+          />
+        )}
+      </MapView>
+    </>
   );
 }
 
@@ -139,6 +142,8 @@ export default FeedMapView;
 
 export const Point = memo(
   ({ item, onPress, navigation, post }) => {
+    const [uri, setUri] = useState(item.properties.source);
+
     return (
       <Marker
         key={item.properties?.cluster_id ?? `point-${item.properties?.id}`}
@@ -156,30 +161,18 @@ export const Point = memo(
             <Text style={styles.clusterMarkerText}>{item.properties.point_count}</Text>
           </View>
         ) : (
-        // Else, use default behavior to render
-        // a marker and add a callout to it
-          /**
-           * 왜 아래처럼 짜여졌냐, Image가 지도 위에서는 첫 로드시에는 안 보임.
-           * 그래서 임의로 한번 로드하고 다시 보여주는건데... 시발ㄹ 나도 모르개ㅔㅆ따왜이러ㅏㄴ지 개빡친다
-           * FastImage도 지도상에 안 띄워짐.
-           */
+          // Else, use default behavior to render
+          // a marker and add a callout to it
+          // FastImage is not working on the map
           <>
             <View style={styles.markerImgContainer}>
-              <FastImage
-                style={{
-                  width: 0,
-                  height: 0,
-                  resizeMode: 'cover',
-                }}
-                source={{ uri: item.properties.source }}
-              />
               <Image
                 style={{
                   width: 80,
                   height: 80,
                   resizeMode: 'cover',
                 }}
-                source={{ uri: item.properties.source }}
+                source={{ uri: uri }}
               />
             </View>
             <Callout>

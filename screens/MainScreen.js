@@ -129,6 +129,7 @@ function MainScreen({ navigation, route }) {
       </View>
       <FlatList
         keyExtractor={(postList, index) => postList.title + index}
+        extraData={postList}
         data={postList}
         onRefresh={onRefresh}
         refreshing={refreshing}
