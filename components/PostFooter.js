@@ -13,7 +13,7 @@ function PostFooter(props) {
   const route = useRoute();
 
   const toggleLike = () => {
-    const token = '';
+    let token = '';
     isLiked ? setLikeCnt(likeCnt - 1) : setLikeCnt(likeCnt + 1);
     isLiked ? (token = 'b') : (token = 'a');
     likeUpdate(props.post.date, token, props.userInfo.id);
