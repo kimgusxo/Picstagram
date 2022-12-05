@@ -139,7 +139,7 @@ function MainScreen({ navigation, route }) {
               key={post.item.key}
               style={styles.postComponent}
               navigation={navigation}
-              userInfo={userInfo}
+              userInfo={userInfo.current}
               post={post.item}
               likeCnt={post.item.like}
             />

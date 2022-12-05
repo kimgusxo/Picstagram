@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
+import { useRoute } from '@react-navigation/native';
 
 function FooterMain(props) {
+  const route = useRoute();
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.homeButtonRow}>
         <TouchableOpacity
           style={styles.homeButton}
-          onPress={() => props.navigation.navigate('Main')}
+          onPress={() => {
+            if (route.name != 'Main') props.navigation.navigate('Main');
+          }}
         >
           <EntypoIcon name="home" style={styles.homeIcon} />
         </TouchableOpacity>
@@ -20,9 +24,10 @@ function FooterMain(props) {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.profileButton}
-          onPress={() =>
-            props.navigation.navigate('Profile', { userInfo: props.userInfo, isMyProfile: true })
-          }
+          onPress={() => {
+            if (route.name != 'Profile')
+              props.navigation.navigate('Profile', { userInfo: props.userInfo, isMyProfile: true });
+          }}
         >
           <EntypoIcon name="user" style={styles.myProfileIcon} />
         </TouchableOpacity>
