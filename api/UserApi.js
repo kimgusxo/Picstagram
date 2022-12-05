@@ -29,7 +29,7 @@ async function findMyInfoByEmail(email) {
   const myInfo = await firestore().collection('User').where('email', '==', email).get();
 
   myInfo.forEach((doc) => {
-    result.push(doc);
+    temp.push(doc);
   });
 
   const fetchCommentsAndImages = async (userId) => {
