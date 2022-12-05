@@ -47,7 +47,7 @@ async function metadataImage(imgName) {
 
 async function deleteStorageImage(images) {
   for (const index of images) {
-    const reference = storage().ref(index.name);
+    const reference = storage().ref(index.imgName);
     await reference.delete();
   }
 }
