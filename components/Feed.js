@@ -1,14 +1,8 @@
+/* eslint-disable indent */
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  StyleSheet,
-  View,
-  Image,
-  Text,
-  Dimensions,
-  TouchableOpacity,
-  Platform,
-} from 'react-native';
+import { StyleSheet, View, Text, Dimensions, TouchableOpacity, Platform } from 'react-native';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
+import FastImage from 'react-native-fast-image';
 
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FeedMapView from './FeedMapView';
@@ -30,17 +24,13 @@ function Feed(props) {
   const isDetailed = props.isDetailed;
 
   // state & ref
-  const [imagePathList, setImagePathList] = useState([]);
   const [index, setIndex] = useState(0);
   const [isConvertedMap, setIsConvertedMap] = useState(false);
+  const [firstItem, setFirstItem] = useState(0);
   const carouselRef = useRef(null);
 
   const sliderWidth = Dimensions.get('window').width;
   const itemWidth = Dimensions.get('window').width;
-
-  useEffect(() => {
-    setImagePathList(sampleImagePathList);
-  }, []);
 
   const toggleMapToImg = () => {
     setIsConvertedMap(!isConvertedMap);
@@ -52,20 +42,24 @@ function Feed(props) {
       <TouchableOpacity
         onPress={() =>
           !isDetailed
-            ? props.navigation.navigate('DetailPost')
-            : props.navigation.navigate('DetailPicture')
+            ? props.navigation.navigate('DetailPost', {
+                firstItem: index,
+                post: props.post,
+                userInfo: props.userInfo,
+              })
+            : props.navigation.navigate('DetailPicture', { firstItem: index, post: props.post })
         }
         style={{ alignItems: 'center' }}
       >
         {/* Carousel Image */}
-        <Image
+        <FastImage
           style={{
             width: 368,
             height: 368,
-            resizeMode: 'cover',
             display: isConvertedMap ? 'none' : 'flex',
           }}
-          source={item.source}
+          resizeMode={FastImage.resizeMode.cover}
+          source={{ uri: item.url }}
         />
       </TouchableOpacity>
     );
@@ -73,9 +67,7 @@ function Feed(props) {
 
   return (
     <View style={[styles.container, props.style]}>
-      <Text style={styles.txtPostTitle}>
-        Aimyon Daisuki~!😍😍😍 {'\n\n'}#Japan #Singer-song Writer
-      </Text>
+      <Text style={styles.txtPostTitle}>{props.post.title}</Text>
       <View style={styles.imgContainer}>
         {/* ConvertBtn */}
         {isDetailed ? (
@@ -89,26 +81,42 @@ function Feed(props) {
         {/* CarouselImg */}
         <Carousel
           ref={carouselRef}
-          data={imagePathList}
+          data={props.post.imageList}
           renderItem={_renderItem}
           sliderWidth={sliderWidth}
           itemWidth={itemWidth}
           onSnapToItem={(index) => setIndex(index)}
+          firstItem={firstItem}
+          initialScrollIndex={firstItem}
+          getItemLayout={(data, index) => ({
+            length: itemWidth,
+            offset: itemWidth * index,
+            index,
+          })}
           layout={'default'}
         />
 
         {/* Map */}
         {isDetailed ? (
-          <FeedMapView isConvertedMap={isConvertedMap} navigation={props.navigation} />
+          <FeedMapView
+            isConvertedMap={isConvertedMap}
+            navigation={props.navigation}
+            post={props.post}
+          />
         ) : (
           <></>
         )}
       </View>
 
       {/* Pagination */}
-      <View style={styles.pagingContainer}>
+      <View
+        style={{
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          marginTop: props.post.imageList.length <= 1 ? 0 : -65,
+        }}
+      >
         <Pagination
-          dotsLength={imagePathList.length}
+          dotsLength={props.post.imageList.length}
           activeDotIndex={index}
           carouselRef={carouselRef}
           dotStyle={{
@@ -125,16 +133,7 @@ function Feed(props) {
       </View>
 
       {/* Post Content */}
-      {isDetailed ? (
-        <Text style={styles.txtContent}>
-          Aimyon is my favorite Japanese Singer~~!!! {'\n'}
-          She is famous Singer-song writer in japan~! {'\n'}
-          Do u know her song? {'\n'}
-          My favorite song of hers is Marigold ❤❤
-        </Text>
-      ) : (
-        <></>
-      )}
+      {isDetailed ? <Text style={styles.txtContent}>{props.post.content}</Text> : <></>}
     </View>
   );
 }
@@ -145,10 +144,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     flexDirection: 'row',
     justifyContent: 'center',
-  },
-  pagingContainer: {
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    marginTop: -65,
   },
   image: {
     widht: '100%',

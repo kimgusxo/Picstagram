@@ -1,17 +1,44 @@
 import React from 'react';
 import { StyleSheet, View, TextInput } from 'react-native';
-import SubmitButton from './SubmitButton';
+import CommentSubmitButton from './CommentSubmitButton';
 
 function InputComment(props) {
+  const [comment, setComment] = React.useState({
+    commentWriter: '',
+    commentContent: '',
+    date: '',
+    postDate: props.post.date,
+  });
+
   return (
     <>
       {props.isDetailed ? (
         <View style={styles.wrapper}>
           <View style={styles.inputCommentContainer}>
             <View style={styles.inputComment}>
-              <TextInput multiline={true} placeholder=": Insert any comment..." />
+              <TextInput
+                ref={props.txtInputRef}
+                multiline={true}
+                value={comment.commentContent}
+                placeholder=": Insert any comment..."
+                onChangeText={(text) => {
+                  setComment({
+                    ...comment,
+                    commentWriter: props.userInfo.id,
+                    commentContent: text,
+                  });
+                }}
+              />
             </View>
-            <SubmitButton style={styles.submitButton} />
+            <CommentSubmitButton
+              style={styles.submitButton}
+              comment={comment}
+              txtInputRef={props.txtInputRef}
+              setTxtInput={props.setTxtInput}
+              post={props.post}
+              setComment={setComment}
+              setCommentList={props.setCommentList}
+            />
           </View>
         </View>
       ) : (

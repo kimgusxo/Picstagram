@@ -1,6 +1,7 @@
-import React, {Component, useState, useRef, useEffect} from 'react';
-import {StyleSheet, View, Dimensions, Image} from 'react-native';
-import Carousel, {Pagination} from 'react-native-snap-carousel';
+import React, { Component, useState, useRef, useEffect } from 'react';
+import { StyleSheet, View, Dimensions, Image } from 'react-native';
+import FastImage from 'react-native-fast-image';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
 
 const sampleImagePathList = [
   {
@@ -14,7 +15,7 @@ const sampleImagePathList = [
   },
 ];
 
-function DetailPictureScreen({navigation, route}) {
+function DetailPictureScreen({ navigation, route }) {
   const [imagePathList, setImagePathList] = useState([]);
   const [index, setIndex] = useState(0);
   const carouselRef = useRef(null);
@@ -26,12 +27,17 @@ function DetailPictureScreen({navigation, route}) {
   const sliderWidth = Dimensions.get('window').width;
   const itemWidth = Dimensions.get('window').width;
 
-  const _renderItem = ({item, index}) => {
+  const _renderItem = ({ item, index }) => {
     return (
-      <View style={{alignItems: 'center'}}>
-        <Image
-          style={{width: 368, height: 368, resizeMode: 'cover'}}
-          source={item.source}
+      <View style={{ alignItems: 'center' }}>
+        {/* Carousel Image */}
+        <FastImage
+          style={{
+            width: 368,
+            height: 368,
+          }}
+          resizeMode={FastImage.resizeMode.cover}
+          source={{ uri: item.url }}
         />
       </View>
     );
@@ -43,17 +49,21 @@ function DetailPictureScreen({navigation, route}) {
         <View style={styles.imgContainer}>
           <Carousel
             ref={carouselRef}
-            data={imagePathList}
+            data={route.params.post.imageList}
             renderItem={_renderItem}
             sliderWidth={sliderWidth}
             itemWidth={itemWidth}
-            onSnapToItem={index => setIndex(index)}
+            onSnapToItem={(index) => setIndex(index)}
+            autoplay={true}
+            loop={true}
+            autoplayDelay={0}
+            autoplayInterval={5000}
             layout={'default'}
           />
         </View>
         <View style={styles.pagingContainer}>
           <Pagination
-            dotsLength={imagePathList.length}
+            dotsLength={route.params.post.imageList.length}
             activeDotIndex={index}
             carouselRef={carouselRef}
             dotStyle={{

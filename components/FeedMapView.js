@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useCallback, useState, memo } from 'react';
-import { Dimensions, Platform, View, Image, StyleSheet, Text } from 'react-native';
+import { Dimensions, Platform, View, StyleSheet, Text, Image } from 'react-native';
 import MapView, { Callout, Marker, Polyline } from 'react-native-maps';
 import { Clusterer } from 'react-native-clusterer';
+import FastImage from 'react-native-fast-image';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 function FeedMapView(props) {
@@ -14,38 +15,29 @@ function FeedMapView(props) {
   // Variable
   const MAP_DIMENSIONS = { width: Dimensions.get('window').width, height: 368 };
 
-  const placesMarkers = [
-    {
-      type: 'Feature',
-      properties: {
-        id: 0,
-        identifier: '0',
-        source: require('../assets/images/aimyon.jpg'),
-      },
-      geometry: { type: 'Point', coordinates: [128.39141, 36.145667] },
-    },
-    {
-      type: 'Feature',
-      properties: {
-        id: 1,
-        identifier: '1',
-        source: require('../assets/images/aimyon1.jpg'),
-      },
-      geometry: { type: 'Point', coordinates: [128.39241, 36.145767] },
-    },
-    {
-      type: 'Feature',
-      properties: {
-        id: 2,
-        identifier: '2',
-        source: require('../assets/images/aimyon2.jpg'),
-      },
-      geometry: { type: 'Point', coordinates: [128.39341, 36.145867] },
-    },
-  ];
+  // props로 전달받은 데이터를 placesMarker로 변환하는 메소드가 필요함
+  const imgListToMarkers = () => {
+    let result = props.post.imageList.map((image) => {
+      return {
+        type: 'Feature,',
+        properties: {
+          id: image.url,
+          identifier: image.url,
+          source: image.url,
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: [Number(image.longitude), Number(image.latitude)],
+        },
+      };
+    });
+    return result;
+  };
+  //const placesMarkers = imgListToMarkers();
 
   // Hooks
   useEffect(() => {
+    placesMarkers = imgListToMarkers();
     setInitialRegion(getInitialRegion(placesMarkers));
     setRegion(initialRegion);
   }, []);
@@ -62,6 +54,7 @@ function FeedMapView(props) {
 
   // Methods
   const getInitialRegion = (markers) => {
+    //console.log(markers[0].geometry.coordinate);
     let size = markers.length;
     let sumOfLatitude = 0,
       sumOfLongitude = 0;
@@ -93,59 +86,72 @@ function FeedMapView(props) {
 
   // Return
   return (
-    <MapView
-      ref={mapRef}
-      userInterfaceStyle={'dark'}
-      region={initialRegion}
-      onLayout={onMapLayout}
-      onMapLoaded={fitAllMarksers}
-      loadingEnabled={true}
-      onRegionChangeComplete={setRegion}
-      style={{
-        width: Dimensions.get('window').width,
-        height: 368,
-        minHeight: 368,
-        display: props.isConvertedMap ? 'flex' : 'none',
-        elevation: Platform.os === 'android' ? 50 : 0,
-        zIndex: -1,
-      }}
-    >
-      {isMapReady && (
-        <Clusterer
-          data={placesMarkers}
-          region={region}
-          options={{ radius: 30, minPoints: 2 }}
-          mapDimensions={MAP_DIMENSIONS}
-          renderItem={(item) => {
-            return (
-              <Point
-                key={item.properties?.cluster_id ?? `point-${item.properties?.id}`}
-                item={item}
-                navigation={props.navigation}
-                onPress={_handlePointPress}
-              />
-            );
-          }}
-        />
-      )}
-      {isMapReady && (
-        <Polyline
-          coordinates={placesMarkers.map((marker) => ({
-            latitude: marker.geometry.coordinates[1],
-            longitude: marker.geometry.coordinates[0],
-          }))}
-          strokeColor="rgba(0,0,222,0.33)"
-          strokeWidth={8}
-        />
-      )}
-    </MapView>
+    <>
+      <MapView
+        ref={mapRef}
+        region={initialRegion}
+        onLayout={onMapLayout}
+        onMapLoaded={fitAllMarksers}
+        loadingEnabled={true}
+        onRegionChangeComplete={setRegion}
+        zoomControlEnabled={true}
+        style={{
+          width: Dimensions.get('window').width,
+          height: 368,
+          minHeight: 368,
+          display: props.isConvertedMap ? 'flex' : 'none',
+          elevation: Platform.os === 'android' ? 50 : 0,
+          zIndex: -1,
+        }}
+      >
+        {isMapReady ? (
+          <Clusterer
+            data={placesMarkers}
+            region={region}
+            options={{ radius: 30, minPoints: 2 }}
+            mapDimensions={MAP_DIMENSIONS}
+            renderItem={(item) => {
+              return (
+                <Point
+                  key={item.properties?.cluster_id ?? `point-${item.properties?.id}`}
+                  item={item}
+                  navigation={props.navigation}
+                  onPress={_handlePointPress}
+                  post={props.post}
+                />
+              );
+            }}
+          />
+        ) : (
+          <></>
+        )}
+        {isMapReady ? (
+          <Polyline
+            coordinates={placesMarkers.map((marker) => ({
+              latitude: marker.geometry.coordinates[1],
+              longitude: marker.geometry.coordinates[0],
+            }))}
+            strokeColor="rgba(0,0,222,0.33)"
+            strokeWidth={8}
+          />
+        ) : (
+          <></>
+        )}
+      </MapView>
+    </>
   );
 }
 
 export default FeedMapView;
 
 export const Point = memo(
-  ({ item, onPress, navigation }) => {
+  ({ item, onPress, navigation, post }) => {
+    const [uri, setUri] = useState('');
+
+    useEffect(() => {
+      setUri(item.properties.source);
+    }, [uri]);
+
     return (
       <Marker
         key={item.properties?.cluster_id ?? `point-${item.properties?.id}`}
@@ -155,7 +161,7 @@ export const Point = memo(
         }}
         tracksViewChanges={false}
         onPress={() => onPress(item)}
-        onCalloutPress={() => navigation.navigate('DetailPicture')}
+        onCalloutPress={() => navigation.navigate('DetailPicture', post)}
       >
         {item.properties?.cluster ? (
           // Render Cluster
@@ -165,14 +171,16 @@ export const Point = memo(
         ) : (
           // Else, use default behavior to render
           // a marker and add a callout to it
+          // FastImage is not working on the map
           <>
             <View style={styles.markerImgContainer}>
               <Image
                 style={{
                   width: 80,
                   height: 80,
+                  resizeMode: 'cover',
                 }}
-                source={item.properties.source}
+                source={{ uri: uri }}
               />
             </View>
             <Callout>
@@ -200,7 +208,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,100,0.66)',
+    backgroundColor: 'rgba(255,255,255,0.66)',
   },
   calloutContainer: {
     width: 200,

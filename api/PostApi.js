@@ -1,10 +1,77 @@
 import firestore from '@react-native-firebase/firestore';
 import { getPostDocId, getCommentsDocId } from './LogicApi';
 import { findFollowingById } from './UserApi';
-import { getImageUrl, imageUpload, deleteStorageImage } from './StorageImage';
+import { getImageUrl, imageUpload, deleteStorageImage, parseDate } from './StorageImage';
 
 // 매개변수: 유저ID
 async function findPostById(userId) {
+  //유저ID로 게시물 찾기
+  const result = [];
+
+  const postList = await firestore()
+    .collection('Post')
+    .where('writer', '==', userId)
+    .orderBy('date', 'desc')
+    .get(); // 두 개 이상의 조건 사용 시 콘솔에서 복합색인 만들어야 함
+
+  if (postList.empty) {
+    // 게시물이 없을때 출력문
+    console.log('해당하는 게시물이 없습니다.');
+    return [];
+  }
+
+  postList.forEach((doc) => {
+    // 콘솔 출력문
+    if (doc.data().range != 'Private') result.push(doc);
+  });
+
+  return result;
+}
+
+async function findOnePostByPostDate(date) {
+  //console.log(date);
+  // 게시물의 docID 찾기
+  const temp = await firestore().collection('Post').where('date', '==', date).get();
+
+  let arr = [];
+  const result = [];
+
+  temp.forEach((e) => {
+    arr.push(e.data());
+  });
+
+  const fetchCommentsAndImages = async (postDate) => {
+    return { commentList: await readComments(postDate), imageList: await readImages(postDate) };
+  };
+
+  const fetchResult = async () => {
+    let post = arr[0];
+
+    await fetchCommentsAndImages(date).then(({ commentList, imageList }) => {
+      post = { ...post, commentList, imageList };
+      result.push(post);
+    });
+  };
+
+  return fetchResult().then(() => result);
+}
+
+// const fetchCommentsAndImages = async (postDate) => {
+//   return { commentList: await readComments(postDate), imageList: await readImages(postDate) };
+// };
+
+// const fetchResult = async () => {
+//   let post = postDoc.data();
+
+//   await fetchCommentsAndImages(date).then(({ commentList, imageList }) => {
+//     post = { ...post[0], commentList, imageList };
+//   });
+// };
+
+// return fetchResult().then(() => post);
+
+// 매개변수: 유저ID
+async function findMyPostById(userId) {
   //유저ID로 게시물 찾기
   const result = [];
 
@@ -33,6 +100,7 @@ async function findPostById(userId) {
 async function findPostByTitle(title) {
   // 게시물 제목으로 게시물 찾기
   const result = [];
+  const temp = [];
 
   // limit부분을 start와 end로 바꿀 것
   const postList = await firestore()
@@ -48,10 +116,25 @@ async function findPostByTitle(title) {
   }
   postList.forEach((doc) => {
     // 콘솔 출력문
-    result.push(doc.data());
+    temp.push(doc);
   });
 
-  return result;
+  const fetchCommentsAndImages = async (postDate) => {
+    return { commentList: await readComments(postDate), imageList: await readImages(postDate) };
+  };
+
+  const fetchResult = async () => {
+    for (const index of temp) {
+      let post = index.data();
+
+      await fetchCommentsAndImages(post.date).then(({ commentList, imageList }) => {
+        post = { ...post, commentList, imageList };
+        result.push(post);
+      });
+    }
+  };
+
+  return fetchResult().then(() => result);
 }
 
 async function loadingMainPage(userId) {
@@ -77,15 +160,14 @@ async function loadingMainPage(userId) {
   return fetchResult().then(() => result);
 }
 
-// 매개변수: 유저ID
 async function findPostList(userId) {
   // 맨 처음 메인페이지에다가 게시물 출력함
   const postList = [];
 
   // 0. 나의 게시물을 배열에 푸쉬
-  const myPost = await findPostById(userId);
+  const myPost = await findMyPostById(userId);
   myPost.forEach((doc) => {
-    postList.push(doc);
+    if (doc.data().range != 'Private') postList.push(doc);
   });
 
   // 1. 이메일로 following들을 받아옴
@@ -97,10 +179,7 @@ async function findPostList(userId) {
     const post = await findPostById(index.following); // 1차 반복문에서 팔로잉을 받아온 뒤
     post.forEach((doc) => {
       // 2차 반복문에서 팔로잉의 게시물을 전체 배열에 푸쉬
-      if (doc.data().range != 'Private') {
-        // 공개범위가 비공개가 아닐 때
-        postList.push(doc);
-      }
+      postList.push(doc);
     });
   }
 
@@ -111,14 +190,14 @@ async function findPostList(userId) {
 
   postList.forEach((doc) => {
     // 콘솔 출력문
-    console.log(doc);
+    //console.log(doc);
   });
 
   return postList;
 }
 
 // 매개변수: 게시물 제목, 게시물 내용, 게시물 작성자
-async function createPost({ title, content, writer, images }) {
+async function createPost(title, content, writer, images) {
   // 게시물 생성
   const date = new Date();
 
@@ -136,11 +215,13 @@ async function createPost({ title, content, writer, images }) {
   // 쨋든 그 작업을 상위 컬렉션의 필드가 채워진 후 넣는 식으로 작성함
 
   await addStorageImages(images); // 이미지를 스토리지에 넣는 함수
-  await addDatabaseImages(images); // 이미지를 데이터베이스에 넣는 함수
+  await addDatabaseImages(date, images); // 이미지를 데이터베이스에 넣는 함수
+
+  return date;
 }
 
 // 게시물 수정 함수
-async function updatePost({ postDate, title, content, images }) {
+async function updatePost(postDate, title, content, addImages, deleteImages) {
   const postDocId = getPostDocId(postDate);
 
   await firestore().collection('Post').doc(postDocId).update({
@@ -148,10 +229,12 @@ async function updatePost({ postDate, title, content, images }) {
     content: content,
   });
 
-  await deleteImage(postDocId);
+  //이미지 처리 파트
+  await deleteStorageImage(deleteImages); // 스토리지 사진 지우는 것
+  await deleteDatabaseImage(postDocId); // 데이터베이스 사진 지우는 것
 
-  await addStorageImages(images); // 이미지를 스토리지에 넣는 함수
-  await addDatabaseImages({ postDate, metadata }); // 이미지를 데이터베이스에 넣는 함수
+  await addStorageImages(addImages); // 이미지를 스토리지에 넣는 함수
+  await addDatabaseImages(postDate, addImages); // 이미지를 데이터베이스에 넣는 함수
 }
 
 // images가 배열이므로 반복문 돌려야함
@@ -167,29 +250,45 @@ async function addStorageImages(images) {
 }
 
 // images가 배열이므로 반복문 돌려야함
-async function addDatabaseImages(images) {
-  const postDocId = getPostDocId(images.Datetime); // 사진을 넣기 위한 DocId 추출
-
+async function addDatabaseImages(date, images) {
+  const postDocId = await getPostDocId(date); // 사진을 넣기 위한 DocId 추출
+  console.log(postDocId);
   for (const index of images) {
     // images에서 메타데이터 추출
     const arSplitUrl = index.path.split('/'); //   "/" 로 전체 url 을 나눈다
     let nArLength = arSplitUrl.length;
     let arFileName = arSplitUrl[nArLength - 1]; // 나누어진 배열의 맨 끝이 파일명이다
+    const imageDate = (await parseDate(index.DateTime)).toString();
+    const Latitude = index.Latitude;
+    const Longitude = index.Longitude;
 
-    await firestore()
-      .collection('Post')
-      .doc(postDocId)
-      .collection('Images')
-      .add({
-        imgDate: index.Datetime,
-        latitude: index.latitude,
-        longtitude: index.longtitude,
-        url: await getImageUrl(arFileName),
-      });
+    if (Latitude == undefined) {
+      await firestore()
+        .collection('Post')
+        .doc(postDocId)
+        .collection('Images')
+        .add({
+          imgName: arFileName,
+          imgDate: imageDate,
+          url: await getImageUrl(arFileName),
+        });
+    } else {
+      await firestore()
+        .collection('Post')
+        .doc(postDocId)
+        .collection('Images')
+        .add({
+          imgName: arFileName,
+          imgDate: imageDate,
+          latitude: Latitude,
+          longitude: Longitude,
+          url: await getImageUrl(arFileName),
+        });
+    }
   }
 }
 
-async function deleteImage(postDocId) {
+async function deleteDatabaseImage(postDocId) {
   const imageDocIdList = await firestore()
     .collection('Post') // 해당 하위 컬렉션의 docId를 전부 획득
     .doc(postDocId)
@@ -199,7 +298,7 @@ async function deleteImage(postDocId) {
   imageDocIdList.forEach((doc) => {
     // 반복문으로 하위 컬렉션의 문서를 전부 삭제
     const imagesDocId = doc.id;
-    deleteImagesByDocId({ postDocId, imagesDocId });
+    deleteImagesByDocId(postDocId, imagesDocId);
   });
 }
 
@@ -221,10 +320,13 @@ async function deletePost(postDate) {
   commentsDocIdList.forEach((doc) => {
     // 반복문으로 하위 컬렉션의 문서를 전부 삭제
     const commentsDocId = doc.id;
-    deleteCommentsByDocId({ postDocId, commentsDocId });
+    deleteCommentsByDocId(postDocId, commentsDocId);
   });
 
-  deleteImage(postDocId); // 이미지 db랑 스토리지에 있는거 삭제
+  const deleteImages = await readImages(postDate);
+  await deleteStorageImage(deleteImages); // 스토리지 사진 지우는 것
+
+  await deleteDatabaseImage(postDocId); // 데이터베이스 이미지컬렉션 삭제
 
   // 이슈!: 하위 컬렉션이 있는 문서의 경우 하위컬렉션의 모든 문서를 제거한 뒤
   // 삭제해야하므로 for문을 통해 하위컬렉션의 문서들을 전부 삭제해야한다.
@@ -232,7 +334,7 @@ async function deletePost(postDate) {
 }
 
 // 매개변수: 게시물 시간, 설정한 범위
-async function postRangeUpdate({ postDate, range }) {
+async function postRangeUpdate(postDate, range) {
   // 게시물 범위를 업데이트하는 함수
   const postDocId = await getPostDocId(postDate);
 
@@ -243,7 +345,7 @@ async function postRangeUpdate({ postDate, range }) {
 
 // 매개변수: 게시물 시간, 좋아요 토큰, 좋아요 개수
 // 증분함수나 집계함수가 안먹힙니다....
-async function likeUpdate({ postDate, likeToken, like }) {
+async function likeUpdate(postDate, likeToken, userId) {
   // 좋아요 받는 함수
   const postDocId = await getPostDocId(postDate);
 
@@ -253,43 +355,49 @@ async function likeUpdate({ postDate, likeToken, like }) {
       .collection('Post')
       .doc(postDocId)
       .update({
-        like: like + 1,
+        like: firestore.FieldValue.increment(1),
+        likeList: firestore.FieldValue.arrayUnion(userId),
       });
   } else {
     await firestore()
       .collection('Post')
       .doc(postDocId)
       .update({
-        like: like - 1,
+        like: firestore.FieldValue.increment(-1),
+        likeList: firestore.FieldValue.arrayRemove(userId),
       });
   }
 }
 
 // 매개변수: 댓글 작성자, 댓글 내용, 게시물 시간
-async function createComments({ commentWriter, commentContent, postDate }) {
+async function createComments(commentWriter, commentContent, postDate) {
   // 댓글 작성자와 댓글 내용을 넣어 댓글 생성
   const postDocId = await getPostDocId(postDate);
+
+  const date = new Date();
 
   await firestore().collection('Post').doc(postDocId).collection('Comments').add({
     commentWriter: commentWriter,
     commentContent: commentContent,
-    date: new Date(),
+    date: date,
     type: true,
   });
+
+  return date;
 }
 
 // 이슈!: 댓글도 유일성을 보장하는 필드가 없음!
 // 매개변수: 게시물 시간, 댓글 시간
-async function deleteComments({ postDate, commentsDate }) {
+async function deleteComments(postDate, commentsDate) {
   const postDocId = await getPostDocId(postDate); // 해당 상위컬렉션인 게시물의 docId 획득
-  const commentsDocId = await getCommentsDocId({ postDate, commentsDate }); // 해당 하위컬렉션인 댓글의 docId 획득
+  const commentsDocId = await getCommentsDocId(postDate, commentsDate); // 해당 하위컬렉션인 댓글의 docId 획득
 
-  deleteCommentsByDocId({ postDocId, commentsDocId });
+  deleteCommentsByDocId(postDocId, commentsDocId);
 }
 
-async function updateComments({ postDate, commentsDate, commentContent }) {
+async function updateComments(postDate, commentsDate, commentContent) {
   const postDocId = await getPostDocId(postDate); // 해당 상위컬렉션인 게시물의 docId 획득
-  const commentsDocId = await getCommentsDocId({ postDate, commentsDate }); // 해당 하위컬렉션인 댓글의 docId 획득
+  const commentsDocId = await getCommentsDocId(postDate, commentsDate); // 해당 하위컬렉션인 댓글의 docId 획득
 
   await firestore()
     .collection('Post')
@@ -344,7 +452,7 @@ async function readImages(postDate) {
 // ---> 잘몰루!
 
 // 매개변수: 리턴된 게시물, 나의Id
-function isMyPost({ post, myId }) {
+function isMyPost(post, myId) {
   // 나의 게시물인지 확인하는 함수
   const myPost = [];
 
@@ -360,7 +468,7 @@ function isMyPost({ post, myId }) {
 }
 
 // 매개변수: 리턴된 댓글, 나의Id
-function isMyComments({ comments, myId }) {
+function isMyComments(comments, myId) {
   // 내가 쓴 댓글인지 확인하는 함수
   const myComments = [];
 
@@ -377,7 +485,7 @@ function isMyComments({ comments, myId }) {
 
 // 게시물의 삭제를 위해 어쩔 수 없이 docId로 삭제하는 방향으로 작성
 // 내부로직 함수
-async function deleteCommentsByDocId({ postDocId, commentsDocId }) {
+async function deleteCommentsByDocId(postDocId, commentsDocId) {
   await firestore()
     .collection('Post')
     .doc(postDocId)
@@ -387,8 +495,7 @@ async function deleteCommentsByDocId({ postDocId, commentsDocId }) {
 }
 
 // 내부로직 함수
-async function deleteImagesByDocId({ postDocId, imagesDocId, imgName }) {
-  await deleteStorageImage(imgName); // 스토리지 사진 지우는 것
+async function deleteImagesByDocId(postDocId, imagesDocId) {
   await firestore()
     .collection('Post')
     .doc(postDocId) // 파이어베이스 DB 정보 지우는 것
@@ -399,6 +506,8 @@ async function deleteImagesByDocId({ postDocId, imagesDocId, imgName }) {
 
 export {
   findPostById,
+  findOnePostByPostDate,
+  findMyPostById,
   loadingMainPage,
   findPostByTitle,
   findPostList,
