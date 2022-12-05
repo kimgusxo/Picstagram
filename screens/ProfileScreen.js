@@ -44,31 +44,37 @@ const ITEM_MARGIN = 4;
 const numColumns = 3;
 const DEVICE_WIDTH = Dimensions.get('window').width;
 
+/**
+ * @param {userInfo} 나의 유저 정보
+ * @param {profileInfo} 프로필 조회를 위한 유저 정보
+ * @param {isMyPost} bottomNav처럼 언제나 나의 프로필 열람인 것이 보장될 경우 사용
+ */
 function ProfileScreen({ navigation, route }) {
   const [dataList, setDataList] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const isFocused = useIsFocused();
   const id = React.useRef('');
 
-  useEffect(() => {}, [isFocused]);
-
+  /**
+   * depArr = isFocused
+   * 화면이 포커싱 될 때 마다 데이터 Fetching
+   * 성능 개선을 위해 이전 화면을 기억해 두었음
+   */
   useEffect(() => {
-    if (id.current == route.params.userInfo.id) return;
+    // Comparison prevUser with curUser
+    // 일치 시, fetch 없이 return.
+    if (id.current == route.params.profileInfo.id) return;
+    id.current = route.params.profileInfo.id;
 
-    id.current = route.params.userInfo.id;
     setIsLoading(true);
-    let isMyPost = false;
 
-    async function getIsMyPost() {
-      // Get userToken
-      const userToken = firebase.auth().currentUser;
+    // isMyPost => getMyPost or getPost 분기에 사용됨
+    let isMyPost;
+    route.params.isMyPost == true
+      ? (isMyPost = true)
+      : (isMyPost = route.params.userInfo.id == id.current);
 
-      // Set user information by userToken
-      const userInfo = await findMyInfoByEmail(userToken.email);
-
-      if (id.current == userInfo.id) isMyPost = true;
-    }
-
+    // getMyPost
     async function getMyPost(id) {
       const temp = [];
       (await findMyPostById(id)).forEach((post) => {
@@ -78,7 +84,6 @@ function ProfileScreen({ navigation, route }) {
       const result = [];
       for (let index of temp) {
         const imageList = await readImages(index.date);
-        //const comments = await readComments(index.date);
         result.push({
           key: imageList.url ?? index.title,
           title: index.title,
@@ -91,6 +96,7 @@ function ProfileScreen({ navigation, route }) {
       setIsLoading(false);
     }
 
+    // getPost
     async function getPost(id) {
       const temp = [];
       (await findMyPostById(id)).forEach((post) => {
@@ -112,9 +118,8 @@ function ProfileScreen({ navigation, route }) {
       setDataList(result);
       setIsLoading(false);
     }
-    getIsMyPost().then(() => {
-      isMyPost ? getMyPost(id.current) : getPost(id.current);
-    });
+
+    isMyPost ? getMyPost(id.current) : getPost(id.current);
   }, [isFocused]);
 
   // Flatlist formatting
@@ -135,12 +140,15 @@ function ProfileScreen({ navigation, route }) {
       return <View style={[styles.item, styles.blankItem]} />;
     }
 
+    // 사진이 없는 포스트의 배경색상은 Random
     let colorCode = '#' + Math.round(Math.random() * 0xffffff).toString(16);
+
     return (
       <View style={styles.container}>
         <TouchableOpacity
           style={styles.item}
           onPress={async () => {
+            // DetailPost로 navigate하면서 단일 Post의 전체 데이터를 Fetch합니다.
             return findOnePostByPostDate(item.date).then((post) => {
               navigation.navigate('DetailPost', {
                 post: post[0],
@@ -176,7 +184,7 @@ function ProfileScreen({ navigation, route }) {
   return (
     <>
       {isLoading ? (
-        <Loading />
+        <Loading profileId={route.params.profileInfo.id} />
       ) : (
         <>
           <View>
@@ -184,7 +192,7 @@ function ProfileScreen({ navigation, route }) {
             <ProfileHeader
               style={styles.profileHeader}
               navigation={navigation}
-              userId={route.params.userInfo.id}
+              profileId={route.params.profileInfo.id}
             />
             <ProfileInfomation style={styles.profileInfomation} navigation={navigation} />
           </View>
@@ -205,12 +213,12 @@ function ProfileScreen({ navigation, route }) {
   );
 }
 
-const Loading = () => {
+const Loading = (props) => {
   return (
     <>
       <View>
         <StatusBar hidden />
-        <ProfileHeader style={styles.profileHeader} />
+        <ProfileHeader style={styles.profileHeader} profileId={props.profileId} />
         <ProfileInfomation style={styles.profileInfomation} />
       </View>
       <View

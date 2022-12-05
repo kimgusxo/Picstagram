@@ -105,7 +105,9 @@ function PostProfile(props) {
           style={styles.profileButton}
           onPress={() => {
             props.navigation.navigate('Profile', {
-              userInfo: { email: '', id: props.post.writer },
+              //userInfo: { email: '', id: props.post.writer },
+              userInfo: props.userInfo,
+              profileInfo: { email: '', id: props.post.writer },
             });
           }}
         >

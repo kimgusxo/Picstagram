@@ -22,7 +22,11 @@ function DetailPostScreen({ navigation, route }) {
         />
       </ScrollView>
       <View>
-        <FooterMain style={styles.footerMain} navigation={navigation} />
+        <FooterMain
+          style={styles.footerMain}
+          navigation={navigation}
+          userInfo={route.params.userInfo}
+        />
       </View>
     </>
   );

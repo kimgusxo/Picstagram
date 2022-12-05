@@ -187,7 +187,12 @@ function MainScreen({ navigation, route }) {
         }}
       />
       <View>
-        <FooterMain style={styles.footerMain} navigation={navigation} userInfo={userInfo.current} />
+        <FooterMain
+          style={styles.footerMain}
+          navigation={navigation}
+          userInfo={userInfo.current}
+          profileInfo={userInfo.current}
+        />
       </View>
     </>
   );

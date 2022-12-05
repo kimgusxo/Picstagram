@@ -12,7 +12,8 @@ const Comment = (props) => {
         style={styles.profileButton}
         onPress={() =>
           props.navigation.navigate('Profile', {
-            userInfo: { id: props.comment.commentWriter, email: '' },
+            userInfo: props.userInfo,
+            profileInfo: { id: props.comment.commentWriter, email: '' },
           })
         }
       >
@@ -31,7 +32,12 @@ function Comments(props) {
     <>
       {props.isDetailed ? (
         props.post.commentList.map((comment, index) => (
-          <Comment key={index} comment={comment} navigation={props.navigation} />
+          <Comment
+            key={index}
+            userInfo={props.userInfo}
+            comment={comment}
+            navigation={props.navigation}
+          />
         ))
       ) : (
         <></>

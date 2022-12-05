@@ -26,7 +26,11 @@ function FooterMain(props) {
           style={styles.profileButton}
           onPress={() => {
             if (route.name != 'Profile')
-              props.navigation.navigate('Profile', { userInfo: props.userInfo, isMyProfile: true });
+              props.navigation.navigate('Profile', {
+                userInfo: props.userInfo,
+                profileInfo: props.profileInfo,
+                isMyProfile: true,
+              });
           }}
         >
           <EntypoIcon name="user" style={styles.myProfileIcon} />

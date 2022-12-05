@@ -9,7 +9,7 @@ function ProfileHeader(props) {
         <TouchableOpacity style={styles.backButton} onPress={() => props.navigation.goBack()}>
           <Icon name="cross" style={styles.backIcon} />
         </TouchableOpacity>
-        <Text style={styles.title}>{props.userId}</Text>
+        <Text style={styles.title}>{props.profileId}</Text>
       </View>
     </View>
   );
