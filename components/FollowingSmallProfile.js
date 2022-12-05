@@ -1,21 +1,34 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
+import { deleteFollowing, findUserById } from '../api/UserApi';
 
-function UserSmallProfile(props) {
+function FollowingSmallProfile(props) {
+  let followingInfo;
+
+  const deleteUser = async () => {
+    await deleteFollowing(props.user.id, props.following.following);
+  };
+
+  const clickFollowing = async () => {
+    followingInfo = await findUserById(props.following.following);
+  };
+
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.userButtonRow}>
         <TouchableOpacity
           style={styles.userButton}
-          onPress={() => props.navigation.navigate('Profile', { user: props.user })}
+          onPress={() =>
+            clickFollowing.then(props.navigation.navigate('Profile', { user: followingInfo }))
+          }
         >
           <View style={styles.userIconRow}>
             <EntypoIcon name="user" style={styles.userIcon} />
-            <Text style={styles.userId}> {props.user.id} </Text>
+            <Text style={styles.userId}> {props.following.following} </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.cancleButton}>
+        <TouchableOpacity style={styles.cancleButton} onPress={() => deleteUser()}>
           <EntypoIcon name="cross" style={styles.cancleIcon} />
         </TouchableOpacity>
       </View>
@@ -71,4 +84,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserSmallProfile;
+export default FollowingSmallProfile;

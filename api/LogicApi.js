@@ -71,4 +71,56 @@ async function getCommentsDocId(postDate, commentsDate) {
   return commentsDocId[0];
 }
 
-export { getUserDocId, getPostDocId, getCommentsDocId };
+async function getFollowerDocId(myId, yourId) {
+  const userDocId = await getUserDocId(myId);
+
+  const followerDocIdList = await firestore()
+    .collection('User')
+    .doc(userDocId)
+    .collection('follower')
+    .where('follower', '==', yourId)
+    .get();
+
+  if (followerDocIdList.empty) {
+    // 유저문서가 비어있을때 널값 리턴
+    console.log('해당하는 문서가 없습니다.');
+    return;
+  }
+
+  const followerDocId = [];
+
+  followerDocIdList.forEach((doc) => {
+    // 리스트로 DB에서 받아오므로 추출과정 필요
+    followerDocId.push(doc.id);
+  });
+
+  return followerDocId[0]; // 나 또는 다른 상대방의 문서Id를 얻기위해 스트링형으로 리턴(매개변수로 사용하기 때문)
+}
+
+async function getFollowingDocId(myId, yourId) {
+  const userDocId = await getUserDocId(myId);
+
+  const followingDocIdList = await firestore()
+    .collection('User')
+    .doc(userDocId)
+    .collection('following')
+    .where('following', '==', yourId)
+    .get();
+
+  if (followingDocIdList.empty) {
+    // 유저문서가 비어있을때 널값 리턴
+    console.log('해당하는 문서가 없습니다.');
+    return;
+  }
+
+  const followingDocId = [];
+
+  followingDocIdList.forEach((doc) => {
+    // 리스트로 DB에서 받아오므로 추출과정 필요
+    followingDocId.push(doc.id);
+  });
+
+  return followingDocId[0]; // 나 또는 다른 상대방의 문서Id를 얻기위해 스트링형으로 리턴(매개변수로 사용하기 때문)
+}
+
+export { getUserDocId, getPostDocId, getCommentsDocId, getFollowerDocId, getFollowingDocId };

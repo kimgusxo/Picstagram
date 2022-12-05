@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, TouchableOpacity} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import SearchTextBox from './SearchTextBox';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
@@ -7,17 +7,16 @@ import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 function SearchTab(props) {
   return (
     <View style={[styles.container, props.style]}>
-        <View style={styles.prevRow}>
-            <TouchableOpacity style={styles.prevButton} onPress={() => props.navigation.goBack()}>
-              <FeatherIcon name="arrow-left" style={styles.prevIcon} />
-            </TouchableOpacity>
-          <SearchTextBox style={styles.searchTextBox} />
+      <View style={styles.prevRow}>
+        <TouchableOpacity style={styles.prevButton} onPress={() => props.navigation.goBack()}>
+          <FeatherIcon name="arrow-left" style={styles.prevIcon} />
+        </TouchableOpacity>
+        <SearchTextBox style={styles.searchTextBox} setText={props.setText} />
 
-              <TouchableOpacity style={styles.searchButton}>
-                <IoniconsIcon name="md-search" style={styles.searchIcon} />
-              </TouchableOpacity>
-              
-        </View>
+        <TouchableOpacity style={styles.searchButton}>
+          <IoniconsIcon name="md-search" style={styles.searchIcon} onPress={() => props.search()} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }

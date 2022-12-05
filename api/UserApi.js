@@ -1,5 +1,5 @@
 import firestore from '@react-native-firebase/firestore';
-import { getUserDocId } from './LogicApi';
+import { getFollowingDocId, getFollowerDocId, getUserDocId } from './LogicApi';
 
 // 매개변수: google이메일
 async function authUser(email) {
@@ -23,40 +23,76 @@ async function createUser(userId, email) {
 }
 
 async function findMyInfoByEmail(email) {
+  const temp = [];
   const result = [];
 
   const myInfo = await firestore().collection('User').where('email', '==', email).get();
 
   myInfo.forEach((doc) => {
-    result.push(doc.data());
+    result.push(doc);
   });
 
-  return result;
+  const fetchCommentsAndImages = async (userId) => {
+    return {
+      followingList: await findFollowingById(userId),
+      followerList: await findFollowerById(userId),
+    };
+  };
+
+  const fetchResult = async () => {
+    for (const index of temp) {
+      let user = index.data();
+
+      await fetchCommentsAndImages(user.id).then(({ followingList, followerList }) => {
+        user = { ...user, followingList, followerList };
+        result.push(user);
+      });
+    }
+  };
+
+  return fetchResult().then(() => result);
 }
 
 // 매개변수: 유저ID
 async function findUserById(userId) {
   // 유저ID로 유저 찾기
+  const temp = [];
   const result = [];
 
   const user = await firestore().collection('User').where('id', '==', userId).get();
 
   if (user.empty) {
-    // 유저가 비어있을때 널값 리턴
     console.log('해당하는 유저가 없습니다.');
     return [];
   }
 
   user.forEach((doc) => {
-    // 콘솔 출력문
-    result.push(doc.data());
+    temp.push(doc);
   });
 
-  return result;
+  const fetchCommentsAndImages = async (userId) => {
+    return {
+      followingList: await findFollowingById(userId),
+      followerList: await findFollowerById(userId),
+    };
+  };
+
+  const fetchResult = async () => {
+    for (const index of temp) {
+      let user = index.data();
+
+      await fetchCommentsAndImages(user.id).then(({ followingList, followerList }) => {
+        user = { ...user, followingList, followerList };
+        result.push(user);
+      });
+    }
+  };
+
+  return fetchResult().then(() => result);
 }
 
 // 매개변수: 나의ID, 상대방ID
-async function addFollowing({ myId, yourId }) {
+async function addFollowing(myId, yourId) {
   //내 유저ID와 상대방의 유저ID를 받아 팔로우, 팔로잉 추가
   const myFollowing = await getUserDocId(myId); // 내 문서ID
   const yourFollower = await getUserDocId(yourId); // 상대방 문서ID
@@ -141,44 +177,50 @@ async function countFollower(userId) {
 }
 
 // 매개변수: 나의 유저ID, 상대방 유저ID
-async function deleteFollowing({ myId, yourId }) {
+async function deleteFollowing(myId, yourId) {
   // 내 팔로잉 삭제
-  const myFollowing = await getUserDocId(myId); // 내 문서ID
-  const yourFollower = await getUserDocId(yourId); // 상대방 문서ID
+  const myInfo = await getUserDocId(myId); // 내 유저 문서ID
+  const yourInfo = await getUserDocId(yourId); // 상대방 유저 문서ID
+
+  const myFollowing = await getFollowingDocId(myId, yourId);
+  const yourFollower = await getFollowerDocId(yourId, myId);
 
   await firestore()
     .collection('User')
-    .doc(myFollowing) // 나의 팔로잉에서 상대방 삭제
+    .doc(myInfo) // 나의 팔로잉에서 상대방 삭제
     .collection('following')
-    .doc(yourFollower)
+    .doc(myFollowing)
     .delete();
 
   await firestore()
     .collection('User')
-    .doc(yourFollower) // 상대방의 팔로워에서 나 삭제
+    .doc(yourInfo) // 상대방의 팔로워에서 나 삭제
     .collection('follower')
-    .doc(myFollowing)
+    .doc(yourFollower)
     .delete();
 }
 
 // 매개변수: 나의 유저ID, 상대방 유저ID
-async function deleteFollower({ myId, yourId }) {
+async function deleteFollower(myId, yourId) {
   // 내 팔로워 삭제
-  const myFollower = await getUserDocId(myId); // 내 문서ID
-  const yourFollowing = await getUserDocId(yourId); // 상대방 문서ID
+  const myInfo = await getUserDocId(myId); // 내 유저 문서ID
+  const yourInfo = await getUserDocId(yourId); // 상대방 유저 문서ID
+
+  const myFollower = await getFollowerDocId(myId, yourId);
+  const yourFollowing = await getFollowingDocId(yourId, myId);
 
   await firestore()
     .collection('User')
-    .doc(myFollower) // 나의 팔로워에서 상대방 삭제
+    .doc(myInfo) // 나의 팔로워에서 상대방 삭제
     .collection('follower')
-    .doc(yourFollowing)
+    .doc(myFollower)
     .delete();
 
   await firestore()
     .collection('User')
-    .doc(yourFollowing) // 상대방의 팔로잉에서 나 삭제
+    .doc(yourInfo) // 상대방의 팔로잉에서 나 삭제
     .collection('following')
-    .doc(myFollower)
+    .doc(yourFollowing)
     .delete();
 }
 

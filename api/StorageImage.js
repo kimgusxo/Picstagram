@@ -18,7 +18,9 @@ async function imageUpload(images) {
   let arFileName = arSplitUrl[nArLength - 1]; // 나누어진 배열의 맨 끝이 파일명이다
 
   const imageName = arFileName;
-  const fileImage = `${utils.FilePath.PICTURES_DIRECTORY}/${imageName}`;
+  const cropPath = '/storage/emulated/0/Android/data/com.kumoh.fusion/files/Pictures';
+
+  const fileImage = `${cropPath}/${imageName}`;
   const reference = storage().ref(imageName);
   await reference.putFile(fileImage);
 }
@@ -43,9 +45,17 @@ async function metadataImage(imgName) {
   return metadata;
 }
 
-async function deleteStorageImage(imgName) {
-  const reference = storage().ref(imgName);
-  await reference.delete();
+async function deleteStorageImage(images) {
+  for (const index of images) {
+    const reference = storage().ref(index.name);
+    await reference.delete();
+  }
 }
 
-export { getImageUrl, imageUpload, metadataImage, setMetadata, deleteStorageImage };
+async function parseDate(date) {
+  const s = new String(date);
+  var b = s.split(/\D/);
+  return new Date(b[0], b[1] - 1, b[2], b[3], b[4], b[5]);
+}
+
+export { getImageUrl, imageUpload, metadataImage, setMetadata, deleteStorageImage, parseDate };

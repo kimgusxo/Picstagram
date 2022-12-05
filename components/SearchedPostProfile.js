@@ -1,15 +1,24 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, View, TouchableOpacity, Text, Image } from 'react-native';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
+import { getImageUrl } from '../api/StorageImage';
+import { readImages } from '../api/PostApi';
 
 function SearchedPostProfile(props) {
+  const imageUrl = { uri: props.post.imageList[0].url };
+
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.postButtonRow}>
-        <TouchableOpacity style={styles.postButton}>
+        <TouchableOpacity
+          style={styles.postButton}
+          onPress={() => props.navigation.navigate('DetailPost', { post: props.post })}
+        >
           <View style={styles.postRow}>
-            <View style={styles.thumbnail} />
-            <Text style={styles.postTitle}>Post Title</Text>
+            <View>
+              <Image style={styles.thumbnail} source={imageUrl} />
+            </View>
+            <Text style={styles.postTitle}>{props.post.title}</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -26,7 +35,6 @@ const styles = StyleSheet.create({
     width: 300,
     height: 120,
     flexDirection: 'row',
-    
   },
   thumbnail: {
     width: 100,
@@ -39,14 +47,12 @@ const styles = StyleSheet.create({
     color: '#121212',
     marginLeft: 15,
     fontSize: 20,
-    
   },
   postRow: {
     height: 120,
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-    
   },
   postButtonRow: {
     height: 120,
