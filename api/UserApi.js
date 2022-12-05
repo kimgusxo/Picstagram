@@ -1,5 +1,5 @@
 import firestore from '@react-native-firebase/firestore';
-import { getUserDocId } from './LogicApi';
+import { getFollowingDocId, getFollowerDocId, getUserDocId } from './LogicApi';
 
 // 매개변수: google이메일
 async function authUser(email) {
@@ -179,42 +179,48 @@ async function countFollower(userId) {
 // 매개변수: 나의 유저ID, 상대방 유저ID
 async function deleteFollowing(myId, yourId) {
   // 내 팔로잉 삭제
-  const myFollowing = await getUserDocId(myId); // 내 문서ID
-  const yourFollower = await getUserDocId(yourId); // 상대방 문서ID
+  const myInfo = await getUserDocId(myId); // 내 유저 문서ID
+  const yourInfo = await getUserDocId(yourId); // 상대방 유저 문서ID
+
+  const myFollowing = await getFollowingDocId(myId, yourId);
+  const yourFollower = await getFollowerDocId(yourId, myId);
 
   await firestore()
     .collection('User')
-    .doc(myFollowing) // 나의 팔로잉에서 상대방 삭제
+    .doc(myInfo) // 나의 팔로잉에서 상대방 삭제
     .collection('following')
-    .doc(yourFollower)
+    .doc(myFollowing)
     .delete();
 
   await firestore()
     .collection('User')
-    .doc(yourFollower) // 상대방의 팔로워에서 나 삭제
+    .doc(yourInfo) // 상대방의 팔로워에서 나 삭제
     .collection('follower')
-    .doc(myFollowing)
+    .doc(yourFollower)
     .delete();
 }
 
 // 매개변수: 나의 유저ID, 상대방 유저ID
 async function deleteFollower(myId, yourId) {
   // 내 팔로워 삭제
-  const myFollower = await getUserDocId(myId); // 내 문서ID
-  const yourFollowing = await getUserDocId(yourId); // 상대방 문서ID
+  const myInfo = await getUserDocId(myId); // 내 유저 문서ID
+  const yourInfo = await getUserDocId(yourId); // 상대방 유저 문서ID
+
+  const myFollower = await getFollowerDocId(myId, yourId);
+  const yourFollowing = await getFollowingDocId(yourId, myId);
 
   await firestore()
     .collection('User')
-    .doc(myFollower) // 나의 팔로워에서 상대방 삭제
+    .doc(myInfo) // 나의 팔로워에서 상대방 삭제
     .collection('follower')
-    .doc(yourFollowing)
+    .doc(myFollower)
     .delete();
 
   await firestore()
     .collection('User')
-    .doc(yourFollowing) // 상대방의 팔로잉에서 나 삭제
+    .doc(yourInfo) // 상대방의 팔로잉에서 나 삭제
     .collection('following')
-    .doc(myFollower)
+    .doc(yourFollowing)
     .delete();
 }
 
