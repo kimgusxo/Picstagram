@@ -5,11 +5,31 @@ function FollowListTabs(props) {
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.tabsWrapper}>
-        <TouchableOpacity style={styles.follwerButton} onPress={() => props.setToken(0)}>
-          <Text style={styles.txtFollower}>팔로워</Text>
+        <TouchableOpacity
+          style={[
+            styles.follwerButton,
+            {
+              backgroundColor: props.token ? '#007AFF' : '#FFFFFF',
+            },
+          ]}
+          onPress={() => props.setToken((prev) => !prev)}
+        >
+          <Text style={[styles.txtFollower, { color: props.token ? '#FFFFFF' : '#007AFF' }]}>
+            팔로워
+          </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.followButton} onPress={() => props.setToken(1)}>
-          <Text style={styles.txtFollow}>팔로잉</Text>
+        <TouchableOpacity
+          style={[
+            styles.followButton,
+            {
+              backgroundColor: props.token ? '#FFFFFF' : '#007AFF',
+            },
+          ]}
+          onPress={() => props.setToken((prev) => !prev)}
+        >
+          <Text style={[styles.txtFollow, { color: props.token ? '#007AFF' : '#FFFFFF' }]}>
+            팔로잉
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -33,8 +53,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#007AFF',
-    borderWidth: 1,
     borderColor: '#007AFF',
+    borderWidth: 1,
     borderBottomLeftRadius: 5,
     borderTopLeftRadius: 5,
 

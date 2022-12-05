@@ -1,8 +1,17 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { addFollowing, deleteFollowing } from '../api/UserApi';
 
 function ProfileFollowingButton(props) {
   const [isFollowed, setIsFollowed] = useState(false);
+
+  useEffect(() => {
+    if (props.user.followerList != undefined) {
+      props.user.followerList.forEach((element) => {
+        if (element.follower == props.userInfo.id) setIsFollowed(true);
+      });
+    }
+  });
 
   const toggleFollowBtn = () => {
     setIsFollowed(!isFollowed);
@@ -13,6 +22,8 @@ function ProfileFollowingButton(props) {
       style={[styles.container, props.style, styles.followedBtn]}
       onPress={() => {
         console.log('Clicked unfollowing btn');
+        deleteFollowing(props.userInfo.id, props.profileInfo.id);
+        props.setFollowerCnt((prev) => prev - 1);
         toggleFollowBtn();
       }}
     >
@@ -23,6 +34,8 @@ function ProfileFollowingButton(props) {
       style={[styles.container, props.style, styles.followingBtn]}
       onPress={() => {
         console.log('Clicked following btn');
+        addFollowing(props.userInfo.id, props.profileInfo.id);
+        props.setFollowerCnt((prev) => prev + 1);
         toggleFollowBtn();
       }}
     >

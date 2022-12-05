@@ -3,6 +3,8 @@ import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 
 function UserSmallProfile(props) {
+  console.log('aa', props.myInfo);
+  console.log('bb', props.user);
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.userButtonRow}>

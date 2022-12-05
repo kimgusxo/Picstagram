@@ -6,42 +6,37 @@ import FollowerSmallProfile from '../components/FollowerSmallProfile';
 import FollowingSmallProfile from '../components/FollowingSmallProfile';
 import { findUserById } from '../api/UserApi';
 
-function FollowListScreen({ navigation, props }) {
-  const [user, setUser] = useState({});
-  const [token, setToken] = useState(0);
-
-  const test = async () => {
-    const userId = 'gusxo';
-    const a = await findUserById(userId);
-    setUser(a);
-  };
-
-  useEffect(() => {
-    test();
-  }, []);
+function FollowListScreen({ navigation, route }) {
+  const [token, setToken] = useState(route.params.token);
 
   return (
     <View style={styles.container}>
       <StatusBar hidden />
       <ProfileHeader style={styles.profileHeader} navigation={navigation} />
-      <FollowListTabs style={styles.followListTabs} setToken={setToken} />
+      <FollowListTabs style={styles.followListTabs} token={token} setToken={setToken} />
       <ScrollView contentContainerStyle={styles.followList}>
-        {token == 0
-          ? user[0].followerList.map((index, key) => (
+        {token
+          ? route.params.user.followerList.map((index, key) => (
               <FollowerSmallProfile
                 key={key}
                 style={styles.userSmallProfile}
                 follower={index}
-                user={user[0]}
+                user={route.params.user}
+                setUser={route.params.setUser}
+                setFollowerCnt={route.params.setFollowerCnt}
+                userInfo={route.params.userInfo}
                 navigation={navigation}
               />
             ))
-          : user[0].followingList.map((index, key) => (
+          : route.params.user.followingList.map((index, key) => (
               <FollowingSmallProfile
                 key={key}
                 style={styles.userSmallProfile}
                 following={index}
-                user={user[0]}
+                user={route.params.user}
+                setUser={route.params.setUser}
+                setFollowingCnt={route.params.setFollowingCnt}
+                userInfo={route.params.userInfo}
                 navigation={navigation}
               />
             ))}

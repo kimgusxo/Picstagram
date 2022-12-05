@@ -15,6 +15,7 @@ import FastImage from 'react-native-fast-image';
 import { ActivityIndicator } from '@react-native-material/core';
 import { useIsFocused } from '@react-navigation/native';
 import { findMyPostById, findOnePostByPostDate, readImages } from '../api/PostApi';
+import { findUserById } from '../api/UserApi';
 
 const ITEM_MARGIN = 4;
 const numColumns = 3;
@@ -28,6 +29,7 @@ const DEVICE_WIDTH = Dimensions.get('window').width;
 function ProfileScreen({ navigation, route }) {
   const [dataList, setDataList] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [profileInfo, setProfileInfo] = React.useState('');
   const isFocused = useIsFocused();
   const id = React.useRef('');
   const isMyPost = React.useRef('');
@@ -49,7 +51,13 @@ function ProfileScreen({ navigation, route }) {
     // isMyPost => getMyPost or getPost 분기에 사용됨
     route.params.isMyPost == true
       ? (isMyPost.current = true)
-      : (isMyPost.current = route.params.userInfo.id == id.current);
+      : (isMyPost.current = route.params.userInfo.id == route.params.profileInfo.id);
+
+    // getUser for followList
+    async function getFollowFollowingList(id) {
+      const temp = await findUserById(id);
+      setProfileInfo(temp[0]);
+    }
 
     // getMyPost
     async function getMyPost(id) {
@@ -96,7 +104,9 @@ function ProfileScreen({ navigation, route }) {
       setIsLoading(false);
     }
 
-    isMyPost.current ? getMyPost(id.current) : getPost(id.current);
+    getFollowFollowingList(route.params.profileInfo.id).then(() => {
+      isMyPost.current ? getMyPost(id.current) : getPost(id.current);
+    });
   }, [isFocused]);
 
   // Flatlist formatting
@@ -159,7 +169,11 @@ function ProfileScreen({ navigation, route }) {
   };
 
   return isLoading ? (
-    <Loading profileId={route.params.profileInfo.id} />
+    <Loading
+      profileId={route.params.profileInfo.id}
+      userInfo={route.params.userInfo}
+      profileInfo={{ ...route.params.profileInfo, email: '', followerList: [], followingList: [] }}
+    />
   ) : (
     <>
       <View>
@@ -172,6 +186,8 @@ function ProfileScreen({ navigation, route }) {
         <ProfileInfomation
           style={styles.profileInfomation}
           navigation={navigation}
+          userInfo={route.params.userInfo}
+          profileInfo={profileInfo}
           isMyPost={isMyPost.current}
         />
       </View>
@@ -195,7 +211,11 @@ const Loading = (props) => {
       <View>
         <StatusBar hidden />
         <ProfileHeader style={styles.profileHeader} profileId={props.profileId} />
-        <ProfileInfomation style={styles.profileInfomation} />
+        <ProfileInfomation
+          style={styles.profileInfomation}
+          userInfo={props.userInfo}
+          profileInfo={props.profileInfo}
+        />
       </View>
       <View
         style={{

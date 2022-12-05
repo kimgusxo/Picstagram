@@ -11,7 +11,7 @@ function FollowingSmallProfile(props) {
   };
 
   const clickFollowing = async () => {
-    followingInfo = await findUserById(props.following.following);
+    return await findUserById(props.following.following);
   };
 
   return (
@@ -20,7 +20,12 @@ function FollowingSmallProfile(props) {
         <TouchableOpacity
           style={styles.userButton}
           onPress={() =>
-            clickFollowing.then(props.navigation.navigate('Profile', { user: followingInfo }))
+            clickFollowing().then((followingInfo) => {
+              props.navigation.navigate('Profile', {
+                userInfo: props.userInfo,
+                profileInfo: followingInfo[0],
+              });
+            })
           }
         >
           <View style={styles.userIconRow}>
@@ -28,7 +33,23 @@ function FollowingSmallProfile(props) {
             <Text style={styles.userId}> {props.following.following} </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.cancleButton} onPress={() => deleteUser()}>
+        <TouchableOpacity
+          style={styles.cancleButton}
+          onPress={() => {
+            deleteUser().then(() => {
+              props.setUser((prev) => {
+                const temp = {
+                  ...prev,
+                  followingList: prev.followingList.filter((fl) => {
+                    return fl.following != props.following.following;
+                  }),
+                };
+                props.setFollowingCnt(temp.followingList.length);
+                return temp;
+              });
+            });
+          }}
+        >
           <EntypoIcon name="cross" style={styles.cancleIcon} />
         </TouchableOpacity>
       </View>
