@@ -1,4 +1,4 @@
-import React, { Component, useState, useRef } from 'react';
+import React, { Component, useState, useRef, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -12,22 +12,52 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import PostApi, { createPost } from '../api/PostApi';
-import UserApi, { findMyInfoByEmail } from '../api/UserApi';
+import PostApi, { findPostByTitle, readImages, updatePost } from '../api/PostApi';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
-import auth from '@react-native-firebase/auth';
 import MaterialCommunityIconsIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const width = Dimensions.get('window').width;
 const IMAGE_WIDTH = 100;
 const ENABLED_SCROLL_WIDTH = Dimensions.get('window').width - IMAGE_WIDTH;
 
-function PostingScreen({ navigation, props }) {
+function PostingUpdateScreen({ navigation, props }) {
   //Multiple-image 선택
   const [images, setImages] = useState([]);
   const [form, setForm] = useState({ title: '', content: '' });
   const [isScrollable, setIsScrollable] = useState(false);
+  const [oriImages, setOriImages] = useState([]);
+  const [postDate, setPostDate] = useState('');
+  // const { inputdata } = props;
+  let oriImageLength = 0;
+
+  //title, content, postDate, images,
+
+  useEffect(() => {
+    beforePostData();
+  }, []);
+
+  const beforePostData = async () => {
+    // setForm({ title: inputdata.title, content: inputdata.content });
+    // setImages(inputdata.images);
+    // setOriImages(inputdata.images);
+    // setPostDate(inputdata.postDate);
+    const testTitle = '나는 도으히';
+    const con = await findPostByTitle(testTitle);
+    console.log('con' + con);
+    const originalImgArr = await readImages(con[0].date);
+    console.log('originalImgArr' + originalImgArr.date);
+    const temp = [];
+    setOriImages(originalImgArr);
+    console.log('oriImage' + oriImages);
+    oriImages.forEach((img) => {
+      temp.push(img);
+      const result = images.concat(temp);
+      setImages(result);
+    });
+
+    oriImageLength = images.length;
+  };
 
   const cropMulti = async (images) => {
     const props = {
@@ -79,7 +109,7 @@ function PostingScreen({ navigation, props }) {
         includeExif: true,
       }).then((items) => {
         const temp = [];
-        console.log(items);
+        ('');
         cropMulti(items).then((e) => {
           items = e;
           items.forEach((item) => {
@@ -94,7 +124,8 @@ function PostingScreen({ navigation, props }) {
           const result = images.concat(temp);
           setImages(result);
           console.log(result);
-          const currentImageWidth = IMAGE_WIDTH * result.length + 8 * result.length; //padding = 8px
+          const currentImageWidth =
+            IMAGE_WIDTH * (result.length + oriImageLength + 8) * (result.length + oriImageLength); //padding = 8px
           currentImageWidth > ENABLED_SCROLL_WIDTH ? setIsScrollable(true) : setIsScrollable(false);
         });
       });
@@ -108,11 +139,12 @@ function PostingScreen({ navigation, props }) {
       return item?.path !== value?.path;
     });
     setImages(data);
-    const currentImageWidth = IMAGE_WIDTH * data.length + 8 * data.length; //padding = 8px
+    const currentImageWidth =
+      IMAGE_WIDTH * (data.length + oriImageLength + 8) * (data.length + oriImageLength); //padding = 8px
     currentImageWidth > ENABLED_SCROLL_WIDTH ? setIsScrollable(true) : setIsScrollable(false);
   };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({ item, index }) => {
     return (
       <View>
         <Image
@@ -123,7 +155,7 @@ function PostingScreen({ navigation, props }) {
           style={styles.media}
         />
         <TouchableOpacity
-          onPress={() => onDelete(item)}
+          onPress={() => onDelete(item, index)}
           activeOpacity={0.9}
           style={styles.buttonDelete}
         >
@@ -133,9 +165,29 @@ function PostingScreen({ navigation, props }) {
     );
   };
 
-  const registerPost = async () => {
+  const updatePost = async () => {
+    let deleteImages = [];
+    let addImages = [];
+
+    deleteImages = oriImages.filter((it) => !images.includes(it));
+    addImages = images.filter((it) => !oriImages.includes(it));
     //1. 이미지 배열 정제
-    const mappingImage = images.map((e) => {
+    const mappingDeleteImage = deleteImages.map((e) => {
+      if (e.exif.Latitude != undefined) {
+        return {
+          path: e.path,
+          Latitude: e.exif.Latitude,
+          Longitude: e.exif.Longitude,
+          DateTime: e.exif.DateTime,
+        };
+      } else {
+        return {
+          path: e.path,
+          DateTime: e.exif.DateTime,
+        };
+      }
+    });
+    const mappingAddImage = addImages.map((e) => {
       if (e.exif.Latitude != undefined) {
         return {
           path: e.path,
@@ -151,9 +203,9 @@ function PostingScreen({ navigation, props }) {
       }
     });
     setForm(form);
-    const userId = await findMyInfoByEmail(auth().currentUser.email);
-    //2. createpostApi 호출
-    await createPost(form.title, form.content, 'All', userId[0].id, mappingImage);
+
+    //2. updateP 호출
+    await updatePost(postDate, form.title, form.content, mappingAddImage, mappingDeleteImage);
   };
 
   return (
@@ -167,8 +219,7 @@ function PostingScreen({ navigation, props }) {
         <TouchableOpacity
           style={styles.nextButton}
           onPress={() => {
-            //props.registerPost();
-            registerPost();
+            updatePost();
             navigation.navigate('Main');
           }}
         >
@@ -178,6 +229,7 @@ function PostingScreen({ navigation, props }) {
 
       <View style={[styles.titleWriteContainer]}>
         <TextInput
+          defaultValue={form.title}
           placeholder="제목을 입력하세요."
           style={styles.titleinputStyle}
           onChangeText={(value) => {
@@ -187,6 +239,7 @@ function PostingScreen({ navigation, props }) {
       </View>
       <View style={[styles.contentsWritecontainer]}>
         <TextInput
+          defaultValue={form.content}
           multiline
           returnKeyType="next"
           placeholder="내용을 입력하세요."
@@ -304,10 +357,10 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
   },
   media: {
-    alignSelf: 'center',
+    marginLeft: 6,
     width: IMAGE_WIDTH,
     height: IMAGE_WIDTH,
-    margin: 2,
+    marginBottom: 6,
     backgroundColor: 'rgba(0,0,0,0.2)',
   },
   cancelButton: {
@@ -369,4 +422,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostingScreen;
+export default PostingUpdateScreen;
