@@ -52,8 +52,6 @@ function PostingScreen({ navigation, props }) {
         props.cropped.push(cImg);
         props.current = props.current - 1;
       } else {
-        cImg.exif.Latitude = null;
-        cImg.exif.Longitude = null;
         cImg.exif.DateTime = images[props.length - props.current].exif.DateTime;
 
         props.cropped.push(cImg);
@@ -81,7 +79,8 @@ function PostingScreen({ navigation, props }) {
         includeExif: true,
       }).then((items) => {
         const temp = [];
-        ('');
+        // (''); 왜 있는거지 이거
+        console.log(items);
         cropMulti(items).then((e) => {
           items = e;
           items.forEach((item) => {
@@ -95,6 +94,7 @@ function PostingScreen({ navigation, props }) {
           });
           const result = images.concat(temp);
           setImages(result);
+          console.log(result);
           const currentImageWidth = IMAGE_WIDTH * result.length + 8 * result.length; //padding = 8px
           currentImageWidth > ENABLED_SCROLL_WIDTH ? setIsScrollable(true) : setIsScrollable(false);
         });
@@ -113,7 +113,7 @@ function PostingScreen({ navigation, props }) {
     currentImageWidth > ENABLED_SCROLL_WIDTH ? setIsScrollable(true) : setIsScrollable(false);
   };
 
-  const renderItem = ({ item, index }) => {
+  const renderItem = ({ item }) => {
     return (
       <View>
         <Image
@@ -124,7 +124,7 @@ function PostingScreen({ navigation, props }) {
           style={styles.media}
         />
         <TouchableOpacity
-          onPress={() => onDelete(item, index)}
+          onPress={() => onDelete(item)}
           activeOpacity={0.9}
           style={styles.buttonDelete}
         >
@@ -137,12 +137,19 @@ function PostingScreen({ navigation, props }) {
   const registerPost = async () => {
     //1. 이미지 배열 정제
     const mappingImage = images.map((e) => {
-      return {
-        path: e.path,
-        Latitude: e.exif.Latitude,
-        Longitude: e.exif.Longitude,
-        DateTime: e.exif.DateTime,
-      };
+      if (e.exif.Latitude != undefined) {
+        return {
+          path: e.path,
+          Latitude: e.exif.Latitude,
+          Longitude: e.exif.Longitude,
+          DateTime: e.exif.DateTime,
+        };
+      } else {
+        return {
+          path: e.path,
+          DateTime: e.exif.DateTime,
+        };
+      }
     });
     setForm(form);
     const userId = await findMyInfoByEmail(auth().currentUser.email);
