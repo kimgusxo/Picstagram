@@ -8,7 +8,12 @@ function UserSmallProfile(props) {
       <View style={styles.userButtonRow}>
         <TouchableOpacity
           style={styles.userButton}
-          onPress={() => props.navigation.navigate('Profile', { user: props.user })}
+          onPress={() =>
+            props.navigation.navigate('Profile', {
+              userInfo: props.myInfo,
+              profileInfo: props.user,
+            })
+          }
         >
           <View style={styles.userIconRow}>
             <EntypoIcon name="user" style={styles.userIcon} />

@@ -16,7 +16,7 @@ function HeaderMain(props) {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.searchButton}
-          onPress={() => props.navigation.navigate('UserSearch')}
+          onPress={() => props.navigation.navigate('UserSearch', { userInfo: props.userInfo })}
         >
           <EvilIconsIcon name="search" style={styles.searchIcon} />
         </TouchableOpacity>

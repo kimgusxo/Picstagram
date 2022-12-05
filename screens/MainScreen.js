@@ -125,7 +125,7 @@ function MainScreen({ navigation, route }) {
     <>
       <View>
         <StatusBar hidden />
-        <HeaderMain style={styles.headerMain} navigation={navigation} />
+        <HeaderMain style={styles.headerMain} navigation={navigation} userInfo={userInfo.current} />
       </View>
       <FlatList
         keyExtractor={(postList, index) => postList.title + index}

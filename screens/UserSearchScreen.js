@@ -28,6 +28,7 @@ function UserSearchScreen({ navigation, route }) {
           <UserSmallProfile
             style={styles.userSmallProfile}
             user={user[0]}
+            myInfo={route.params.userInfo}
             navigation={navigation}
           />
         ) : null}
