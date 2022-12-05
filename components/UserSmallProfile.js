@@ -1,15 +1,18 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 
 function UserSmallProfile(props) {
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.userButtonRow}>
-        <TouchableOpacity style={styles.userButton}>
+        <TouchableOpacity
+          style={styles.userButton}
+          onPress={() => props.navigation.navigate('Profile', { user: props.user })}
+        >
           <View style={styles.userIconRow}>
             <EntypoIcon name="user" style={styles.userIcon} />
-            <Text style={styles.userId}>user_ID</Text>
+            <Text style={styles.userId}> {props.user.id} </Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.cancleButton}>
@@ -23,7 +26,7 @@ function UserSmallProfile(props) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    marginBottom: 15
+    marginBottom: 15,
   },
   userButton: {
     width: 228,
@@ -65,7 +68,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignSelf: 'center',
-
   },
 });
 
