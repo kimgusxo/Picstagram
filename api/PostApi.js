@@ -391,7 +391,6 @@ async function createComments(commentWriter, commentContent, postDate) {
 async function deleteComments(postDate, commentsDate) {
   const postDocId = await getPostDocId(postDate); // 해당 상위컬렉션인 게시물의 docId 획득
   const commentsDocId = await getCommentsDocId(postDate, commentsDate); // 해당 하위컬렉션인 댓글의 docId 획득
-  console.log('1');
 
   deleteCommentsByDocId(postDocId, commentsDocId);
 }
