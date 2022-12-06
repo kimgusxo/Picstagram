@@ -8,7 +8,7 @@ import { likeUpdate } from '../api/PostApi';
 function PostFooter(props) {
   // eslint-disable-next-line no-unused-vars
   const [likeCnt, setLikeCnt] = useState(props.likeCnt);
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(props.post.isLiked);
   // eslint-disable-next-line no-unused-vars
   const route = useRoute();
 

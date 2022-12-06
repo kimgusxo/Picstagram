@@ -74,6 +74,15 @@ function MainScreen({ navigation, route }) {
     }
 
     fetchData().then(() => {
+      setPostList((prev) => {
+        return prev.map((post) => {
+          if (post.likeList != undefined && post.likeList.includes(userInfo.current.id)) {
+            return { ...post, isLiked: true };
+          } else {
+            return { ...post, isLiked: false };
+          }
+        });
+      });
       setIsLoading(false);
     });
 
@@ -118,6 +127,15 @@ function MainScreen({ navigation, route }) {
     setRefreshing(true);
     fetchData().then(() => {
       console.log(initialPostList.current.length);
+      setPostList((prev) => {
+        prev.forEach((post) => {
+          if (post.likeList != undefined && post.likeList.includes(userInfo.current.id)) {
+            post.push({ isLiked: true });
+          } else {
+            post.push({ isLiked: false });
+          }
+        });
+      });
       wait(2000).then(() => setRefreshing(false));
     });
   }, []);

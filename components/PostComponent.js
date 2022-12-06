@@ -23,6 +23,7 @@ function PostComponent(props) {
   const [txtInput, setTxtInput] = React.useState('');
   const txtInputRef = useRef();
 
+  console.log(props.post);
   return (
     <View style={[styles.container, props.style]}>
       <PostProfile
