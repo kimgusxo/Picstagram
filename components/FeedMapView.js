@@ -146,12 +146,6 @@ export default FeedMapView;
 
 export const Point = memo(
   ({ item, onPress, navigation, post }) => {
-    const [uri, setUri] = useState('');
-
-    useEffect(() => {
-      setUri(item.properties.source);
-    }, [uri]);
-
     return (
       <Marker
         key={item.properties?.cluster_id ?? `point-${item.properties?.id}`}
@@ -161,7 +155,7 @@ export const Point = memo(
         }}
         tracksViewChanges={false}
         onPress={() => onPress(item)}
-        onCalloutPress={() => navigation.navigate('DetailPicture', post)}
+        onCalloutPress={() => navigation.navigate('DetailPicture', { post: post })}
       >
         {item.properties?.cluster ? (
           // Render Cluster
@@ -180,7 +174,7 @@ export const Point = memo(
                   height: 80,
                   resizeMode: 'cover',
                 }}
-                source={{ uri: uri }}
+                source={{ uri: item.properties.source }}
               />
             </View>
             <Callout>

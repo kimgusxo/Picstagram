@@ -24,6 +24,8 @@ function DetailPictureScreen({ navigation, route }) {
     setImagePathList(sampleImagePathList);
   }, []);
 
+  console.log(route.params.post);
+
   const sliderWidth = Dimensions.get('window').width;
   const itemWidth = Dimensions.get('window').width;
 

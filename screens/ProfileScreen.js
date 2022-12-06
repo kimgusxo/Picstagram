@@ -152,7 +152,7 @@ function ProfileScreen({ navigation, route }) {
                 backgroundColor: colorCode,
               }}
             >
-              <Text style={{ fontSize: 32, color: 'white' }}>{item.title}</Text>
+              <Text style={{ padding: 8, fontSize: 32, color: 'white' }}>{item.title}</Text>
             </View>
           ) : (
             <FastImage
