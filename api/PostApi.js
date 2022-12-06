@@ -411,7 +411,7 @@ async function readComments(postDate) {
     .collection('Post')
     .doc(postDocId)
     .collection('Comments')
-    .orderBy('date', 'desc')
+    .orderBy('date', 'asc')
     .get();
 
   comments.forEach((doc) => {
