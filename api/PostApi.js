@@ -205,6 +205,7 @@ async function createPost(title, content, writer, images) {
     content: content,
     date: date,
     like: 0,
+    likeList: [],
     range: 'All',
     title: title,
     writer: writer,
