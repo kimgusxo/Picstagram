@@ -439,6 +439,11 @@ async function readImages(postDate) {
     result.push(doc.data());
   });
 
+  //temp배열에 있는 doc들을 전부 시간순으로 재정렬
+  result.sort(function compare(a, b) {
+    return a.imgDate.seconds - b.imgDate.seconds;
+  });
+
   return result;
 }
 
