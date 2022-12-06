@@ -105,15 +105,18 @@ function MainScreen({ navigation, route }) {
 
     // Fetching Data
     async function fetchData() {
+      // Initailizaing
+
       // Get userToken
       userToken.current = firebase.auth().currentUser;
 
       // Set user information by userToken
       [userInfo.current] = await findMyInfoByEmail(userToken.current.email);
 
-      // Get Initail PostList and Set Current PostList
+      // Get Initail PostList
       initialPostList.current = await loadingMainPage(userInfo.current.id);
 
+      // Get Next PostList and Set Current PostList
       let temp;
       isLastPost.current = cursor.current + POST_OFFSET > initialPostList.current.length;
       if (!isLastPost.current)
@@ -128,14 +131,15 @@ function MainScreen({ navigation, route }) {
     fetchData().then(() => {
       console.log(initialPostList.current.length);
       setPostList((prev) => {
-        prev.forEach((post) => {
+        return prev.map((post) => {
           if (post.likeList != undefined && post.likeList.includes(userInfo.current.id)) {
-            post.push({ isLiked: true });
+            return { ...post, isLiked: true };
           } else {
-            post.push({ isLiked: false });
+            return { ...post, isLiked: false };
           }
         });
       });
+      setIsLoading(false);
       wait(2000).then(() => setRefreshing(false));
     });
   }, []);
