@@ -15,6 +15,7 @@ import FooterMain from '../components/FooterMain';
 import { loadingMainPage } from '../api/PostApi';
 import { findMyInfoByEmail } from '../api/UserApi';
 import { ActivityIndicator } from '@react-native-material/core';
+import { useIsFocused } from '@react-navigation/native';
 
 // timeout for refreshing
 const wait = (timeout) => {
@@ -27,6 +28,7 @@ function MainScreen({ navigation, route }) {
   const [postList, setPostList] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [getMorePost, setGetMorePost] = React.useState(false);
+  const isFocused = useIsFocused();
   const POST_OFFSET = 10;
   const initialPostList = useRef([]);
   const userToken = useRef();
@@ -35,7 +37,6 @@ function MainScreen({ navigation, route }) {
   let isLastPost = useRef(false);
 
   useEffect(() => {
-    //
     /***
      *  When this screen is Mounted,
      *
@@ -48,6 +49,8 @@ function MainScreen({ navigation, route }) {
      */
 
     // Fetching Data
+    setIsLoading(true);
+
     async function fetchData() {
       // Initailizaing
 
@@ -80,7 +83,7 @@ function MainScreen({ navigation, route }) {
       initialPostList.current.length = 0;
       setPostList([]);
     };
-  }, [initialPostList]);
+  }, [isFocused]);
 
   const onRefresh = React.useCallback(() => {
     console.log('리프레쉬 이후 작업을 이곳에 기술하세요.');
