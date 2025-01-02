@@ -1,43 +1,48 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, StatusBar, ScrollView} from 'react-native';
+import React, { Component, useState, useEffect } from 'react';
+import { StyleSheet, View, StatusBar, ScrollView } from 'react-native';
 import UserSmallProfile from '../components/UserSmallProfile';
 import SearchTab from '../components/SearchTab';
+import { findUserById } from '../api/UserApi';
 
-function UserSearchScreen({navigation, route}) {
+function UserSearchScreen({ navigation, route }) {
+  const [text, setText] = useState('');
+  const [user, setUser] = useState({});
+
+  const search = async () => {
+    const info = await findUserById(text);
+    setUser(info);
+  };
+
   return (
-      <View style={styles.container}>
-        <StatusBar hidden />
-        <SearchTab style={styles.searchTab} navigation={navigation} />
-        <ScrollView
-        contentContainerStyle={styles.scrollArea_contentContainerStyle}>
-          <UserSmallProfile style={styles.userSmallProfile} />
-          <UserSmallProfile style={styles.userSmallProfile} />
-          <UserSmallProfile style={styles.userSmallProfile} />
-          <UserSmallProfile style={styles.userSmallProfile} />
-          <UserSmallProfile style={styles.userSmallProfile} />
-          <UserSmallProfile style={styles.userSmallProfile} />
-          <UserSmallProfile style={styles.userSmallProfile} />
-          <UserSmallProfile style={styles.userSmallProfile} />
-          <UserSmallProfile style={styles.userSmallProfile} />
-          <UserSmallProfile style={styles.userSmallProfile} />
-          <UserSmallProfile style={styles.userSmallProfile} />
-          <UserSmallProfile style={styles.userSmallProfile} />
-          <UserSmallProfile style={styles.userSmallProfile} />
-          <UserSmallProfile style={styles.userSmallProfile} />
-        </ScrollView>
-      </View>
-      
+    <View style={styles.container}>
+      <StatusBar hidden />
+      <SearchTab
+        style={styles.searchTab}
+        navigation={navigation}
+        setText={setText}
+        search={search}
+      />
+
+      <ScrollView contentContainerStyle={styles.scrollArea_contentContainerStyle}>
+        {user[0] != undefined ? (
+          <UserSmallProfile
+            style={styles.userSmallProfile}
+            user={user[0]}
+            myInfo={route.params.userInfo}
+            navigation={navigation}
+          />
+        ) : null}
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    
   },
   scrollArea_contentContainerStyle: {
     paddingVertical: 15,
-    
   },
   userSmallProfile: {
     height: 70,

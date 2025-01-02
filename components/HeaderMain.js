@@ -1,17 +1,37 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import EvilIconsIcon from 'react-native-vector-icons/EvilIcons';
 
 function HeaderMain(props) {
+  const alertSearchBtn = () => {
+    Alert.alert('게시물 검색 / 유저 검색', '검색하시겠습니까?', [
+      {
+        text: '게시글 검색',
+        onPress: () => {
+          props.navigation.navigate('PostSearch', { userInfo: props.userInfo });
+        },
+      },
+      {
+        text: '유저 검색',
+        onPress: () => {
+          props.navigation.navigate('UserSearch', { userInfo: props.userInfo });
+        },
+      },
+    ]);
+  };
+
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.picstagramRow}>
         <Text style={styles.picstagram}>Picstagram</Text>
-        <TouchableOpacity style={styles.addPostButton} onPress={() => props.navigation.navigate('RegisteryPost')}>
+        <TouchableOpacity
+          style={styles.addPostButton}
+          onPress={() => props.navigation.navigate('Posting')}
+        >
           <FeatherIcon name="plus" style={styles.addPostIcon} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.searchButton} onPress={() => props.navigation.navigate('UserSearch')}>
+        <TouchableOpacity style={styles.searchButton} onPress={alertSearchBtn}>
           <EvilIconsIcon name="search" style={styles.searchIcon} />
         </TouchableOpacity>
       </View>

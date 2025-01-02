@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, StatusBar, Text} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, View, StatusBar, Text } from 'react-native';
 import LoginButton from '../components/LoginButton';
 import SignUpButton from '../components/SignUpButton';
 import HeaderLogo from '../components/HeaderLogo';
 
-function FirstScreen({navigation, route}) {
+function FirstScreen({ navigation, route }) {
   return (
     <View style={styles.container}>
       <StatusBar hidden backgroundColor="rgba(255,255,255,1)" />

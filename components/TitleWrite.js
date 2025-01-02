@@ -1,23 +1,23 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, TextInput} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, View, TextInput } from 'react-native';
 
 function TitleWrite(props) {
   return (
-    <View style={[styles.container, props.style]}>
-      <TextInput placeholder="제목을 입력하세요." style={styles.inputStyle} />
+    <View style={[styles.titleWriteContainer]}>
+      <TextInput placeholder="제목을 입력하세요." style={styles.titleinputStyle} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  titleWriteContainer: {
     borderBottomWidth: 1,
     borderColor: '#D9D5DC',
     backgroundColor: 'transparent',
     flexDirection: 'row',
     alignItems: 'center',
   },
-  inputStyle: {
+  titleinputStyle: {
     color: '#000',
     paddingRight: 5,
     fontSize: 16,

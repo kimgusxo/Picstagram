@@ -1,11 +1,18 @@
-import React, {Component} from 'react';
-import {StyleSheet, TouchableOpacity, Text} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 
 function SubmitButton(props) {
   return (
-    <TouchableOpacity style={[styles.container, props.style]}>
-      <Text style={styles.submit}>Submit</Text>
-    </TouchableOpacity>
+    <View style={[styles.container, props.style]}>
+      <TouchableOpacity
+        onPress={() => {
+          props.registerUser();
+          props.navigation.navigate('Main');
+        }}
+      >
+        <Text style={styles.submit}>Submit</Text>
+      </TouchableOpacity>
+    </View>
   );
 }
 

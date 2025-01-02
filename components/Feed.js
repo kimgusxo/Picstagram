@@ -1,8 +1,12 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {StyleSheet, View, Image, Text, Dimensions} from 'react-native';
-import Carousel, {Pagination} from 'react-native-snap-carousel';
+/* eslint-disable indent */
+import React, { useEffect, useRef, useState } from 'react';
+import { StyleSheet, View, Text, Dimensions, TouchableOpacity, Platform } from 'react-native';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
+import FastImage from 'react-native-fast-image';
 
-// 원래 위치
+import EntypoIcon from 'react-native-vector-icons/Entypo';
+import FeedMapView from './FeedMapView';
+
 const sampleImagePathList = [
   {
     source: require('../assets/images/aimyon.jpg'),
@@ -16,59 +20,120 @@ const sampleImagePathList = [
 ];
 
 function Feed(props) {
-  const [imagePathList, setImagePathList] = useState([]);
-  const [index, setIndex] = useState(0);
-  const carouselRef = useRef(null);
+  // props
+  const isDetailed = props.isDetailed;
 
-  useEffect(() => {
-    setImagePathList(sampleImagePathList);
-  }, []);
+  // state & ref
+  const [index, setIndex] = useState(0);
+  const [isConvertedMap, setIsConvertedMap] = useState(false);
+  const [firstItem, setFirstItem] = useState(0);
+  const carouselRef = useRef(null);
 
   const sliderWidth = Dimensions.get('window').width;
   const itemWidth = Dimensions.get('window').width;
 
-  const _renderItem = ({item, index}) => {
+  const toggleMapToImg = () => {
+    setIsConvertedMap(!isConvertedMap);
+  };
+
+  // eslint-disable-next-line no-unused-vars
+  const _renderItem = ({ item, index }) => {
     return (
-      <View style={{ alignItems: 'center' }}>
-      <Image
-        style={{width: 368, height: 368, resizeMode: 'cover'}}
-        source={item.source}
+      <TouchableOpacity
+        onPress={() =>
+          !isDetailed
+            ? props.navigation.navigate('DetailPost', {
+                firstItem: index,
+                post: props.post,
+                userInfo: props.userInfo,
+              })
+            : props.navigation.navigate('DetailPicture', { firstItem: index, post: props.post })
+        }
+        style={{ alignItems: 'center' }}
+      >
+        {/* Carousel Image */}
+        <FastImage
+          style={{
+            width: 368,
+            height: 368,
+            display: isConvertedMap ? 'none' : 'flex',
+          }}
+          resizeMode={FastImage.resizeMode.cover}
+          source={{ uri: item.url }}
         />
-    </View>
+      </TouchableOpacity>
     );
-  } 
+  };
 
   return (
     <View style={[styles.container, props.style]}>
-      <Text style={styles.txtPostTitle}>Aimyon Daisuki~!😍😍😍</Text>
+      <Text style={styles.txtPostTitle}>{props.post.title}</Text>
       <View style={styles.imgContainer}>
+        {/* ConvertBtn */}
+        {isDetailed ? (
+          <TouchableOpacity style={styles.convertBtn} onPress={toggleMapToImg}>
+            <EntypoIcon name="map" style={styles.mapIcon} />
+          </TouchableOpacity>
+        ) : (
+          <></>
+        )}
+
+        {/* CarouselImg */}
         <Carousel
           ref={carouselRef}
-          data={imagePathList}
+          data={props.post.imageList}
           renderItem={_renderItem}
           sliderWidth={sliderWidth}
           itemWidth={itemWidth}
           onSnapToItem={(index) => setIndex(index)}
+          firstItem={firstItem}
+          initialScrollIndex={firstItem}
+          getItemLayout={(data, index) => ({
+            length: itemWidth,
+            offset: itemWidth * index,
+            index,
+          })}
           layout={'default'}
         />
-      </View>
-      <View style={styles.pagingContainer}>
-        <Pagination
-            dotsLength={imagePathList.length}
-            activeDotIndex={index}
-            carouselRef={carouselRef}
-            dotStyle={{
-              width: 15,
-              height: 5,
-              borderRadius: 5,
-              marginHorizontal: 0,
-              backgroundColor: 'rgba(255, 255, 255, 0.92)'
-            }}
-            inactiveDotOpacity={0.4}
-            inactiveDotScale={0.6}
-            tappableDots={true}
+
+        {/* Map */}
+        {isDetailed ? (
+          <FeedMapView
+            isConvertedMap={isConvertedMap}
+            navigation={props.navigation}
+            post={props.post}
           />
-        </View>
+        ) : (
+          <></>
+        )}
+      </View>
+
+      {/* Pagination */}
+      <View
+        style={{
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          marginTop: props.post.imageList.length <= 1 ? 0 : -65,
+        }}
+      >
+        <Pagination
+          dotsLength={props.post.imageList.length}
+          activeDotIndex={index}
+          carouselRef={carouselRef}
+          dotStyle={{
+            width: 15,
+            height: 5,
+            borderRadius: 5,
+            marginHorizontal: 0,
+            backgroundColor: 'rgba(255, 255, 255, 0.92)',
+          }}
+          inactiveDotOpacity={0.4}
+          inactiveDotScale={0.6}
+          tappableDots={true}
+        />
+      </View>
+
+      {/* Post Content */}
+      {isDetailed ? <Text style={styles.txtContent}>{props.post.content}</Text> : <></>}
     </View>
   );
 }
@@ -80,10 +145,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  pagingContainer: {
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    marginTop: -65,
-  },
   image: {
     widht: '100%',
     height: 328,
@@ -92,8 +153,37 @@ const styles = StyleSheet.create({
   txtPostTitle: {
     fontFamily: 'roboto-regular',
     color: '#121212',
+    fontSize: 16,
+    fontWeight: 'bold',
+    backgroundColor: 'white',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     marginVertical: 10,
     marginHorizontal: 16,
+  },
+  txtContent: {
+    fontFamily: 'roboto-regular',
+    color: '#121212',
+    backgroundColor: 'white',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginVertical: 10,
+    marginHorizontal: 16,
+    lineHeight: 24,
+  },
+  convertBtn: {
+    position: 'absolute',
+    right: 16,
+    top: 16,
+    elevation: Platform.os === 'android' ? 50 : 0,
+    zIndex: 10,
+  },
+  mapIcon: {
+    color: 'rgba(255,255,255,1)',
+    fontSize: 30,
+    position: 'relative',
   },
 });
 

@@ -1,9 +1,19 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, TouchableOpacity, Text} from 'react-native';
+import React, { Component, useEffect } from 'react';
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
+import ProfileFollowingButton from './ProfileFollowingButton';
 import UpdateProfileButton from './UpdateProfileButton';
 
 function ProfileInfomation(props) {
+  const [followerCnt, setFollowerCnt] = React.useState(0);
+  const [followingCnt, setFollowingCnt] = React.useState(0);
+  const [user, setUser] = React.useState(props.profileInfo);
+
+  useEffect(() => {
+    setFollowerCnt(user.followerList.length);
+    setFollowingCnt(user.followingList.length);
+  });
+
   return (
     <View style={[styles.container, props.style]}>
       <View style={styles.userIconRow}>
@@ -11,14 +21,44 @@ function ProfileInfomation(props) {
         <View style={styles.group}>
           <View style={styles.followerRow}>
             <View style={styles.follower}>
-              <TouchableOpacity style={styles.followerCheckButton} onPress={() => props.navigation.navigate('FollowList')}>
-                <Text style={styles.followerCount}>0</Text>
+              <TouchableOpacity
+                style={styles.followerCheckButton}
+                onPress={() =>
+                  props.navigation.navigate('FollowList', {
+                    profileInfo: props.profileInfo,
+                    userInfo: props.userInfo,
+                    setFollowerCnt: setFollowerCnt,
+                    setFollowingCnt: setFollowingCnt,
+                    user: user,
+                    setUser: setUser,
+                    token: true,
+                  })
+                }
+              >
+                <Text style={styles.followerCount}>
+                  {props.profileInfo.followerList == undefined ? 0 : followerCnt}
+                </Text>
               </TouchableOpacity>
             </View>
             <View style={styles.followerFiller} />
             <View style={styles.following}>
-              <TouchableOpacity style={styles.followingCheckButton} onPress={() => props.navigation.navigate('FollowList')}>
-                <Text style={styles.followingCount}>0</Text>
+              <TouchableOpacity
+                style={styles.followingCheckButton}
+                onPress={() =>
+                  props.navigation.navigate('FollowList', {
+                    profileInfo: props.profileInfo,
+                    userInfo: props.userInfo,
+                    setFollowerCnt: setFollowerCnt,
+                    setFollowingCnt: setFollowingCnt,
+                    user: user,
+                    setUser: setUser,
+                    token: false,
+                  })
+                }
+              >
+                <Text style={styles.followingCount}>
+                  {props.profileInfo.followingList == undefined ? 0 : followingCnt}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -29,7 +69,20 @@ function ProfileInfomation(props) {
           </View>
         </View>
       </View>
-      <UpdateProfileButton style={styles.updateProfileButton} navigation={props.navigation} />
+      {props.isMyPost ? (
+        <UpdateProfileButton style={styles.updateProfileButton} navigation={props.navigation} />
+      ) : (
+        <ProfileFollowingButton
+          style={styles.updateProfileButton}
+          navigation={props.navigation}
+          profileInfo={props.profileInfo}
+          user={user}
+          setUser={setUser}
+          setFollowerCnt={setFollowerCnt}
+          setFollowingCnt={setFollowingCnt}
+          userInfo={props.userInfo}
+        />
+      )}
     </View>
   );
 }

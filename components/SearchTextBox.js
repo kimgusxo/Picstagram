@@ -1,10 +1,14 @@
-import React, {Component} from 'react';
-import {StyleSheet, View, TextInput} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, View, TextInput } from 'react-native';
 
 function SearchTextBox(props) {
   return (
     <View style={[styles.container, props.style]}>
-      <TextInput placeholder="Search" style={styles.inputStyle} />
+      <TextInput
+        placeholder="Search"
+        style={styles.inputStyle}
+        onChangeText={(text) => props.setText(text)}
+      />
     </View>
   );
 }

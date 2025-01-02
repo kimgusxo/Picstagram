@@ -1,4 +1,4 @@
-package com.example_rn.newarchitecture.modules;
+package com.kumoh.fusion.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;
